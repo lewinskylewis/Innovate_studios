@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="INNOV8 Studios crafts competitive advantage through strategy, design, technology, and world-class visual experiences."
+    />
+    <title>INNOV8 Studios - Hero</title>
+    <script>document.documentElement.classList.add("js");</script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header" data-site-header>
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="#home" aria-label="INNOV8 Studios home">
+          <img src="assets/images/logo-white.png" alt="INNOV8 Studios" />
+        </a>
+
+        <div class="desktop-nav" aria-label="Main menu">
+          <a class="is-active" href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#courses">Courses</a>
+          <a href="#products">Products</a>
+        </div>
+
+        <a class="nav-cta" href="#book">
+          <span>Book a call</span>
+          <svg viewBox="0 0 48 18" aria-hidden="true">
+            <path d="M1 9h43M35 1l9 8-9 8" />
+          </svg>
+        </a>
+
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+
+      <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu-top">
+          <a class="mobile-brand" href="#home" aria-label="INNOV8 Studios home">
+            <img src="assets/images/logo-white.png" alt="INNOV8 Studios" />
+          </a>
+          <button class="menu-close" type="button" aria-label="Close menu">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="mobile-menu-links">
+          <a class="is-active" href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#courses">Courses</a>
+          <a href="#products">Products</a>
+          <a class="mobile-book" href="#book">Book a call</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="hero-section" id="home" data-hero>
+        <canvas class="dust-canvas" aria-hidden="true"></canvas>
+
+        <div class="hero-inner">
+          <div class="hero-copy load-left">
+            <h1>
+              Competitive
+              <span>Advantage,</span>
+              <span>Crafted</span>
+              <span>Through</span>
+              <span>Innovation.</span>
+            </h1>
+
+            <p>
+              We help ambitious businesses earn trust faster, communicate value more clearly, and position themselves
+              as the obvious choice through strategy, design, technology and world-class visual experiences.
+            </p>
+
+            <a class="strategy-cta" href="#book">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+              <span>See Our Work</span>
+            </a>
+          </div>
+
+          <picture class="duck-layer load-up">
+            <img src="assets/images/ducks-clean.png" alt="Two INNOV8 duck characters" />
+          </picture>
+
+          <img
+            class="hero-note load-note"
+            src="assets/images/hero-scribble.png"
+            alt="Quietly building what everyone notices."
+          />
+
+          <aside class="hero-aside load-right" aria-label="INNOV8 Studios metrics">
+            <div class="metric-card">
+              <svg viewBox="0 0 32 32" aria-hidden="true">
+                <path d="M10 10V8.5A4.5 4.5 0 0 1 14.5 4h3A4.5 4.5 0 0 1 22 8.5V10" />
+                <path d="M6 10h20v16H6z" />
+                <path d="M12 16h8" />
+              </svg>
+              <div>
+                <strong><span data-count="110">0</span>+</strong>
+                <small>Business<br />Transformations</small>
+              </div>
+            </div>
+
+            <p>Trusted by ambitious businesses across finance, real estate, healthcare and hospitality.</p>
+
+            <div class="client-row">
+              <span class="client-icon">
+                <svg viewBox="0 0 32 32" aria-hidden="true">
+                  <path d="M21 25v-1.8a5 5 0 0 0-5-5h-5a5 5 0 0 0-5 5V25" />
+                  <circle cx="13.5" cy="10" r="4.5" />
+                  <path d="M27 25v-1.8a5 5 0 0 0-3.7-4.8" />
+                  <path d="M21.5 6a4.5 4.5 0 0 1 0 8" />
+                </svg>
+              </span>
+              <span>
+                <strong><span data-count="50">0</span>+</strong>
+                <small>Global Clients</small>
+              </span>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
