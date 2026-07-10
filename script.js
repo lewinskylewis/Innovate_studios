@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initNavState();
   initCounters();
   initDust();
+  initFeaturedWork();
 });
 
 function initMobileMenu() {
@@ -146,4 +147,102 @@ function initDust() {
   resize();
   draw();
   window.addEventListener("resize", resize, { passive: true });
+}
+
+function initFeaturedWork() {
+  const videos = document.querySelectorAll(".work-preview-video");
+  const lightbox = document.querySelector(".video-lightbox");
+  const lightboxVideo = document.querySelector(".video-lightbox__player");
+  const closeButton = document.querySelector(".video-lightbox__close");
+
+  const loadPreview = (video) => {
+    if (!video || video.dataset.loaded === "true") return;
+
+    const source = video.dataset.videoSrc;
+    if (source) {
+      video.src = source;
+      video.dataset.loaded = "true";
+      video.load();
+    }
+  };
+
+  const playPreview = (video) => {
+    loadPreview(video);
+    if (!prefersReducedMotion) {
+      video.play().catch(() => {});
+    }
+  };
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target;
+
+          if (entry.isIntersecting) {
+            playPreview(video);
+          } else {
+            video.pause();
+          }
+        });
+      },
+      { threshold: 0.28, rootMargin: "120px 0px" }
+    );
+
+    videos.forEach((video) => observer.observe(video));
+  } else {
+    videos.forEach(playPreview);
+  }
+
+  if (!lightbox || !lightboxVideo || !closeButton) return;
+
+  const closeLightbox = () => {
+    lightbox.classList.remove("is-open");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("lightbox-open");
+    lightboxVideo.pause();
+    lightboxVideo.removeAttribute("src");
+    lightboxVideo.removeAttribute("poster");
+    lightboxVideo.load();
+
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+    }
+  };
+
+  document.querySelectorAll(".work-play").forEach((button) => {
+    button.addEventListener("click", () => {
+      const card = button.closest(".work-card");
+      const preview = card?.querySelector(".work-preview-video");
+      if (!preview) return;
+
+      const source = preview.dataset.videoSrc || preview.currentSrc || preview.src;
+      const poster = preview.getAttribute("poster");
+
+      if (poster) lightboxVideo.setAttribute("poster", poster);
+      if (source) lightboxVideo.src = source;
+
+      lightbox.classList.add("is-open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.classList.add("lightbox-open");
+      lightboxVideo.load();
+      lightboxVideo.play().catch(() => {});
+
+      if (lightbox.requestFullscreen) {
+        lightbox.requestFullscreen().catch(() => {});
+      }
+    });
+  });
+
+  closeButton.addEventListener("click", closeLightbox);
+
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && lightbox.classList.contains("is-open")) {
+      closeLightbox();
+    }
+  });
 }

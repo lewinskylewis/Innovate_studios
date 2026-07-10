@@ -132,7 +132,116 @@
           </aside>
         </div>
       </section>
+
+      <section class="featured-work" id="portfolio" aria-labelledby="featured-work-title">
+        <div class="featured-inner">
+          <div class="featured-kicker">
+            <span></span>
+            <p>Featured Work</p>
+          </div>
+
+          <div class="featured-copy">
+            <h2 id="featured-work-title">
+              <span>The</span> Future
+              <span>Doesn't Need A Camera.</span>
+            </h2>
+
+            <p>
+              Some ideas deserve more than conventional marketing, some messages are too important to be explained with
+              words alone. Through cinematic 3D storytelling, we transform complex concepts into unforgettable visual
+              experiences that inspire confidence, capture attention, and elevate how brands are perceived.
+            </p>
+          </div>
+
+          <div class="work-grid" aria-label="Featured 3D highlight work">
+            <article class="work-card" data-project="Nike Kenya">
+              <div class="work-card__tag">Product<br />Awareness</div>
+
+              <div class="work-card__media">
+                <video
+                  class="work-preview-video"
+                  muted
+                  playsinline
+                  loop
+                  preload="none"
+                  poster="assets/images/Nikekenya.png"
+                  data-video-src="assets/videos/nike-kenya.mp4"
+                ></video>
+                <button class="work-play" type="button" aria-label="Play Nike Kenya video">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9 6.8v10.4L17.2 12 9 6.8z" />
+                  </svg>
+                </button>
+              </div>
+
+              <h3><a href="projects/nike-kenya.html">Nike Kenya</a></h3>
+              <p>Crafted to introduce a New product Line and strengthen brand recall in a highly competitive market.</p>
+            </article>
+
+            <article class="work-card" data-project="Stanbic Bank">
+              <div class="work-card__tag">Customer<br />Acquisition</div>
+
+              <div class="work-card__media">
+                <video
+                  class="work-preview-video"
+                  muted
+                  playsinline
+                  loop
+                  preload="none"
+                  poster="assets/images/Stanbic Bank.png"
+                  data-video-src="assets/videos/stanbic-bank.mp4"
+                ></video>
+                <button class="work-play" type="button" aria-label="Play Stanbic Bank video">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9 6.8v10.4L17.2 12 9 6.8z" />
+                  </svg>
+                </button>
+              </div>
+
+              <h3><a href="projects/stanbic-bank.html">Stanbic Bank</a></h3>
+              <p>A high-end 3D visual narrative built to communicate reliability, clarity, and confidence in financial services.</p>
+            </article>
+
+            <article class="work-card" data-project="Toyota Kenya">
+              <div class="work-card__tag">Product<br />Launch</div>
+
+              <div class="work-card__media">
+                <video
+                  class="work-preview-video"
+                  muted
+                  playsinline
+                  loop
+                  preload="none"
+                  poster="assets/images/ToyotaKenya.png"
+                  data-video-src="assets/videos/toyota-kenya.mp4"
+                ></video>
+                <button class="work-play" type="button" aria-label="Play Toyota Kenya video">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9 6.8v10.4L17.2 12 9 6.8z" />
+                  </svg>
+                </button>
+              </div>
+
+              <h3><a href="projects/toyota-kenya.html">Toyota Kenya</a></h3>
+              <p>A launch-focused 3D commercial designed to introduce new offerings with impact and immediate attention.</p>
+            </article>
+          </div>
+
+          <a class="portfolio-cta" href="#portfolio">
+            <span>View Portfolio</span>
+          </a>
+        </div>
+      </section>
     </main>
+
+    <div class="video-lightbox" aria-hidden="true" role="dialog" aria-label="Project video player">
+      <button class="video-lightbox__close" type="button" aria-label="Close video">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" />
+        </svg>
+      </button>
+      <video class="video-lightbox__player" controls playsinline></video>
+    </div>
 
     <script src="script.js"></script>
   </body>
