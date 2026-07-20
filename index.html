@@ -5,244 +5,297 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="INNOV8 Studios crafts competitive advantage through strategy, design, technology, and world-class visual experiences."
+      content="Innov8 Studios creates competitive advantage through strategy, design, technology, and cinematic visual experiences."
     />
-    <title>INNOV8 Studios - Hero</title>
-    <script>document.documentElement.classList.add("js");</script>
+    <meta name="theme-color" content="#070707" />
+    <title>Innov8 Studios | Competitive Advantage Crafted</title>
     <link rel="stylesheet" href="styles.css" />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gabriela&family=Rock+Salt&display=swap" rel="stylesheet">
   </head>
   <body>
-    <header class="site-header" data-site-header>
-      <nav class="nav-shell" aria-label="Primary navigation">
-        <a class="brand" href="#home" aria-label="INNOV8 Studios home">
-          <img src="assets/images/logo-white.png" alt="INNOV8 Studios" />
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" data-header>
+      <div class="nav-shell liquid-glass">
+        <a class="brand-mark" href="#home" aria-label="Innov8 Studios home">
+          <img src="assets/images/logo white.png" alt="Innov8 Studios" />
         </a>
 
-        <div class="desktop-nav" aria-label="Main menu">
-          <a class="is-active" href="#home">Home</a>
-          <a href="#about">About</a>
-          <a href="#portfolio">Portfolio</a>
-          <a href="#courses">Courses</a>
-          <a href="#products">Products</a>
-        </div>
-
-        <a class="nav-cta" href="#book">
-          <span>Book a call</span>
-          <svg viewBox="0 0 48 18" aria-hidden="true">
-            <path d="M1 9h43M35 1l9 8-9 8" />
-          </svg>
-        </a>
-
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
-          <span></span>
+        <button class="menu-button liquid-glass" type="button" aria-label="Open navigation" aria-expanded="false" data-menu-button>
           <span></span>
           <span></span>
         </button>
-      </nav>
 
-      <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
-        <div class="mobile-menu-top">
-          <a class="mobile-brand" href="#home" aria-label="INNOV8 Studios home">
-            <img src="assets/images/logo-white.png" alt="INNOV8 Studios" />
-          </a>
-          <button class="menu-close" type="button" aria-label="Close menu">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6 6l12 12M18 6 6 18" />
-            </svg>
-          </button>
-        </div>
-
-        <div class="mobile-menu-links">
+        <nav class="site-nav" aria-label="Primary navigation" data-site-nav>
           <a class="is-active" href="#home">Home</a>
-          <a href="#about">About</a>
-          <a href="#portfolio">Portfolio</a>
-          <a href="#courses">Courses</a>
-          <a href="#products">Products</a>
-          <a class="mobile-book" href="#book">Book a call</a>
-        </div>
+          <a href="#featured">About</a>
+          <a href="#featured">Portfolio</a>
+          <a href="#services">Courses</a>
+          <a href="#ventures">Products</a>
+          <a class="menu-call" href="#contact">
+            <span>Book a Call</span>
+            <span class="arrow" aria-hidden="true"></span>
+          </a>
+        </nav>
+
+        <a class="nav-cta liquid-glass" href="#services">
+          <span>Book a Call</span>
+          <span class="arrow" aria-hidden="true"></span>
+        </a>
       </div>
     </header>
 
-    <main class="page-shell">
-      <section class="hero-section" id="home" data-hero>
-        <canvas class="dust-canvas" aria-hidden="true"></canvas>
+    <main id="main">
+      <section class="hero" id="home" aria-label="Innov8 Studios hero">
+        <img class="hero-bg" src="assets/images/Hero.png" alt="" aria-hidden="true" />
 
         <div class="hero-inner">
-          <div class="hero-copy load-left">
-            <h1>
-              Competitive
-              <span>Advantage,</span>
-              <span>Crafted</span>
-              <span>Through</span>
-              <span>Innovation.</span>
-            </h1>
-
+          <div class="hero-copy">
+            <h1>Competitive<br />Crafted<br />Advantage</h1>
             <p>
-              We help ambitious businesses earn trust faster, communicate value more clearly, and position themselves
+              We help ambitious businesses earn trust faster, communicate value and position themselves
               as the obvious choice through strategy, design, technology and world-class visual experiences.
             </p>
-
-            <a class="strategy-cta" href="#book">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-              <span>See Our Work</span>
+            <a class="hero-button liquid-glass" href="#featured">
+              <span class="button-arrow" aria-hidden="true"></span>
+              <span>View Our Work</span>
             </a>
           </div>
 
-          <picture class="duck-layer load-up">
-            <img src="assets/images/ducks-clean.png" alt="Two INNOV8 duck characters" />
-          </picture>
+          <div class="hero-aside">
+            <p>Quietly Building What Everyone Notices.</p>
 
-          <img
-            class="hero-note load-note"
-            src="assets/images/hero-scribble.png"
-            alt="Quietly building what everyone notices."
-          />
-
-          <aside class="hero-aside load-right" aria-label="INNOV8 Studios metrics">
-            <div class="metric-card">
-              <svg viewBox="0 0 32 32" aria-hidden="true">
-                <path d="M10 10V8.5A4.5 4.5 0 0 1 14.5 4h3A4.5 4.5 0 0 1 22 8.5V10" />
-                <path d="M6 10h20v16H6z" />
-                <path d="M12 16h8" />
-              </svg>
-              <div>
-                <strong><span data-count="110">0</span>+</strong>
-                <small>Business<br />Transformations</small>
-              </div>
+            <div class="metric-card liquid-glass">
+              <div class="metric-icon" aria-hidden="true"></div>
+              <strong>110+</strong>
+              <span>Business<br />Transformations</span>
             </div>
 
-            <p>Trusted by ambitious businesses across finance, real estate, healthcare and hospitality.</p>
-
-            <div class="client-row">
-              <span class="client-icon">
-                <svg viewBox="0 0 32 32" aria-hidden="true">
-                  <path d="M21 25v-1.8a5 5 0 0 0-5-5h-5a5 5 0 0 0-5 5V25" />
-                  <circle cx="13.5" cy="10" r="4.5" />
-                  <path d="M27 25v-1.8a5 5 0 0 0-3.7-4.8" />
-                  <path d="M21.5 6a4.5 4.5 0 0 1 0 8" />
-                </svg>
-              </span>
-              <span>
-                <strong><span data-count="50">0</span>+</strong>
-                <small>Global Clients</small>
-              </span>
-            </div>
-          </aside>
+            <p class="trust-copy">
+              Trusted by ambitious businesses across finance, real estate, healthcare and hospitality.
+            </p>
+          </div>
         </div>
       </section>
 
-      <section class="featured-work" id="portfolio" aria-labelledby="featured-work-title">
-        <div class="featured-inner">
-          <div class="featured-kicker">
+      <section class="featured" id="featured">
+        <div class="section-container">
+          <div class="section-kicker">
             <span></span>
-            <p>Featured Work</p>
+            <p>Featured work</p>
           </div>
 
-          <div class="featured-copy">
-            <h2 id="featured-work-title">
-              <span>The</span> Future
-              <span>Doesn't Need A Camera.</span>
-            </h2>
-
+          <div class="featured-heading">
+            <h2><span>The</span> Future<br />Doesn't Need A Camera.</h2>
             <p>
-              Some ideas deserve more than conventional marketing, some messages are too important to be explained with
-              words alone. Through cinematic 3D storytelling, we transform complex concepts into unforgettable visual
-              experiences that inspire confidence, capture attention, and elevate how brands are perceived.
+              Some ideas deserve more than conventional marketing, some messages are too important to be
+              explained with words alone. Through cinematic 3D storytelling, we transform complex concepts
+              into unforgettable visual experiences that inspire confidence, capture attention, and elevate
+              how brands are perceived.
             </p>
           </div>
 
-          <div class="work-grid" aria-label="Featured 3D highlight work">
-            <article class="work-card" data-project="Nike Kenya">
-              <div class="work-card__tag">Product<br />Awareness</div>
-
-              <div class="work-card__media">
-                <video
-                  class="work-preview-video"
-                  muted
-                  playsinline
-                  loop
-                  preload="none"
-                  poster="assets/images/Nikekenya.png"
-                  data-video-src="assets/videos/nike-kenya.mp4"
-                ></video>
-                <button class="work-play" type="button" aria-label="Play Nike Kenya video">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M9 6.8v10.4L17.2 12 9 6.8z" />
-                  </svg>
+          <div class="work-grid">
+            <article class="work-item">
+              <div class="work-media">
+                <video poster="assets/images/Featured-Nike.png" preload="metadata" playsinline data-work-video>
+                  <source src="SOCIAl%20MEDIA/Audio%20BTS.mp4" type="video/mp4" />
+                </video>
+                <span class="work-tag">Product Awareness</span>
+                <button class="work-play" type="button" aria-label="Play Nike Kenya video" data-play-button>
+                  <span aria-hidden="true"></span>
                 </button>
+                <span class="video-status" role="status" data-video-status></span>
               </div>
-
-              <h3><a href="projects/nike-kenya.html">Nike Kenya</a></h3>
-              <p>Crafted to introduce a New product Line and strengthen brand recall in a highly competitive market.</p>
+              <h3>Nike Kenya</h3>
+              <p>
+                Crafted to introduce a New product Line and strengthen brand recall in a highly competitive market.
+              </p>
             </article>
 
-            <article class="work-card" data-project="Stanbic Bank">
-              <div class="work-card__tag">Customer<br />Acquisition</div>
-
-              <div class="work-card__media">
-                <video
-                  class="work-preview-video"
-                  muted
-                  playsinline
-                  loop
-                  preload="none"
-                  poster="assets/images/Stanbic Bank.png"
-                  data-video-src="assets/videos/stanbic-bank.mp4"
-                ></video>
-                <button class="work-play" type="button" aria-label="Play Stanbic Bank video">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M9 6.8v10.4L17.2 12 9 6.8z" />
-                  </svg>
+            <article class="work-item">
+              <div class="work-media">
+                <video poster="assets/images/Featured-Stanbic.png" preload="metadata" playsinline data-work-video></video>
+                <span class="work-tag">Customer Acquisition</span>
+                <button class="work-play" type="button" aria-label="Play Stanbic Bank video" data-play-button>
+                  <span aria-hidden="true"></span>
                 </button>
+                <span class="video-status" role="status" data-video-status></span>
               </div>
-
-              <h3><a href="projects/stanbic-bank.html">Stanbic Bank</a></h3>
-              <p>A high-end 3D visual narrative built to communicate reliability, clarity, and confidence in financial services.</p>
+              <h3>Stanbic Bank</h3>
+              <p>
+                A high-end 3D visual narrative built to communicate reliability, clarity, and confidence
+                in financial services.
+              </p>
             </article>
 
-            <article class="work-card" data-project="Toyota Kenya">
-              <div class="work-card__tag">Product<br />Launch</div>
-
-              <div class="work-card__media">
-                <video
-                  class="work-preview-video"
-                  muted
-                  playsinline
-                  loop
-                  preload="none"
-                  poster="assets/images/ToyotaKenya.png"
-                  data-video-src="assets/videos/toyota-kenya.mp4"
-                ></video>
-                <button class="work-play" type="button" aria-label="Play Toyota Kenya video">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M9 6.8v10.4L17.2 12 9 6.8z" />
-                  </svg>
+            <article class="work-item">
+              <div class="work-media">
+                <video poster="assets/images/Featured-Jubilee.png" preload="metadata" playsinline data-work-video></video>
+                <span class="work-tag">Product Launch</span>
+                <button class="work-play" type="button" aria-label="Play Jubilee Insurance video" data-play-button>
+                  <span aria-hidden="true"></span>
                 </button>
+                <span class="video-status" role="status" data-video-status></span>
               </div>
-
-              <h3><a href="projects/toyota-kenya.html">Toyota Kenya</a></h3>
-              <p>A launch-focused 3D commercial designed to introduce new offerings with impact and immediate attention.</p>
+              <h3>Jubilee Insurance</h3>
+              <p>
+                A launch-focused 3D commercial designed to introduce new offerings with impact and immediate attention.
+              </p>
             </article>
           </div>
 
-          <a class="portfolio-cta" href="#portfolio">
-            <span>View Portfolio</span>
-          </a>
+          <div class="center-action">
+            <a class="portfolio-button liquid-glass" href="#services">View Portfolio</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="services" id="services">
+        <div class="section-container services-container">
+          <div class="services-top">
+            <div>
+              <div class="section-kicker">
+                <span></span>
+                <p>Our services</p>
+              </div>
+              <h2><span>Where</span> Strategy<br /><span>Meets</span> Execution.</h2>
+              <p>
+                We combine strategy, design, technology, and marketing to solve business challenges,
+                strengthen market perception, and build brands people choose with confidence.
+              </p>
+            </div>
+
+          </div>
+
+          <div class="service-grid">
+            <article class="service-item">
+              <span class="service-number">01.</span>
+              <h3>Brand<br />Strategy</h3>
+              <h4>Marketing Direction</h4>
+              <p>
+                We help businesses define how they should be perceived in competitive markets and translate
+                that into campaigns that drive trust and demand.
+              </p>
+              <a class="service-button liquid-glass" href="#home">Explore Work</a>
+            </article>
+
+            <article class="service-item">
+              <span class="service-number">02.</span>
+              <h3>3D Visual<br />Storytelling</h3>
+              <h4>Cinematic 3D Campaigns</h4>
+              <p>
+                We create high-impact visual narratives that simplify complex ideas, elevate perception,
+                and make brands impossible to ignore.
+              </p>
+              <a class="service-button liquid-glass" href="#home">Explore Work</a>
+            </article>
+
+            <article class="service-item">
+              <span class="service-number">03.</span>
+              <h3>Digital<br />Experiences</h3>
+              <h4>Conversion-Focused<br />Web Systems</h4>
+              <p>
+                We design and develop digital platforms engineered to turn attention into measurable
+                business outcomes.
+              </p>
+              <a class="service-button liquid-glass" href="#home">Explore Work</a>
+            </article>
+
+            <article class="service-item">
+              <span class="service-number">04.</span>
+              <h3>Graphic<br />Design</h3>
+              <h4>Brand Communication<br />Design</h4>
+              <p>
+                We create visual systems that strengthen brand consistency across campaigns, digital
+                platforms, and marketing channels.
+              </p>
+              <a class="service-button liquid-glass" href="#home">Explore Work</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <div class="skills-ticker" aria-label="Studio capabilities">
+        <div class="ticker-track">
+          <span class="ticker-item"><img src="assets/images/service-icons/graphic-design-2d.svg" alt="" />Graphic Design</span><i></i>
+          <span class="ticker-item"><img src="assets/images/service-icons/three-d-2d.svg" alt="" />3D</span><i></i>
+          <span class="ticker-item"><img src="assets/images/service-icons/web-dev-2d.svg" alt="" />Web Dev</span><i></i>
+          <span class="ticker-item"><img src="assets/images/service-icons/digital-marketing-2d.svg" alt="" />Digital Marketing</span><i></i>
+          <span class="ticker-item"><img src="assets/images/service-icons/motion-graphics-2d.svg" alt="" />Motion Graphics</span><i></i>
+          <span class="ticker-item" aria-hidden="true"><img src="assets/images/service-icons/graphic-design-2d.svg" alt="" />Graphic Design</span><i aria-hidden="true"></i>
+          <span class="ticker-item" aria-hidden="true"><img src="assets/images/service-icons/three-d-2d.svg" alt="" />3D</span><i aria-hidden="true"></i>
+          <span class="ticker-item" aria-hidden="true"><img src="assets/images/service-icons/web-dev-2d.svg" alt="" />Web Dev</span><i aria-hidden="true"></i>
+          <span class="ticker-item" aria-hidden="true"><img src="assets/images/service-icons/digital-marketing-2d.svg" alt="" />Digital Marketing</span><i aria-hidden="true"></i>
+          <span class="ticker-item" aria-hidden="true"><img src="assets/images/service-icons/motion-graphics-2d.svg" alt="" />Motion Graphics</span><i aria-hidden="true"></i>
+        </div>
+      </div>
+
+      <section class="academy" id="academy">
+        <img class="academy-bg" src="assets/images/Academy.png" alt="Innov8 mascot surrounded by creative software icons in a mountain landscape" />
+        <div class="section-container academy-copy">
+          <div class="section-kicker"><span></span><p>Innov8 Academy</p></div>
+          <h2>Learn From The Studio<br /><strong>Behind The Work.</strong></h2>
+          <p>We don’t teach theory. We teach the workflows, systems and creative thinking behind the commercial projects we deliver every day. Whether you’re mastering 3D, design, or digital production, every course is built to help you create work that competes globally.</p>
+          <a class="accent-button" href="#contact">Explore The Academy <span aria-hidden="true">→</span></a>
+        </div>
+      </section>
+
+      <section class="ventures" id="ventures">
+        <div class="section-container ventures-container">
+          <header class="ventures-header">
+            <div class="section-kicker"><span></span><p>Our ventures</p></div>
+            <h2><span>Ideas Worth Building.</span><br />We Don’t Just Build For Businesses. We Build Businesses.</h2>
+            <p class="ventures-intro">Every great product begins with a problem worth solving. Our ventures are born from the same thinking we bring to our clients—identifying opportunities, designing intelligent digital experiences, and building products with real commercial potential. They demonstrate not just what we imagine, but what we’re capable of bringing to market.</p>
+            <a class="outline-button" href="#venture-showcase">Explore Ventures <span aria-hidden="true">→</span></a>
+          </header>
+
+          <article class="venture-showcase" id="venture-showcase">
+            <div class="venture-art">
+              <img src="assets/images/rentora.png" alt="Innov8 mascot using the Rentora property management platform" />
+            </div>
+            <div class="venture-copy">
+              <h3>Rentora</h3>
+              <p>Rentora is reimagining rental management through a smarter, connected digital ecosystem. Built for property managers, landlords, and tenants, it simplifies everyday operations while delivering a faster, more transparent rental experience from discovery to payment.</p>
+              <a href="#contact">Continue to Site <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="contact" id="contact">
+        <div class="section-container contact-grid">
+          <div class="contact-copy">
+            <div class="section-kicker"><span></span><p>Let’s get started</p></div>
+            <h2>Get A Free<br />Consultation<span>.</span></h2>
+            <p>We always try to implement our creative ideas at the highest level. Tell us about your project and we’ll make it work.</p>
+          </div>
+          <form class="contact-form" data-contact-form>
+            <div class="field-row"><label><span>Name</span><input name="name" autocomplete="name" required /></label><label><span>Email</span><input type="email" name="email" autocomplete="email" required /></label></div>
+            <label><span>Message</span><textarea name="message" rows="5" required></textarea></label>
+            <button type="submit">Send message</button>
+            <p class="form-status" role="status" data-form-status></p>
+          </form>
         </div>
       </section>
     </main>
 
-    <div class="video-lightbox" aria-hidden="true" role="dialog" aria-label="Project video player">
-      <button class="video-lightbox__close" type="button" aria-label="Close video">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M6 6l12 12M18 6 6 18" />
-        </svg>
-      </button>
-      <video class="video-lightbox__player" controls playsinline></video>
-    </div>
+    <footer class="site-footer">
+      <div class="section-container footer-grid">
+        <div class="footer-brand"><img src="assets/images/logo white.png" alt="Innov8 Studios" /><p>Nairobi, Kenya<br />+254 798 900 992</p><a href="mailto:innov8studios@gmail.com">innov8studios@gmail.com</a></div>
+        <div class="footer-subscribe"><h2>Subscribe</h2><form data-subscribe-form><label class="sr-only" for="footer-email">Email address</label><input id="footer-email" type="email" placeholder="Enter Your Email Here*" required /><button type="submit">Submit</button></form><p>Socials</p><div class="social-links"><a href="#" aria-label="Facebook">f</a><a href="#" aria-label="Instagram">◎</a><a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="YouTube">▶</a><a href="#" aria-label="X">𝕏</a></div></div>
+        <div><h2>Site Map</h2><nav class="footer-nav" aria-label="Footer"><a href="#home">Home</a><a href="#featured">About Us</a><a href="#featured">Portfolio</a><a href="#academy">Academy</a><a href="#ventures">Ventures</a></nav></div>
+        <div><h2>Explore</h2><nav class="footer-nav"><a href="#featured">Our Portfolio</a><a href="#academy">Innov8 Academy</a><a href="#ventures">Innov8 Ventures</a><a href="#contact">Who we are</a></nav></div>
+      </div>
+      <div class="section-container footer-bottom"><span>© 2026 Innov8 Studios</span><a href="#home">Back to top ↑</a></div>
+    </footer>
 
     <script src="script.js"></script>
+    <script src="motion.js"></script>
   </body>
 </html>
