@@ -9,45 +9,70 @@
     />
     <meta name="theme-color" content="#070707" />
     <title>Innov8 Studios | Competitive Advantage Crafted</title>
+    <link rel="preload" href="Fonts/Comfortaa-Regular.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="Fonts/Abel-Regular.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="Fonts/CenturyGothicPaneuropeanRegular.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="Fonts/RockSalt-Regular.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="stylesheet" href="styles.css" />
     <script>
       document.documentElement.classList.add("js");
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gabriela&family=Rock+Salt&display=swap" rel="stylesheet">
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header" data-header>
-      <div class="nav-shell liquid-glass">
+      <div class="nav-shell">
         <a class="brand-mark" href="#home" aria-label="Innov8 Studios home">
           <img src="assets/images/logo white.png" alt="Innov8 Studios" />
         </a>
 
-        <button class="menu-button liquid-glass" type="button" aria-label="Open navigation" aria-expanded="false" data-menu-button>
-          <span></span>
-          <span></span>
-        </button>
-
         <nav class="site-nav" aria-label="Primary navigation" data-site-nav>
+          <aside class="menu-studio-panel">
+            <img class="menu-studio-logo" src="assets/images/logo white.png" alt="" />
+            <div class="menu-studio-meta">
+              <span>Nairobi, Kenya</span>
+              <span>Strategy · Design · Technology</span>
+            </div>
+            <div class="menu-socials">
+              <a href="https://www.behance.net/lewiskariuki1" target="_blank" rel="noreferrer">Behance</a>
+              <a href="https://www.linkedin.com/in/lewiskariuki1/" target="_blank" rel="noreferrer">LinkedIn</a>
+              <a href="https://www.instagram.com/innov8_studios/" target="_blank" rel="noreferrer">Instagram</a>
+              <a href="https://www.tiktok.com/@innov8_studios" target="_blank" rel="noreferrer">TikTok</a>
+              <a href="https://www.youtube.com/@Innov8Studios" target="_blank" rel="noreferrer">YouTube</a>
+            </div>
+          </aside>
+
+          <div class="menu-showcase-panel" data-menu-carousel>
+            <div class="menu-showcase-track">
+              <img src="assets/images/Featured-Nike.png" alt="Nike Kenya campaign" />
+              <img src="assets/images/Featured-Stanbic.png" alt="Stanbic Bank campaign" />
+              <img src="assets/images/Featured-Jubilee.png" alt="Jubilee Insurance campaign" />
+            </div>
+            <p><span>Selected work</span>Ideas made impossible to ignore.</p>
+            <div class="menu-case-links">
+              <a href="#case-study-nike">Nike Kenya <span>↗</span></a>
+              <a href="#case-study-stanbic">Stanbic Bank <span>↗</span></a>
+              <a href="#case-study-jubilee">Jubilee Insurance <span>↗</span></a>
+            </div>
+          </div>
+
           <a class="is-active" href="#home">Home</a>
-          <a href="#featured">About</a>
-          <a href="#featured">Portfolio</a>
+          <a href="about.html">About</a>
+          <a href="portfolio.html">Portfolio</a>
           <a href="#services">Courses</a>
-          <a href="#ventures">Products</a>
           <a class="menu-call" href="#contact">
             <span>Book a Call</span>
             <span class="arrow" aria-hidden="true"></span>
           </a>
         </nav>
 
-        <a class="nav-cta liquid-glass" href="#services">
-          <span>Book a Call</span>
-          <span class="arrow" aria-hidden="true"></span>
-        </a>
       </div>
+
+      <button class="menu-button liquid-glass" type="button" aria-label="Open navigation" aria-expanded="false" data-menu-button>
+        <span></span>
+        <span></span>
+      </button>
     </header>
 
     <main id="main">
@@ -59,7 +84,7 @@
             <h1>Competitive<br />Crafted<br />Advantage</h1>
             <p>
               We help ambitious businesses earn trust faster, communicate value and position themselves
-              as the obvious choice through strategy, design, technology and world-class visual experiences.
+              as the obvious choice through strategy, design, technology and  world-class visual experiences.
             </p>
             <a class="hero-button liquid-glass" href="#featured">
               <span class="button-arrow" aria-hidden="true"></span>
@@ -68,17 +93,12 @@
           </div>
 
           <div class="hero-aside">
-            <p>Quietly Building What Everyone Notices.</p>
-
-            <div class="metric-card liquid-glass">
-              <div class="metric-icon" aria-hidden="true"></div>
-              <strong>110+</strong>
-              <span>Business<br />Transformations</span>
-            </div>
-
-            <p class="trust-copy">
-              Trusted by ambitious businesses across finance, real estate, healthcare and hospitality.
-            </p>
+            <p>Quietly Building<br />What Everyone<br />Notices.</p>
+            <nav class="hero-quick-links" aria-label="Quick links">
+              <a href="#academy">Learn with us <span aria-hidden="true">↗</span></a>
+              <a href="#contact">Careers (Join us) <span aria-hidden="true">↗</span></a>
+              <a href="#featured">3D Experiences <span aria-hidden="true">↗</span></a>
+            </nav>
           </div>
         </div>
       </section>
@@ -92,67 +112,65 @@
 
           <div class="featured-heading">
             <h2><span>The</span> Future<br />Doesn't Need A Camera.</h2>
-            <p>
-              Some ideas deserve more than conventional marketing, some messages are too important to be
-              explained with words alone. Through cinematic 3D storytelling, we transform complex concepts
-              into unforgettable visual experiences that inspire confidence, capture attention, and elevate
-              how brands are perceived.
-            </p>
+            <div class="featured-summary">
+              <p>
+                Some ideas deserve more than conventional marketing, some messages are too important to be
+                explained with words alone. Through cinematic 3D storytelling, we transform complex concepts
+                into unforgettable visual experiences that inspire confidence, capture attention, and elevate
+                how brands are perceived.
+              </p>
+              <a class="portfolio-button" href="portfolio.html">View Portfolio <span aria-hidden="true">↗</span></a>
+            </div>
           </div>
 
+
           <div class="work-grid">
-            <article class="work-item">
+            <article class="work-item" id="case-study-nike">
               <div class="work-media">
                 <video poster="assets/images/Featured-Nike.png" preload="metadata" playsinline data-work-video>
                   <source src="SOCIAl%20MEDIA/Audio%20BTS.mp4" type="video/mp4" />
                 </video>
-                <span class="work-tag">Product Awareness</span>
                 <button class="work-play" type="button" aria-label="Play Nike Kenya video" data-play-button>
                   <span aria-hidden="true"></span>
                 </button>
                 <span class="video-status" role="status" data-video-status></span>
               </div>
-              <h3>Nike Kenya</h3>
+              <h3><a href="#case-study-nike">Nike Kenya</a></h3>
               <p>
                 Crafted to introduce a New product Line and strengthen brand recall in a highly competitive market.
               </p>
             </article>
 
-            <article class="work-item">
+            <article class="work-item" id="case-study-stanbic">
               <div class="work-media">
                 <video poster="assets/images/Featured-Stanbic.png" preload="metadata" playsinline data-work-video></video>
-                <span class="work-tag">Customer Acquisition</span>
                 <button class="work-play" type="button" aria-label="Play Stanbic Bank video" data-play-button>
                   <span aria-hidden="true"></span>
                 </button>
                 <span class="video-status" role="status" data-video-status></span>
               </div>
-              <h3>Stanbic Bank</h3>
+              <h3><a href="#case-study-stanbic">Stanbic Bank</a></h3>
               <p>
                 A high-end 3D visual narrative built to communicate reliability, clarity, and confidence
                 in financial services.
               </p>
             </article>
 
-            <article class="work-item">
+            <article class="work-item" id="case-study-jubilee">
               <div class="work-media">
                 <video poster="assets/images/Featured-Jubilee.png" preload="metadata" playsinline data-work-video></video>
-                <span class="work-tag">Product Launch</span>
                 <button class="work-play" type="button" aria-label="Play Jubilee Insurance video" data-play-button>
                   <span aria-hidden="true"></span>
                 </button>
                 <span class="video-status" role="status" data-video-status></span>
               </div>
-              <h3>Jubilee Insurance</h3>
+              <h3><a href="#case-study-jubilee">Jubilee Insurance</a></h3>
               <p>
                 A launch-focused 3D commercial designed to introduce new offerings with impact and immediate attention.
               </p>
             </article>
           </div>
 
-          <div class="center-action">
-            <a class="portfolio-button liquid-glass" href="#services">View Portfolio</a>
-          </div>
         </div>
       </section>
 
@@ -170,7 +188,7 @@
                 strengthen market perception, and build brands people choose with confidence.
               </p>
             </div>
-
+            <p class="services-note">Designed to Float<br />Above the Noise.</p>
           </div>
 
           <div class="service-grid">
@@ -182,7 +200,7 @@
                 We help businesses define how they should be perceived in competitive markets and translate
                 that into campaigns that drive trust and demand.
               </p>
-              <a class="service-button liquid-glass" href="#home">Explore Work</a>
+              <a class="service-button" href="#featured">Explore Service <span aria-hidden="true">↗</span></a>
             </article>
 
             <article class="service-item">
@@ -193,7 +211,7 @@
                 We create high-impact visual narratives that simplify complex ideas, elevate perception,
                 and make brands impossible to ignore.
               </p>
-              <a class="service-button liquid-glass" href="#home">Explore Work</a>
+              <a class="service-button" href="#featured">Explore Service <span aria-hidden="true">↗</span></a>
             </article>
 
             <article class="service-item">
@@ -204,7 +222,7 @@
                 We design and develop digital platforms engineered to turn attention into measurable
                 business outcomes.
               </p>
-              <a class="service-button liquid-glass" href="#home">Explore Work</a>
+              <a class="service-button" href="#featured">Explore Service <span aria-hidden="true">↗</span></a>
             </article>
 
             <article class="service-item">
@@ -215,7 +233,7 @@
                 We create visual systems that strengthen brand consistency across campaigns, digital
                 platforms, and marketing channels.
               </p>
-              <a class="service-button liquid-glass" href="#home">Explore Work</a>
+              <a class="service-button" href="#featured">Explore Service <span aria-hidden="true">↗</span></a>
             </article>
           </div>
         </div>
@@ -223,16 +241,16 @@
 
       <div class="skills-ticker" aria-label="Studio capabilities">
         <div class="ticker-track">
-          <span class="ticker-item"><img src="assets/images/service-icons/graphic-design-2d.svg" alt="" />Graphic Design</span><i></i>
-          <span class="ticker-item"><img src="assets/images/service-icons/three-d-2d.svg" alt="" />3D</span><i></i>
-          <span class="ticker-item"><img src="assets/images/service-icons/web-dev-2d.svg" alt="" />Web Dev</span><i></i>
-          <span class="ticker-item"><img src="assets/images/service-icons/digital-marketing-2d.svg" alt="" />Digital Marketing</span><i></i>
-          <span class="ticker-item"><img src="assets/images/service-icons/motion-graphics-2d.svg" alt="" />Motion Graphics</span><i></i>
-          <span class="ticker-item" aria-hidden="true"><img src="assets/images/service-icons/graphic-design-2d.svg" alt="" />Graphic Design</span><i aria-hidden="true"></i>
-          <span class="ticker-item" aria-hidden="true"><img src="assets/images/service-icons/three-d-2d.svg" alt="" />3D</span><i aria-hidden="true"></i>
-          <span class="ticker-item" aria-hidden="true"><img src="assets/images/service-icons/web-dev-2d.svg" alt="" />Web Dev</span><i aria-hidden="true"></i>
-          <span class="ticker-item" aria-hidden="true"><img src="assets/images/service-icons/digital-marketing-2d.svg" alt="" />Digital Marketing</span><i aria-hidden="true"></i>
-          <span class="ticker-item" aria-hidden="true"><img src="assets/images/service-icons/motion-graphics-2d.svg" alt="" />Motion Graphics</span><i aria-hidden="true"></i>
+          <span class="ticker-item">Graphic Design</span><i></i>
+          <span class="ticker-item">3D</span><i></i>
+          <span class="ticker-item">Web Dev</span><i></i>
+          <span class="ticker-item">Digital Marketing</span><i></i>
+          <span class="ticker-item">Motion Graphics</span><i></i>
+          <span class="ticker-item" aria-hidden="true">Graphic Design</span><i aria-hidden="true"></i>
+          <span class="ticker-item" aria-hidden="true">3D</span><i aria-hidden="true"></i>
+          <span class="ticker-item" aria-hidden="true">Web Dev</span><i aria-hidden="true"></i>
+          <span class="ticker-item" aria-hidden="true">Digital Marketing</span><i aria-hidden="true"></i>
+          <span class="ticker-item" aria-hidden="true">Motion Graphics</span><i aria-hidden="true"></i>
         </div>
       </div>
 
@@ -246,28 +264,6 @@
         </div>
       </section>
 
-      <section class="ventures" id="ventures">
-        <div class="section-container ventures-container">
-          <header class="ventures-header">
-            <div class="section-kicker"><span></span><p>Our ventures</p></div>
-            <h2><span>Ideas Worth Building.</span><br />We Don’t Just Build For Businesses. We Build Businesses.</h2>
-            <p class="ventures-intro">Every great product begins with a problem worth solving. Our ventures are born from the same thinking we bring to our clients—identifying opportunities, designing intelligent digital experiences, and building products with real commercial potential. They demonstrate not just what we imagine, but what we’re capable of bringing to market.</p>
-            <a class="outline-button" href="#venture-showcase">Explore Ventures <span aria-hidden="true">→</span></a>
-          </header>
-
-          <article class="venture-showcase" id="venture-showcase">
-            <div class="venture-art">
-              <img src="assets/images/rentora.png" alt="Innov8 mascot using the Rentora property management platform" />
-            </div>
-            <div class="venture-copy">
-              <h3>Rentora</h3>
-              <p>Rentora is reimagining rental management through a smarter, connected digital ecosystem. Built for property managers, landlords, and tenants, it simplifies everyday operations while delivering a faster, more transparent rental experience from discovery to payment.</p>
-              <a href="#contact">Continue to Site <span aria-hidden="true">→</span></a>
-            </div>
-          </article>
-        </div>
-      </section>
-
       <section class="contact" id="contact">
         <div class="section-container contact-grid">
           <div class="contact-copy">
@@ -276,7 +272,8 @@
             <p>We always try to implement our creative ideas at the highest level. Tell us about your project and we’ll make it work.</p>
           </div>
           <form class="contact-form" data-contact-form>
-            <div class="field-row"><label><span>Name</span><input name="name" autocomplete="name" required /></label><label><span>Email</span><input type="email" name="email" autocomplete="email" required /></label></div>
+            <div class="field-row"><label><span>Name</span><input name="name" autocomplete="name" required /></label><label><span>Phone Number</span><input type="tel" name="phone" autocomplete="tel" /></label></div>
+            <label><span>Email</span><input type="email" name="email" autocomplete="email" required /></label>
             <label><span>Message</span><textarea name="message" rows="5" required></textarea></label>
             <button type="submit">Send message</button>
             <p class="form-status" role="status" data-form-status></p>
@@ -289,8 +286,8 @@
       <div class="section-container footer-grid">
         <div class="footer-brand"><img src="assets/images/logo white.png" alt="Innov8 Studios" /><p>Nairobi, Kenya<br />+254 798 900 992</p><a href="mailto:innov8studios@gmail.com">innov8studios@gmail.com</a></div>
         <div class="footer-subscribe"><h2>Subscribe</h2><form data-subscribe-form><label class="sr-only" for="footer-email">Email address</label><input id="footer-email" type="email" placeholder="Enter Your Email Here*" required /><button type="submit">Submit</button></form><p>Socials</p><div class="social-links"><a href="#" aria-label="Facebook">f</a><a href="#" aria-label="Instagram">◎</a><a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="YouTube">▶</a><a href="#" aria-label="X">𝕏</a></div></div>
-        <div><h2>Site Map</h2><nav class="footer-nav" aria-label="Footer"><a href="#home">Home</a><a href="#featured">About Us</a><a href="#featured">Portfolio</a><a href="#academy">Academy</a><a href="#ventures">Ventures</a></nav></div>
-        <div><h2>Explore</h2><nav class="footer-nav"><a href="#featured">Our Portfolio</a><a href="#academy">Innov8 Academy</a><a href="#ventures">Innov8 Ventures</a><a href="#contact">Who we are</a></nav></div>
+        <div><h2>Site Map</h2><nav class="footer-nav" aria-label="Footer"><a href="#home">Home</a><a href="about.html">About Us</a><a href="portfolio.html">Portfolio</a><a href="#academy">Academy</a></nav></div>
+        <div><h2>Explore</h2><nav class="footer-nav"><a href="portfolio.html">Our Portfolio</a><a href="#academy">Innov8 Academy</a><a href="#contact">Who we are</a></nav></div>
       </div>
       <div class="section-container footer-bottom"><span>© 2026 Innov8 Studios</span><a href="#home">Back to top ↑</a></div>
     </footer>

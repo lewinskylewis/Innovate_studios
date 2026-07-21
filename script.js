@@ -1,16 +1,31 @@
 const root = document.documentElement;
 const header = document.querySelector("[data-header]");
 const menuButton = document.querySelector("[data-menu-button]");
+const siteNav = document.querySelector("[data-site-nav]");
 const navLinks = document.querySelectorAll("[data-site-nav] a");
+const mainNavLinks = document.querySelectorAll("[data-site-nav] > a:not(.menu-call)");
+const navAnchor = document.createComment("site-navigation-home");
+
+siteNav?.before(navAnchor);
+
+const setMenuOpen = (isOpen) => {
+  if (isOpen && siteNav) {
+    document.body.append(siteNav);
+  } else if (navAnchor.parentNode && siteNav) {
+    navAnchor.parentNode.insertBefore(siteNav, navAnchor.nextSibling);
+  }
+
+  root.classList.toggle("nav-open", isOpen);
+  menuButton?.setAttribute("aria-expanded", String(isOpen));
+  menuButton?.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+};
 
 const updateHeaderMode = () => {
   const shouldCondense = window.scrollY > 1;
   header?.classList.toggle("is-condensed", shouldCondense);
 
   if (!shouldCondense) {
-    root.classList.remove("nav-open");
-    menuButton?.setAttribute("aria-expanded", "false");
-    menuButton?.setAttribute("aria-label", "Open navigation");
+    setMenuOpen(false);
   }
 };
 
@@ -18,35 +33,85 @@ window.addEventListener("scroll", updateHeaderMode, { passive: true });
 updateHeaderMode();
 
 menuButton?.addEventListener("click", () => {
-  const isOpen = root.classList.toggle("nav-open");
-  menuButton.setAttribute("aria-expanded", String(isOpen));
-  menuButton.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+  setMenuOpen(!root.classList.contains("nav-open"));
 });
+
+const menuCarousel = document.querySelector("[data-menu-carousel]");
+const menuCarouselTrack = menuCarousel?.querySelector(".menu-showcase-track");
+const menuCarouselSlides = menuCarouselTrack?.querySelectorAll("img") ?? [];
+let menuCarouselIndex = 0;
+let menuCarouselTimer;
+
+const stopMenuCarousel = () => {
+  window.clearInterval(menuCarouselTimer);
+  menuCarouselTimer = undefined;
+};
+
+const startMenuCarousel = () => {
+  stopMenuCarousel();
+  if (
+    menuCarouselSlides.length < 2 ||
+    document.hidden ||
+    !root.classList.contains("nav-open") ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) return;
+
+  menuCarouselTimer = window.setInterval(() => {
+    menuCarouselIndex = (menuCarouselIndex + 1) % menuCarouselSlides.length;
+    menuCarouselTrack.style.transform = `translate3d(-${menuCarouselIndex * (100 / menuCarouselSlides.length)}%, 0, 0)`;
+  }, 4000);
+};
+
+menuButton?.addEventListener("click", () => {
+  window.requestAnimationFrame(() => {
+    if (root.classList.contains("nav-open")) startMenuCarousel();
+    else stopMenuCarousel();
+  });
+});
+
+document.addEventListener("visibilitychange", startMenuCarousel);
 
 navLinks.forEach((link) => {
   link.addEventListener("click", () => {
-    root.classList.remove("nav-open");
-    menuButton?.setAttribute("aria-expanded", "false");
-    menuButton?.setAttribute("aria-label", "Open navigation");
+    setMenuOpen(false);
+    stopMenuCarousel();
   });
 });
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
-    root.classList.remove("nav-open");
-    menuButton?.setAttribute("aria-expanded", "false");
-    menuButton?.setAttribute("aria-label", "Open navigation");
+    setMenuOpen(false);
+    stopMenuCarousel();
   }
 });
 
 const sections = document.querySelectorAll("main section[id]");
+const isAboutPage = document.body.classList.contains("about-page");
+const isPortfolioPage = document.body.classList.contains("portfolio-page");
+const pageMenuLabel = isAboutPage ? "About" : isPortfolioPage ? "Portfolio" : null;
+const activeMenuLabel = {
+  home: "Home",
+  featured: "Portfolio",
+  services: "Courses",
+  academy: "Courses",
+  contact: "About",
+};
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (!entry.isIntersecting) return;
-    navLinks.forEach((link) => link.classList.toggle("is-active", link.hash === `#${entry.target.id}`));
+    const activeLabel = pageMenuLabel ?? activeMenuLabel[entry.target.id];
+    mainNavLinks.forEach((link) => {
+      link.classList.toggle("is-active", link.textContent.trim() === activeLabel);
+    });
   });
 }, { rootMargin: "-35% 0px -55%", threshold: 0 });
 sections.forEach((section) => observer.observe(section));
+
+if (pageMenuLabel) {
+  mainNavLinks.forEach((link) => {
+    link.classList.toggle("is-active", link.textContent.trim() === pageMenuLabel);
+  });
+}
 
 document.querySelectorAll("[data-play-button]").forEach((button) => {
   const media = button.closest(".work-media");
