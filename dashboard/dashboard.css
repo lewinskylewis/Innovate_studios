@@ -4447,3 +4447,20 @@ td.is-wrapped {
     animation-duration: 1ms !important;
   }
 }
+
+/* Relationships — quick-state pill row above the main toolbar row
+   (All / Needs Follow-up / Overdue / Active / Recently Added). Reuses
+   .work-tab for the pills themselves so it matches the tab row exactly;
+   this just gives the row its own compact spacing since it isn't the
+   primary tab strip. */
+
+.rel-quickbar {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.rel-quickbar .work-tab {
+  padding: 0.4375rem 0.875rem;
+}
