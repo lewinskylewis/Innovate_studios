@@ -74,6 +74,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Innov8 Roboto";
+  src: url("fonts/Roboto-VariableFont_wdth,wght.ttf") format("truetype-variations");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Innov8 Roboto";
+  src: url("fonts/Roboto-Italic-VariableFont_wdth,wght.ttf") format("truetype-variations");
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 /* 2. Design tokens */
 
 :root {
@@ -108,6 +124,7 @@
 
   --font-display: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
   --font-ui: "Innov8 Century Gothic", Arial, Helvetica, sans-serif;
+  --font-table: "Innov8 Roboto", Arial, Helvetica, sans-serif;
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -797,6 +814,8 @@ html.dash-collapsed .dash-nav-item .dash-nav-soon {
 }
 
 .dash-account-chevron {
+  width: 1rem;
+  height: 1rem;
   flex-shrink: 0;
   color: var(--faint);
   transition: transform var(--dur-fast) var(--ease);
@@ -1846,7 +1865,7 @@ html.dash-collapsed .dash-account-trigger {
   z-index: 66;
   width: min(38rem, 100vw);
   overflow-y: auto;
-  border-radius: var(--radius-xl) 0 0 var(--radius-xl);
+  border-radius: 0;
   transform: translateX(100%);
   transition: transform var(--dur-slow) var(--ease);
   padding: var(--space-6);
@@ -1856,25 +1875,30 @@ html.dash-collapsed .dash-account-trigger {
   transform: translateX(0);
 }
 
+/* Actions row first, then the title, then the status/priority badges on
+   their own row below — in that fixed order, regardless of how many
+   lines the title wraps to, so the badges can never end up sharing a
+   line with it. */
 .detail-header {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-4);
+  gap: 0.625rem;
   margin-bottom: var(--space-5);
 }
 
-.detail-title-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.detail-title-row h2 {
+.detail-title {
+  align-self: stretch;
   font-family: var(--font-display);
   font-size: var(--text-lg);
   font-weight: 600;
+}
+
+.detail-badge-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
 .detail-meta {
@@ -1896,6 +1920,83 @@ html.dash-collapsed .dash-account-trigger {
   font-weight: 600;
   padding: 0.3125rem 0.75rem;
   cursor: pointer;
+}
+
+.detail-badge-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.detail-badge {
+  font-size: var(--text-2xs);
+  padding: 0.25rem 0.6875rem;
+  cursor: pointer;
+}
+
+.detail-client-name {
+  font-family: "Innov8 Roboto", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--white);
+}
+
+.detail-timeline {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+}
+
+.detail-timeline-date {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.detail-timeline-connector {
+  flex: 1;
+  min-width: 2rem;
+  max-width: 6rem;
+  height: 0;
+  border-top: 0.125rem dotted var(--line-strong);
+}
+
+.detail-timeline-input {
+  background: var(--graphite-soft);
+  border: 0.0625rem solid var(--line-orange);
+  border-radius: var(--radius-sm);
+  color: var(--white);
+  font: inherit;
+  font-size: var(--text-xs);
+  padding: 0.1875rem 0.4375rem;
+}
+
+.detail-section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: var(--space-3);
+}
+
+.detail-section-head h3 {
+  margin-bottom: 0;
+}
+
+.detail-edit-btn {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.detail-edit-btn svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.detail-overview-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .detail-actions {
@@ -2223,6 +2324,20 @@ html.dash-collapsed .dash-account-trigger {
   display: none;
 }
 
+.file-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: var(--text-2xs);
+  flex-shrink: 0;
+}
+
+.file-download-btn svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
 /* Comments */
 
 .comment-item {
@@ -2489,19 +2604,29 @@ textarea.input {
 
 /* Table + premium header treatment */
 
+.studio-table-shell,
+.studio-toolbar,
+.floating-popover,
+.bulk-action-bar {
+  font-family: var(--font-table);
+  font-size: 16px;
+  font-weight: 300;
+}
+
 .studio-table {
   min-width: 62rem;
   border-collapse: separate;
   border-spacing: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-table);
+  table-layout: fixed;
 }
 
 .studio-table,
 .studio-table input,
 .studio-table textarea,
 .studio-table select {
-  font-family: var(--font-display);
-  font-weight: 400;
+  font-family: var(--font-table);
+  font-weight: 300;
 }
 
 .studio-table thead th {
@@ -2509,6 +2634,7 @@ textarea.input {
   text-align: left;
   padding: 0;
   border-bottom: 0.0625rem solid var(--line);
+  border-right: 0.0625rem solid var(--line);
   position: relative;
 }
 
@@ -2521,6 +2647,7 @@ textarea.input {
 .th-inner {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: var(--space-3) var(--space-4) var(--space-3) var(--space-3);
 }
@@ -2643,6 +2770,7 @@ textarea.input {
   background: var(--graphite-raised);
   padding: var(--space-3);
   border-bottom: 0.0625rem solid var(--line-soft);
+  border-right: 0.0625rem solid var(--line-soft);
   font-size: var(--text-sm);
   font-weight: 400;
   vertical-align: middle;
@@ -2662,6 +2790,7 @@ textarea.input {
   max-width: 14rem;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
 }
 
 .studio-cell-sticky {
@@ -2674,6 +2803,7 @@ textarea.input {
 .cell-inner {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
 }
 
@@ -2716,6 +2846,7 @@ textarea.input {
   padding: 0.25rem 0;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   min-height: 1.5rem;
 }
@@ -3054,6 +3185,703 @@ textarea.cell-editor {
   .cell-wrap {
     max-width: 9rem;
   }
+}
+
+/* ---------- Studio table overhaul: shell, toolbar, dense table, column
+   menu, property-type pickers, month grouping, selection + bulk bar ----- */
+
+.studio-table-shell {
+  border: 0.0625rem solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--graphite);
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+/* Toolbar — lives in the tab row (Studio.jsx's .work-toolbar-row), to
+   the right of the Overview/Ongoing Projects tabs, so it stays visible
+   even when every month group is collapsed. */
+
+.studio-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.studio-toolbar-search {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  border: 0.0625rem solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--graphite-soft);
+  min-width: 11rem;
+}
+
+.studio-toolbar-search svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--faint);
+  flex-shrink: 0;
+}
+
+.studio-toolbar-search input {
+  border: none;
+  background: transparent;
+  color: var(--white);
+  font: inherit;
+  font-size: var(--text-xs);
+  width: 100%;
+  padding: 0;
+}
+
+.studio-toolbar-search input:focus {
+  outline: none;
+}
+
+.studio-toolbar-select {
+  border: 0.0625rem solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--graphite-soft);
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--text-xs);
+  padding: 0.375rem 0.5rem;
+  cursor: pointer;
+}
+
+.studio-toolbar-select:focus {
+  outline: none;
+  border-color: var(--line-orange);
+}
+
+.studio-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border: 0.0625rem solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--graphite-soft);
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--text-xs);
+  padding: 0.375rem 0.625rem;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.studio-toolbar-btn svg {
+  width: 0.8125rem;
+  height: 0.8125rem;
+}
+
+.studio-toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--white);
+}
+
+.studio-toolbar-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.property-visibility-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 0.0625rem solid var(--line-strong);
+  border-radius: 0.25rem;
+  flex-shrink: 0;
+}
+
+.property-visibility-check.is-visible {
+  border-color: var(--orange-bright);
+  background: rgba(255, 106, 26, 0.14);
+}
+
+.property-visibility-check svg {
+  width: 0.6875rem;
+  height: 0.6875rem;
+  color: var(--orange-bright);
+}
+
+/* Dense table body */
+
+.studio-table-wrap {
+  padding: 0;
+  border: 0.0625rem solid var(--line);
+  border-radius: var(--radius-md);
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.studio-table-wrap::-webkit-scrollbar {
+  height: 0.5rem;
+  width: 0.5rem;
+}
+
+.studio-table-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.studio-table-wrap::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: var(--radius-pill);
+}
+
+.studio-table-wrap::-webkit-scrollbar-thumb:hover {
+  background: var(--faint);
+}
+
+.th-inner {
+  padding: 0.5rem 0.625rem 0.5rem 0.5rem;
+}
+
+.th-type-icon {
+  display: inline-flex;
+  color: var(--faint);
+  flex-shrink: 0;
+}
+
+.th-type-icon svg {
+  width: 0.8125rem;
+  height: 0.8125rem;
+}
+
+.studio-table tbody td {
+  padding: 0.4375rem 0.625rem;
+  font-size: var(--text-xs);
+}
+
+.milestone-row td {
+  padding: 0.3125rem var(--space-2);
+}
+
+/* No hover lift on rows — background only, position never moves. */
+.studio-row {
+  transition: none;
+}
+
+.studio-row:hover td {
+  background: linear-gradient(rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.03)), var(--graphite-raised);
+}
+
+.studio-row.is-selected td {
+  background: linear-gradient(rgba(255, 106, 26, 0.08), rgba(255, 106, 26, 0.08)), var(--graphite-raised);
+}
+
+/* Selection column: slim, checkbox-only, not draggable/resizable/deletable */
+
+.select-cell,
+.select-cell-header {
+  width: 2rem;
+  min-width: 2rem;
+  max-width: 2rem;
+  text-align: center;
+  padding: 0.4375rem 0 !important;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--graphite-raised);
+}
+
+.select-cell-header {
+  background: var(--graphite);
+  z-index: 3;
+}
+
+.row-checkbox {
+  accent-color: var(--orange);
+  width: 0.8125rem;
+  height: 0.8125rem;
+  cursor: pointer;
+}
+
+/* `.studio-table thead th` below declares `position: relative` (needed
+   so the resize handle's absolutely-positioned children anchor to it)
+   with higher specificity than `.studio-cell-sticky`'s `position:
+   sticky` alone — silently forcing every header cell to `relative`,
+   which never actually stuck and just sat at a constant `left` offset
+   from its normal flow position instead. This selector out-specifies
+   that base rule so sticky headers are real. */
+.studio-table thead th.studio-cell-sticky,
+.studio-table thead th.select-cell-header {
+  position: sticky;
+}
+
+.studio-th-sticky {
+  z-index: 2;
+}
+
+/* The Project column is the one exception to "center every column" —
+   it reads as a name/label, so it stays left-aligned like the rest of
+   the app's row-name columns, both in the header and every cell below
+   it (data rows, the calc footer, and the "+ Add project" row). */
+.studio-th-title .th-inner {
+  justify-content: flex-start;
+}
+
+.studio-td-title {
+  text-align: left;
+}
+
+.studio-td-title .cell-inner,
+.studio-td-title .cell-value {
+  justify-content: flex-start;
+}
+
+.row-open-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.row-open-btn svg {
+  width: 0.8125rem;
+  height: 0.8125rem;
+}
+
+.studio-row:hover .row-open-btn {
+  opacity: 1;
+}
+
+.row-open-btn:hover {
+  color: var(--orange-bright);
+}
+
+.is-wrapped,
+td.is-wrapped {
+  white-space: normal !important;
+}
+
+.cell-value.is-wrapped {
+  align-items: flex-start;
+}
+
+/* Multi-select cell tags */
+
+.multiselect-tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.option-check {
+  width: 0.75rem;
+  height: 0.75rem;
+  color: var(--orange-bright);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.cell-checkbox {
+  accent-color: var(--orange);
+  width: 0.9375rem;
+  height: 0.9375rem;
+  cursor: pointer;
+}
+
+.avatar--sm {
+  width: 1.375rem;
+  height: 1.375rem;
+  font-size: 0.5625rem;
+}
+
+/* "+ Add project" — always the table's last row, in the current
+   month's group (matching where a new project actually lands). */
+
+.studio-add-row {
+  cursor: pointer;
+}
+
+.studio-add-row[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.studio-add-row-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+.studio-add-row-cell svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+}
+
+.studio-add-row:hover td {
+  background: linear-gradient(rgba(255, 106, 26, 0.06), rgba(255, 106, 26, 0.06)), var(--graphite-raised);
+}
+
+.studio-add-row:hover .studio-add-row-cell {
+  color: var(--orange-bright);
+}
+
+/* Calculation footer row */
+
+.studio-calc-row td {
+  background: var(--graphite) !important;
+  border-top: 0.0625rem solid var(--line);
+  padding: 0.3125rem 0.625rem !important;
+}
+
+.studio-calc-value {
+  font-size: var(--text-3xs);
+  color: var(--faint);
+  font-weight: 600;
+}
+
+/* Column menu (Notion-style drill-down popover) */
+
+.column-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.column-menu-back {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  border: none;
+  background: transparent;
+  color: var(--white);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 0.375rem 0.5rem 0.5rem;
+  cursor: pointer;
+}
+
+.column-menu-back svg {
+  width: 0.8125rem;
+  height: 0.8125rem;
+  color: var(--faint);
+}
+
+.column-menu-section {
+  padding: 0.375rem 0.5rem;
+}
+
+.column-menu-clear {
+  margin-top: 0.5rem;
+  border: none;
+  background: transparent;
+  color: var(--danger);
+  font: inherit;
+  font-size: var(--text-2xs);
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.column-menu-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem 0.5rem;
+}
+
+.menu-chevron {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-left: auto;
+  color: var(--faint);
+  flex-shrink: 0;
+}
+
+.menu-label {
+  flex: 1;
+}
+
+.popover-separator {
+  height: 0.0625rem;
+  background: var(--line-soft);
+  margin: 0.25rem 0.125rem;
+}
+
+/* Property type pickers (Add property / Change property type) */
+
+.property-type-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.0625rem;
+  max-height: 15rem;
+  overflow-y: auto;
+}
+
+.property-type-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0.375rem 0.5rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--dur-fast) var(--ease);
+}
+
+.property-type-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.property-type-row.is-selected,
+.property-type-row.is-current {
+  background: rgba(255, 106, 26, 0.1);
+}
+
+.property-type-icon {
+  width: 0.9375rem;
+  height: 0.9375rem;
+  color: var(--faint);
+  flex-shrink: 0;
+}
+
+.property-type-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.property-type-text strong {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--white);
+}
+
+.property-type-text small {
+  font-size: var(--text-3xs);
+  color: var(--faint);
+}
+
+.create-property-menu {
+  padding: 0.25rem;
+}
+
+.create-property-heading {
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+  padding: 0.25rem 0.375rem 0.5rem;
+}
+
+.create-property-name {
+  margin-bottom: 0;
+}
+
+.create-property-label {
+  font-size: var(--text-3xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+  padding: 0.625rem 0.375rem 0.25rem;
+}
+
+.create-property-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+/* Bulk action bar — floating, Monday-style, appears on selection */
+
+.bulk-action-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%);
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.625rem;
+  border: 0.0625rem solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: rgba(10, 8, 8, 0.94);
+  backdrop-filter: blur(1.25rem) saturate(1.3);
+  -webkit-backdrop-filter: blur(1.25rem) saturate(1.3);
+  box-shadow: var(--shadow-elevated);
+  animation: bulk-bar-in 0.16s var(--ease);
+}
+
+@keyframes bulk-bar-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.bulk-action-count {
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  color: var(--white);
+  padding: 0 0.5rem 0 0.375rem;
+  white-space: nowrap;
+}
+
+.bulk-action-sep {
+  width: 0.0625rem;
+  height: 1.25rem;
+  background: var(--line-strong);
+}
+
+.bulk-action-bar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--text-2xs);
+  padding: 0.375rem 0.5625rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.bulk-action-bar button svg {
+  width: 0.8125rem;
+  height: 0.8125rem;
+}
+
+.bulk-action-bar button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
+}
+
+.bulk-action-bar button.is-danger {
+  color: var(--danger);
+}
+
+.bulk-action-bar button.is-danger:hover {
+  background: rgba(255, 90, 95, 0.14);
+}
+
+.bulk-action-close {
+  margin-left: 0.25rem;
+  padding: 0.375rem !important;
+}
+
+/* Month grouping — only the chevron button toggles collapse/expand */
+
+.month-group-header {
+  cursor: default;
+}
+
+.month-group-chevron-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.month-group-chevron-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--orange-bright);
+}
+
+/* Roboto, 14px, weight 300 — applied uniformly across the whole Ongoing
+   Projects table and every menu/popover it opens (column menu, add-
+   property menu, cell option pickers, bulk-action bar). Row height isn't
+   set explicitly anywhere, so it shrinks to match automatically. The
+   month band's own heading is excluded on purpose (see .month-group-
+   header h3) — it keeps its original size and switches to fiery orange
+   instead of white. Deliberately
+   placed last in this section, with !important, so it wins over the
+   many narrower font-size/-weight rules declared above for density —
+   this is a later, more specific product decision that supersedes them. */
+.studio-table-shell,
+.studio-table-shell *,
+.studio-toolbar,
+.studio-toolbar *,
+.floating-popover,
+.floating-popover *,
+.bulk-action-bar,
+.bulk-action-bar * {
+  font-family: var(--font-table) !important;
+}
+
+.studio-table-shell,
+.studio-table-shell input,
+.studio-table-shell textarea,
+.studio-table-shell select,
+.studio-table-shell button,
+.studio-table-shell span,
+.studio-table-shell div,
+.studio-table-shell td,
+.studio-table-shell th,
+.studio-table-shell h2,
+.studio-table-shell h3,
+.studio-toolbar,
+.studio-toolbar *,
+.floating-popover,
+.floating-popover *,
+.bulk-action-bar,
+.bulk-action-bar * {
+  font-size: 14px !important;
+  font-weight: 300 !important;
+}
+
+/* ...except the month band heading, which stays outside the table's own
+   type scale — same size it always was, but fiery orange now instead of
+   white, so a collapsed group is still easy to scan for. */
+.month-group-header h3 {
+  font-size: 1.3125rem !important;
+  font-weight: 600 !important;
+  color: var(--orange-bright) !important;
+}
+
+/* ...and the "N projects" count badge next to it is explicitly exempt
+   from both the table's blanket 14px and the month title's new bigger
+   size — it keeps its original small pill size. */
+.month-group-count {
+  font-size: var(--text-2xs) !important;
+  font-weight: 400 !important;
+}
+
+/* Collapsed months read as a compact index of the year, not a row of
+   full-height bars — same chevron, same click target, just a shorter
+   bar with its (now bigger) title truly centered in it. */
+.month-group.is-collapsed .month-group-header {
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
 }
 
 /* 11. MARKETING & SALES (mock/UI-only module) */

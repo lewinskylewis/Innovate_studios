@@ -1,0 +1,52 @@
+/*
+ * Innov8 Studios — formatting helpers shared by Home and Studio, ported
+ * from legacy/studio.js and legacy/home.js.
+ */
+export const STATUS_BADGE = { Planning: "soon", Active: "active", "Under Review": "pending", Stuck: "urgent", Completed: "active", Archived: "soon" };
+export const PRIORITY_DOT = { Low: "", Normal: "", High: "pending", Urgent: "urgent" };
+
+export function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+export function daysUntil(dateStr) {
+  if (!dateStr) return null;
+  const today = new Date(todayISO());
+  const target = new Date(dateStr);
+  return Math.round((target - today) / 86400000);
+}
+
+export function isOverdue(dateStr) {
+  const diff = daysUntil(dateStr);
+  return diff !== null && diff < 0;
+}
+
+export function formatDate(dateStr) {
+  if (!dateStr) return "—";
+  return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+export function formatDueLabel(dateStr, isDone) {
+  if (isDone) return `Completed ${formatDate(dateStr)}`;
+  if (!dateStr) return "No date";
+  const diff = daysUntil(dateStr);
+  if (diff === 0) return "Due today";
+  if (diff === 1) return "Due tomorrow";
+  if (diff < 0) return `Overdue by ${Math.abs(diff)}d`;
+  if (diff <= 6) return `Due in ${diff}d`;
+  return `Due ${formatDate(dateStr)}`;
+}
+
+export function relativeTime(dateStr) {
+  if (!dateStr) return "—";
+  const diff = daysUntil(dateStr.slice(0, 10));
+  if (diff === 0) return "Today";
+  if (diff === -1) return "Yesterday";
+  if (diff < 0) return `${Math.abs(diff)}d ago`;
+  return formatDate(dateStr);
+}
+
+export function formatMoney(value, currency = "KES") {
+  if (!value && value !== 0) return "—";
+  return `${currency} ${Number(value).toLocaleString("en-KE")}`;
+}
