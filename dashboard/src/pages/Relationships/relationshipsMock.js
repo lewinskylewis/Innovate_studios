@@ -1,20 +1,45 @@
 /*
- * Innov8 Studios — RELATIONSHIPS mock data. UI/UX only, exactly like
- * Marketing's marketingMock.js: nothing here talks to Supabase, nothing
- * survives a refresh. See useRelationships.js for the local, in-memory
- * state built from this array.
+ * Innov8 Studios — RELATIONSHIPS mock data.
  *
- * Every record shares a universal shape (identity + classification +
- * relationship context) and carries additional fields depending on
- * `type`. See relationshipsFormat.js for the helpers that read them.
+ * DATA-LAYER INTEGRATION PHASE UPDATE: useRelationships.js now loads
+ * real Contacts from Supabase (see src/data/relationships.js) — the
+ * RELATIONSHIPS array below is no longer the runtime source of truth
+ * and is not imported by any live component. It's kept here
+ * temporarily as fixture/reference material per the integration
+ * phase's mock-data rule (don't delete until the real implementation
+ * is verified), and because its record shape is exactly what
+ * src/data/relationships.js's mapContactRow() reconstructs from real
+ * rows — useful as a reference for that mapping.
+ *
+ * The constant lists below (TEAM, TAGS, SOURCES, SERVICES,
+ * PARTNER_TYPES, LEAD_STATUSES, INTEREST_LEVELS, PRIORITIES) are NOT
+ * mock data in that sense — they're live dropdown-option config still
+ * imported directly by RelationshipList.jsx / RelationshipDetail.jsx /
+ * NewRelationshipModal.jsx / Relationships.jsx and stay in active use.
+ *
+ * Every record in RELATIONSHIPS shares a universal shape (identity +
+ * classification + relationship context) and carries additional
+ * fields depending on `type`. See relationshipsFormat.js for the
+ * helpers that read them.
  */
 
+/*
+ * NOTE (data-layer integration phase): these names must match
+ * public.team_members.full_name exactly — the Owner dropdowns in
+ * RelationshipList.jsx / NewRelationshipModal.jsx render this static
+ * list, and src/data/relationships.js resolves a selected name back
+ * to a real team_members.id by exact (lowercased) name match. This is
+ * a static snapshot of the real roster, not a live query — the
+ * component files that import TEAM do so as a plain module export,
+ * not a hook prop, so it can't be wired reactively without touching
+ * those frozen files. If the real team_members roster changes, this
+ * list needs a matching manual update.
+ */
 export const TEAM = [
-  { name: "Lewis Kariuki", role: "Founder / Creative Director" },
-  { name: "Wanjiru Ndegwa", role: "Client Success Lead" },
-  { name: "Brian Otieno", role: "Business Development" },
-  { name: "Faith Achieng", role: "Account Manager" },
-  { name: "Kevin Mwas", role: "Partnerships Lead" }
+  { name: "Lewis Kariuki", role: "Creative Director" },
+  { name: "Winsky Otieno", role: "Art Director" },
+  { name: "Aisha Noor", role: "Motion Designer" },
+  { name: "Brian Mutua", role: "Web Developer" }
 ];
 
 export const TAGS = ["High Value", "Returning", "Corporate", "Startup", "Referral", "Design", "Motion", "3D", "Web", "Photography", "Partner", "Priority"];

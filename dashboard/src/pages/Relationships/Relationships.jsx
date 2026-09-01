@@ -198,12 +198,16 @@ export default function Relationships() {
       ) : (
         config && (
           <RelationshipList
-            rows={relationships.relationships.filter((r) => r.type === activeTab.type)}
+            // The Contacts tab is the master view — every Contact, regardless
+            // of classification (including unclassified/NULL contact_type,
+            // mapped to type "Contact" — see src/data/relationships.js). Every
+            // other tab filters to its one classification, same as before.
+            rows={tab === "contacts" ? relationships.relationships : relationships.relationships.filter((r) => r.type === activeTab.type)}
             filters={filters}
             onFiltersChange={setFilters}
             columns={config.columns}
             extraFilters={config.extraFilters}
-            summaryCards={config.summaryCards(relationships.relationships.filter((r) => r.type === activeTab.type))}
+            summaryCards={config.summaryCards(tab === "contacts" ? relationships.relationships : relationships.relationships.filter((r) => r.type === activeTab.type))}
             emptyTitle={config.emptyTitle}
             emptyBody={config.emptyBody}
             newLabel={config.newLabel}

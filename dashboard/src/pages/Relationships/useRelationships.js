@@ -1,218 +1,238 @@
 /*
- * Innov8 Studios — Relationships state, mirroring useMarketing.js:
- * entirely in-memory, local mutable copies of the mock data. Nothing
- * here talks to Supabase and nothing survives a refresh — that's a
- * deliberate V1 UI/UX constraint, not an oversight. See
- * relationshipsMock.js's header comment.
+ * Innov8 Studios — Relationships state, now backed by the real
+ * public.contacts table (see supabase/migrations/
+ * 20260901000001_contacts_foundation.sql and src/data/relationships.js)
+ * instead of local mock state. Mirrors useStudio.js's shape: load once
+ * on mount into React state, every mutation awaits the real Supabase
+ * write and only patches local state on success — the UI never shows
+ * a change that failed to save.
+ *
+ * The public API surface below (relationships, findRelationship,
+ * addRelationship, addNote, logInteraction, setFollowUp, updateTags,
+ * updateLeadStatus, updateClientHealth, convertType, markInactive,
+ * reactivate) is unchanged from the old mock hook on purpose — every
+ * component that consumes this hook (Relationships.jsx,
+ * RelationshipList.jsx, RelationshipDetail.jsx, Overview.jsx,
+ * NewRelationshipModal.jsx) keeps working with zero edits.
+ *
+ * One deliberate exception to "await first, then update state":
+ * addRelationship() is optimistic. NewRelationshipModal.jsx calls it
+ * as `const record = relationships.addRelationship({...})` and reads
+ * `record.brandName` immediately afterwards — a synchronous contract
+ * from a frozen component this phase is not allowed to touch. Making
+ * the real insert awaited would turn `record` into a Promise instead
+ * of data. So this one path builds the record locally, adds it to
+ * state, and returns it synchronously; the real Supabase insert runs
+ * in the background and rolls the optimistic row back (with an error
+ * toast) if it fails. Every other mutation is fire-and-forget from its
+ * frozen caller too, but none of them read a return value, so they
+ * follow the plain await-then-patch pattern with no optimism needed.
  */
-import { useState } from "react";
-import { RELATIONSHIPS } from "./relationshipsMock.js";
+import { useCallback, useEffect, useState } from "react";
+import { useAuth } from "../../lib/AuthContext.jsx";
+import { useToast } from "../../lib/ToastContext.jsx";
+import * as relationshipsData from "../../data/relationships.js";
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
-let recordSeed = RELATIONSHIPS.length;
-function nextId() {
-  recordSeed += 1;
-  return `rel-new-${recordSeed}`;
-}
-let subSeed = 0;
-function subId(prefix) {
-  subSeed += 1;
-  return `${prefix}-new-${subSeed}`;
+function buildOptimisticContact(id, input, ownerName) {
+  const nowISO = new Date().toISOString();
+  return {
+    id,
+    type: input.type,
+    active: true,
+    personName: input.personName,
+    brandName: input.brandName || input.personName,
+    role: input.role || "",
+    email: input.email || "",
+    phone: input.phone || "",
+    website: input.website || "",
+    location: input.location || "",
+    social: "",
+    owner: ownerName,
+    source: input.source || "",
+    tags: input.tags || [],
+    notes: input.notes && input.notes.trim() ? [{ id: crypto.randomUUID(), text: input.notes.trim(), date: nowISO, author: ownerName }] : [],
+    interactions: [],
+    events: [{ id: crypto.randomUUID(), date: nowISO, type: "created", label: `${input.type} created` }],
+    nextFollowUp: null,
+    followUpReason: null,
+    dateAdded: nowISO,
+    dateUpdated: nowISO,
+    originContext: null,
+    potentialService: input.potentialService || "",
+    interestLevel: input.interestLevel || "Medium",
+    opportunity: input.opportunity || "",
+    serviceInterest: input.serviceInterest || "",
+    estimatedValue: input.estimatedValue || 0,
+    status: "New",
+    priority: input.priority || "Normal",
+    servicesUsed: input.servicesUsed || [],
+    clientSince: todayISO(),
+    relationshipHealth: "Healthy",
+    projects: [],
+    partnerType: input.partnerType || "",
+    capabilities: input.capabilities || []
+  };
 }
 
-const TYPE_DEFAULTS = {
-  Contact: {},
-  Prospect: { potentialService: "", interestLevel: "Medium", priority: "Normal" },
+const CONVERT_DEFAULTS = {
+  Prospect: { interestLevel: "Medium", priority: "Normal", potentialService: "" },
   Lead: { opportunity: "", serviceInterest: "", estimatedValue: 0, status: "New", priority: "Normal" },
-  Client: { servicesUsed: [], projects: [], clientSince: todayISO(), relationshipHealth: "Healthy" },
+  Client: { servicesUsed: [], relationshipHealth: "Healthy", clientSince: todayISO(), projects: [] },
   Partner: { partnerType: "Creative", capabilities: [] }
 };
 
 export function useRelationships() {
-  const [relationships, setRelationships] = useState(() =>
-    RELATIONSHIPS.map((r) => ({ ...r, tags: [...r.tags], notes: [...r.notes], interactions: [...r.interactions], events: [...r.events] }))
-  );
+  const { profile } = useAuth();
+  const { show } = useToast();
+  const [state, setState] = useState({ contacts: [], team: [], teamByName: new Map() });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  function findRelationship(idValue) {
-    return relationships.find((r) => r.id === idValue);
+  const reload = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await relationshipsData.loadRelationshipsData();
+      setState(data);
+    } catch (err) {
+      console.error("[relationships] failed to load", err);
+      setError(err.message || "Check your connection and try reloading.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    reload();
+  }, [reload]);
+
+  function findRelationship(id) {
+    return state.contacts.find((r) => r.id === id);
   }
 
-  function updateRecord(idValue, patch) {
-    let updated = null;
-    setRelationships((list) =>
-      list.map((r) => {
-        if (r.id !== idValue) return r;
-        updated = { ...r, ...patch, dateUpdated: todayISO() };
-        return updated;
-      })
-    );
-    return updated;
+  function patchContact(id, patch) {
+    setState((s) => ({ ...s, contacts: s.contacts.map((c) => (c.id === id ? { ...c, ...patch } : c)) }));
   }
 
-  function addRelationship({ type, personName, brandName, role, email, phone, website, location, owner, source, tags, notes, ...typeFields }) {
-    const record = {
-      id: nextId(),
-      type,
-      active: true,
-      personName,
-      brandName: brandName || personName,
-      role: role || "",
-      email: email || "",
-      phone: phone || "",
-      website: website || "",
-      location: location || "",
-      social: "",
-      owner: owner || "",
-      source: source || "Other",
-      tags: tags || [],
-      notes: notes ? [{ id: subId("note"), text: notes, date: todayISO(), author: owner || "" }] : [],
-      interactions: [],
-      events: [{ id: subId("ev"), date: todayISO(), type: "created", label: `${type} created` }],
-      nextFollowUp: null,
-      followUpReason: null,
-      dateAdded: todayISO(),
-      dateUpdated: todayISO(),
-      originContext: null,
-      ...TYPE_DEFAULTS[type],
-      ...typeFields
-    };
-    setRelationships((list) => [record, ...list]);
+  function addRelationship(input) {
+    const id = crypto.randomUUID();
+    const ownerName = input.owner || "";
+    const record = buildOptimisticContact(id, input, ownerName);
+    setState((s) => ({ ...s, contacts: [record, ...s.contacts] }));
+
+    relationshipsData.addContact({ ...input, id }, { teamByName: state.teamByName, authorProfileId: profile?.id }).catch((err) => {
+      console.error("[relationships] addContact failed", err);
+      setState((s) => ({ ...s, contacts: s.contacts.filter((c) => c.id !== id) }));
+      show(err.message || "Couldn't save that contact — try again.");
+    });
+
     return record;
   }
 
-  function addNote(idValue, text) {
-    let updated = null;
-    setRelationships((list) =>
-      list.map((r) => {
-        if (r.id !== idValue) return r;
-        updated = { ...r, notes: [...r.notes, { id: subId("note"), text, date: todayISO(), author: r.owner }], dateUpdated: todayISO() };
-        return updated;
-      })
-    );
-    return updated;
+  async function addNote(id, text) {
+    try {
+      const note = await relationshipsData.addContactNote(id, text, profile?.id);
+      patchContact(id, { notes: [...(findRelationship(id)?.notes || []), { id: note.id, text: note.content, date: note.created_at, author: note.authorName }] });
+    } catch (err) {
+      console.error("[relationships] addNote failed", err);
+      show(err.message || "Couldn't add that note — try again.");
+    }
   }
 
-  function logInteraction(idValue, { type, description, person }) {
-    let updated = null;
-    setRelationships((list) =>
-      list.map((r) => {
-        if (r.id !== idValue) return r;
-        updated = {
-          ...r,
-          interactions: [...r.interactions, { id: subId("int"), type, date: todayISO(), description, person: person || r.owner }],
-          dateUpdated: todayISO()
-        };
-        return updated;
-      })
-    );
-    return updated;
+  async function logInteraction(id, { type, description }) {
+    try {
+      const note = await relationshipsData.addContactInteraction(id, { type, description }, profile?.id);
+      patchContact(id, { interactions: [...(findRelationship(id)?.interactions || []), { id: note.id, type, date: note.created_at, description: note.content, person: note.authorName }] });
+    } catch (err) {
+      console.error("[relationships] logInteraction failed", err);
+      show(err.message || "Couldn't log that interaction — try again.");
+    }
   }
 
-  function setFollowUp(idValue, { date, reason }) {
-    return updateRecord(idValue, { nextFollowUp: date || null, followUpReason: reason || null });
+  async function setFollowUp(id, { date, reason }) {
+    try {
+      await relationshipsData.updateContactFollowUp(id, { date, reason });
+      patchContact(id, { nextFollowUp: date || null, followUpReason: reason || null });
+    } catch (err) {
+      console.error("[relationships] setFollowUp failed", err);
+      show(err.message || "Couldn't update that follow-up — try again.");
+    }
   }
 
-  function updateTags(idValue, tags) {
-    return updateRecord(idValue, { tags });
+  async function updateTags(id, tags) {
+    try {
+      await relationshipsData.updateContactTags(id, tags);
+      patchContact(id, { tags });
+    } catch (err) {
+      console.error("[relationships] updateTags failed", err);
+      show(err.message || "Couldn't update those tags — try again.");
+    }
   }
 
-  function updateLeadStatus(idValue, status) {
-    let updated = null;
-    setRelationships((list) =>
-      list.map((r) => {
-        if (r.id !== idValue || r.type !== "Lead") return r;
-        updated = {
-          ...r,
-          status,
-          events: [...r.events, { id: subId("ev"), date: todayISO(), type: "status_change", label: `Lead status set to ${status}` }],
-          dateUpdated: todayISO()
-        };
-        return updated;
-      })
-    );
-    return updated;
+  async function updateLeadStatus(id, status) {
+    try {
+      await relationshipsData.updateContactLeadStatus(id, status);
+      patchContact(id, { status });
+    } catch (err) {
+      console.error("[relationships] updateLeadStatus failed", err);
+      show(err.message || "Couldn't update that lead status — try again.");
+    }
   }
 
-  function updateClientHealth(idValue, relationshipHealth) {
-    let updated = null;
-    setRelationships((list) =>
-      list.map((r) => {
-        if (r.id !== idValue || r.type !== "Client") return r;
-        updated = {
-          ...r,
-          relationshipHealth,
-          active: relationshipHealth !== "Inactive",
-          events: [...r.events, { id: subId("ev"), date: todayISO(), type: "status_change", label: `Relationship health set to ${relationshipHealth}` }],
-          dateUpdated: todayISO()
-        };
-        return updated;
-      })
-    );
-    return updated;
+  async function updateClientHealth(id, health) {
+    try {
+      await relationshipsData.updateContactClientHealth(id, health);
+      patchContact(id, { relationshipHealth: health, active: health !== "Inactive" });
+    } catch (err) {
+      console.error("[relationships] updateClientHealth failed", err);
+      show(err.message || "Couldn't update that relationship health — try again.");
+    }
   }
 
-  function convertType(idValue, newType) {
-    let updated = null;
-    setRelationships((list) =>
-      list.map((r) => {
-        if (r.id !== idValue) return r;
-        const fromType = r.type;
-        updated = {
-          ...r,
-          type: newType,
-          active: true,
-          ...TYPE_DEFAULTS[newType],
-          events: [...r.events, { id: subId("ev"), date: todayISO(), type: "status_change", label: `Converted from ${fromType} to ${newType}` }],
-          dateUpdated: todayISO()
-        };
-        if (newType === "Client") updated.clientSince = todayISO();
-        return updated;
-      })
-    );
-    return updated;
+  async function convertType(id, newType) {
+    try {
+      await relationshipsData.convertContactType(id, newType);
+      patchContact(id, { type: newType, active: true, ...(CONVERT_DEFAULTS[newType] || {}) });
+    } catch (err) {
+      console.error("[relationships] convertType failed", err);
+      show(err.message || "Couldn't convert that contact — try again.");
+    }
   }
 
-  function markInactive(idValue) {
-    let updated = null;
-    setRelationships((list) =>
-      list.map((r) => {
-        if (r.id !== idValue) return r;
-        updated = {
-          ...r,
-          active: false,
-          relationshipHealth: r.type === "Client" ? "Inactive" : r.relationshipHealth,
-          events: [...r.events, { id: subId("ev"), date: todayISO(), type: "status_change", label: "Marked Inactive" }],
-          dateUpdated: todayISO()
-        };
-        return updated;
-      })
-    );
-    return updated;
+  async function markInactive(id) {
+    const record = findRelationship(id);
+    try {
+      await relationshipsData.setContactActive(id, false, record?.type, record?.relationshipHealth);
+      patchContact(id, { active: false, relationshipHealth: record?.type === "Client" ? "Inactive" : record?.relationshipHealth });
+    } catch (err) {
+      console.error("[relationships] markInactive failed", err);
+      show(err.message || "Couldn't mark that contact inactive — try again.");
+    }
   }
 
-  function reactivate(idValue) {
-    let updated = null;
-    setRelationships((list) =>
-      list.map((r) => {
-        if (r.id !== idValue) return r;
-        updated = {
-          ...r,
-          active: true,
-          relationshipHealth: r.type === "Client" && r.relationshipHealth === "Inactive" ? "Healthy" : r.relationshipHealth,
-          events: [...r.events, { id: subId("ev"), date: todayISO(), type: "status_change", label: "Reactivated" }],
-          dateUpdated: todayISO()
-        };
-        return updated;
-      })
-    );
-    return updated;
+  async function reactivate(id) {
+    const record = findRelationship(id);
+    try {
+      await relationshipsData.setContactActive(id, true, record?.type, record?.relationshipHealth);
+      patchContact(id, {
+        active: true,
+        relationshipHealth: record?.type === "Client" && record?.relationshipHealth === "Inactive" ? "Healthy" : record?.relationshipHealth
+      });
+    } catch (err) {
+      console.error("[relationships] reactivate failed", err);
+      show(err.message || "Couldn't reactivate that contact — try again.");
+    }
   }
 
   return {
-    relationships,
+    relationships: state.contacts,
+    loading,
+    error,
+    reload,
     findRelationship,
     addRelationship,
     addNote,
