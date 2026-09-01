@@ -67,6 +67,72 @@
         margin-top: 1rem;
         line-height: 1.5;
       }
+
+      /* Password visibility toggle */
+      .input-group { position: relative; }
+      .input-group .input { padding-right: 2.75rem; }
+      .input-toggle {
+        position: absolute;
+        top: 50%;
+        right: 0.25rem;
+        transform: translateY(-50%);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        border: none;
+        background: transparent;
+        color: var(--faint);
+        cursor: pointer;
+        border-radius: var(--radius-sm);
+        transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+      }
+      .input-toggle:hover { color: var(--orange-bright); background: rgba(255, 106, 26, 0.12); }
+      .input-toggle svg { width: 1.125rem; height: 1.125rem; }
+
+      /* Forgot password link */
+      .forgot-link {
+        display: block;
+        width: 100%;
+        margin-top: 0.5rem;
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 0.75rem;
+        color: var(--faint);
+        cursor: pointer;
+        text-align: right;
+      }
+      .forgot-link:hover { color: var(--orange-bright); }
+
+      /* OAuth divider + Google button */
+      .auth-divider {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+        color: var(--faint);
+        font-size: 0.6875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .auth-divider::before,
+      .auth-divider::after {
+        content: "";
+        flex: 1;
+        height: 0.0625rem;
+        background: var(--line);
+      }
+      .btn-google {
+        width: 100%;
+        justify-content: center;
+        background: var(--white);
+        color: var(--black);
+        border-color: transparent;
+      }
+      .btn-google:hover { filter: brightness(0.96); }
+      .btn-google svg { width: 1.125rem; height: 1.125rem; }
     </style>
   </head>
   <body>
@@ -76,38 +142,80 @@
         <div class="auth-brand">
           <img src="assets/images/logo%20white.png" alt="Innov8 Studios" />
         </div>
-        <h1 data-form-title>Sign in</h1>
-        <p class="sub" data-form-sub>Internal Studio access only.</p>
 
-        <p class="auth-error" data-auth-error></p>
+        <div data-auth-main>
+          <h1 data-form-title>Sign in</h1>
+          <p class="sub" data-form-sub>Internal Studio access only.</p>
 
-        <form data-signin-form>
-          <div class="field">
-            <label class="field-label" for="email">Email</label>
-            <input class="input" id="email" name="email" type="email" autocomplete="email" required />
-          </div>
-          <div class="field">
-            <label class="field-label" for="password">Password</label>
-            <input class="input" id="password" name="password" type="password" autocomplete="current-password" required minlength="6" />
-          </div>
-          <div class="field" data-fullname-field style="display:none;">
-            <label class="field-label" for="fullname">Full name</label>
-            <input class="input" id="fullname" name="fullname" type="text" autocomplete="name" />
-          </div>
-          <button class="btn btn-primary" type="submit" data-submit-btn>Sign in</button>
-        </form>
+          <p class="auth-error" data-auth-error></p>
 
-        <p class="auth-switch">
-          <span data-switch-prompt>New to the Studio?</span>
-          <button type="button" data-switch-mode>Create an account</button>
-        </p>
+          <form data-signin-form>
+            <div class="field">
+              <label class="field-label" for="email">Email</label>
+              <input class="input" id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label class="field-label" for="password">Password</label>
+              <div class="input-group">
+                <input class="input" id="password" name="password" type="password" autocomplete="current-password" required minlength="6" />
+                <button type="button" class="input-toggle" data-toggle-password aria-label="Show password" aria-pressed="false">
+                  <svg data-icon-eye viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg data-icon-eye-off viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M2 12s3.5-7 10-7c1.6 0 3 .3 4.2.9M22 12s-3.5 7-10 7c-1.6 0-3-.3-4.2-.9"/><path d="M4 4l16 16"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+                </button>
+              </div>
+              <button type="button" class="forgot-link" data-forgot-open>Forgot password?</button>
+            </div>
+            <div class="field" data-fullname-field style="display:none;">
+              <label class="field-label" for="fullname">Full name</label>
+              <input class="input" id="fullname" name="fullname" type="text" autocomplete="name" />
+            </div>
+            <button class="btn btn-primary" type="submit" data-submit-btn>Sign in</button>
+          </form>
 
-        <p class="auth-note">New accounts start as a team member. Admin access is granted separately — see <code>supabase/BOOTSTRAP_ADMIN.md</code>.</p>
+          <div class="auth-divider"><span>or</span></div>
+
+          <button type="button" class="btn btn-google" data-google-btn>
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+            Continue with Google
+          </button>
+
+          <p class="auth-switch">
+            <span data-switch-prompt>New to the Studio?</span>
+            <button type="button" data-switch-mode>Create an account</button>
+          </p>
+
+          <p class="auth-note">New accounts start as a team member. Admin access is granted separately — see <code>supabase/BOOTSTRAP_ADMIN.md</code>.</p>
+        </div>
+
+        <div data-forgot-panel style="display:none;">
+          <h1>Reset your password</h1>
+          <p class="sub">Enter your email and we'll send you a link to choose a new password.</p>
+
+          <p class="auth-error" data-forgot-error></p>
+
+          <form data-forgot-form>
+            <div class="field">
+              <label class="field-label" for="forgot-email">Email</label>
+              <input class="input" id="forgot-email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <button class="btn btn-primary" type="submit" data-forgot-submit>Send reset link</button>
+          </form>
+
+          <p class="auth-switch">
+            <button type="button" data-forgot-back>Back to sign in</button>
+          </p>
+        </div>
       </div>
     </div>
 
     <script src="js/env.js"></script>
     <script src="js/supabaseClient.js"></script>
+    <script src="js/password-toggle.js"></script>
     <script src="js/login.js"></script>
   </body>
 </html>
