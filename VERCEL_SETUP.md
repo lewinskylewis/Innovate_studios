@@ -19,12 +19,9 @@ public website project.
 |---|---|
 | Root Directory | `dashboard` |
 | Framework Preset | Other |
-| Build Command | `node ../scripts/build-env.mjs` (already set in `dashboard/vercel.json`) |
+| Build Command | `npm run build` (already set in `dashboard/vercel.json`, runs `dashboard/build-env.mjs`) |
 | Output Directory | `.` (already set in `dashboard/vercel.json`) |
-| Install Command | *(leave default/empty — there are no npm dependencies to install)* |
-
-Vercel checks out the full repository for the build step even with a
-scoped Root Directory, so `../scripts/build-env.mjs` resolves correctly.
+| Install Command | *(leave default/empty — `dashboard/package.json` has no dependencies)* |
 
 ## 3. Environment variables (Project #2 only)
 

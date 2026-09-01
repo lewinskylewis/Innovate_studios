@@ -1,0 +1,7 @@
+{
+  "name": "innov8-dashboard",
+  "private": true,
+  "scripts": {
+    "build": "node build-env.mjs"
+  }
+}
