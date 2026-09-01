@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#030303" />
+    <title>Marketing &amp; Sales — Innov8 Studios Dashboard</title>
+    <link rel="preload" href="fonts/Comfortaa-Regular.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="fonts/CenturyGothicPaneuropeanRegular.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
+    <div class="dash-ambient" aria-hidden="true"></div>
+
+    <div class="dash-shell">
+      <aside class="dash-sidebar glass-surface" data-sidebar aria-label="Dashboard navigation">
+        <div class="dash-brand">
+          <img src="assets/images/logo%20white.png" alt="Innov8 Studios" />
+          <button class="icon-btn" type="button" data-hamburger aria-label="Collapse navigation" aria-expanded="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+          </button>
+        </div>
+
+        <nav class="dash-nav" id="dash-sidebar-nav"></nav>
+
+        <div class="dash-account" data-account>
+          <div class="dash-account-menu glass-surface">
+            <button type="button" data-logout>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.125rem;height:1.125rem"><path d="M15 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h9"/><path d="M10 12h11"/><path d="m17 8 4 4-4 4"/></svg>
+              Log out
+            </button>
+          </div>
+          <button class="dash-account-trigger" type="button" data-account-trigger>
+            <span class="avatar" style="background:#3ddc84">LK</span>
+            <span class="dash-account-info">
+              <strong>Lewis Kariuki</strong>
+              <span>Administrator</span>
+            </span>
+            <svg class="dash-account-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1rem;height:1rem"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+      </aside>
+
+      <main class="dash-main">
+        <header class="dash-content-header">
+          <div class="dash-header-start">
+            <div class="dash-greeting">
+              <h1>Marketing &amp; Sales</h1>
+              <time>Manage studio outreach, campaigns, and business growth.</time>
+            </div>
+          </div>
+          <div class="dash-header-actions">
+            <span class="avatar">LK</span>
+          </div>
+        </header>
+
+        <div class="work-toolbar-row">
+          <div class="work-tabs" data-mkt-tabs>
+            <button class="work-tab is-active" type="button" data-mkt-tab="overview">Overview</button>
+            <button class="work-tab" type="button" data-mkt-tab="outreach">Outreach</button>
+            <button class="work-tab" type="button" data-mkt-tab="campaigns">Studio Campaigns</button>
+          </div>
+
+          <div class="work-toolbar-actions" data-mkt-actions="overview">
+            <button class="work-toolbar-control work-toolbar-new" type="button" data-modal-open="new-campaign">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1rem;height:1rem"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+              New Campaign
+            </button>
+          </div>
+
+          <div class="work-toolbar-actions" data-mkt-actions="outreach" style="display:none;">
+            <div class="work-toolbar-control work-toolbar-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.8-3.8"/></svg>
+              <input type="search" placeholder="Search" data-prospect-search />
+            </div>
+            <select class="work-toolbar-control work-toolbar-select" data-prospect-filter="industry" aria-label="Filter by industry">
+              <option value="All">Industry</option>
+            </select>
+            <select class="work-toolbar-control work-toolbar-select" data-prospect-filter="status" aria-label="Filter by status">
+              <option value="All">Status</option>
+            </select>
+            <select class="work-toolbar-control work-toolbar-select" data-prospect-filter="channel" aria-label="Filter by channel">
+              <option value="All">Channel</option>
+            </select>
+            <select class="work-toolbar-control work-toolbar-select" data-prospect-filter="serviceInterest" aria-label="Filter by service">
+              <option value="All">Service</option>
+            </select>
+            <select class="work-toolbar-control work-toolbar-select" data-prospect-filter="followup" aria-label="Filter by follow-up">
+              <option value="All">Follow-up</option>
+              <option value="overdue">Overdue</option>
+              <option value="week">Due this week</option>
+              <option value="none">No follow-up set</option>
+            </select>
+            <button class="work-toolbar-control btn btn-ghost" type="button" data-modal-open="outreach-activity">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1rem;height:1rem"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+              Outreach Activity
+            </button>
+            <button class="work-toolbar-control work-toolbar-new" type="button" data-modal-open="new-prospect">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1rem;height:1rem"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+              Add Prospect
+            </button>
+          </div>
+
+          <div class="work-toolbar-actions" data-mkt-actions="campaigns" style="display:none;">
+            <button class="work-toolbar-control work-toolbar-new" type="button" data-modal-open="new-campaign">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1rem;height:1rem"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+              New Campaign
+            </button>
+          </div>
+        </div>
+
+        <!-- ============ OVERVIEW ============ -->
+        <section class="work-view is-active" data-mkt-panel="overview">
+          <section class="dash-stat-cards" data-mkt-kpis aria-label="Marketing &amp; Sales metrics"></section>
+
+          <div class="dash-grid">
+            <div class="dash-column">
+              <div class="panel">
+                <div class="panel-header">
+                  <h2>Outreach activity</h2>
+                  <span class="panel-meta" data-mkt-outreach-meta></span>
+                </div>
+                <div class="dash-table-wrap">
+                  <table class="dash-table">
+                    <thead>
+                      <tr>
+                        <th>Company</th>
+                        <th>Contact</th>
+                        <th>Channel</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                      </tr>
+                    </thead>
+                    <tbody data-mkt-outreach-activity></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header">
+                  <h2>Next actions</h2>
+                  <span class="panel-meta">Today's focus</span>
+                </div>
+                <div data-mkt-upcoming-actions></div>
+              </div>
+            </div>
+
+            <div class="dash-column">
+              <div class="panel">
+                <div class="panel-header">
+                  <h2>Campaign performance</h2>
+                  <button class="panel-link" type="button" data-goto-mkt-tab="campaigns">View all campaigns</button>
+                </div>
+                <div data-mkt-campaign-performance></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ OUTREACH ============ -->
+        <section class="work-view" data-mkt-panel="outreach">
+          <section class="dash-stat-cards" data-mkt-outreach-summary aria-label="Outreach summary"></section>
+
+          <div class="panel">
+            <div class="dash-table-wrap">
+              <table class="dash-table mkt-prospect-table">
+                <thead>
+                  <tr>
+                    <th>Business</th>
+                    <th>Contact</th>
+                    <th>Industry</th>
+                    <th>Service Interest</th>
+                    <th>Channel</th>
+                    <th>Status</th>
+                    <th>Last Contact</th>
+                    <th>Next Follow-up</th>
+                  </tr>
+                </thead>
+                <tbody data-mkt-prospect-rows></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ STUDIO CAMPAIGNS ============ -->
+        <section class="work-view" data-mkt-panel="campaigns">
+          <!-- List view -->
+          <div data-mkt-campaign-list>
+            <div class="mkt-campaign-grid" data-mkt-campaign-cards></div>
+          </div>
+
+          <!-- Detail view (no routing — just a swapped-in panel) -->
+          <div data-mkt-campaign-detail style="display:none;"></div>
+        </section>
+      </main>
+    </div>
+
+    <aside class="detail-drawer glass-surface" data-detail-drawer aria-label="Detail"></aside>
+    <div data-scrim data-detail-scrim></div>
+
+    <div class="dash-palette glass-surface" data-palette role="dialog" aria-modal="true" aria-label="Command palette">
+      <div class="dash-palette-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.8-3.8"/></svg>
+        <label class="sr-only" for="dash-palette-input">Search the dashboard</label>
+        <input id="dash-palette-input" type="text" placeholder="Search" data-palette-input autocomplete="off" />
+        <kbd>Esc</kbd>
+      </div>
+      <div class="dash-palette-list" data-palette-list></div>
+    </div>
+    <div data-scrim data-palette-scrim></div>
+
+    <!-- Add Prospect -->
+    <div class="dash-modal glass-surface" data-modal="new-prospect" role="dialog" aria-modal="true" aria-label="Add prospect">
+      <div class="dash-modal-header">
+        <div>
+          <h2>Add Prospect</h2>
+          <p>Track a new business you're reaching out to.</p>
+        </div>
+        <button class="icon-btn" type="button" data-modal-close aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <form id="form-new-prospect">
+        <div class="field-grid">
+          <div class="field">
+            <label class="field-label" for="prospect-business">Business name</label>
+            <input class="input" id="prospect-business" name="business" type="text" placeholder="e.g. Savanna Fitness Club" required />
+          </div>
+          <div class="field">
+            <label class="field-label" for="prospect-contact">Contact name</label>
+            <input class="input" id="prospect-contact" name="contact" type="text" placeholder="e.g. Grace Chebet" required />
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label class="field-label" for="prospect-industry">Industry</label>
+            <input class="input" id="prospect-industry" name="industry" type="text" placeholder="e.g. Hospitality" required />
+          </div>
+          <div class="field">
+            <label class="field-label" for="prospect-service">Service interest</label>
+            <select class="input select" id="prospect-service" name="serviceInterest">
+              <option>Motion Graphics</option>
+              <option>3D Commercial</option>
+              <option>Social Media Design</option>
+              <option>Website Design</option>
+              <option>Branding</option>
+              <option>Creative Retainer</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label class="field-label" for="prospect-channel">Channel</label>
+            <select class="input select" id="prospect-channel" name="channel">
+              <option>Instagram</option>
+              <option>Email</option>
+              <option>LinkedIn</option>
+              <option>WhatsApp</option>
+              <option>Phone</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label" for="prospect-followup">Next follow-up</label>
+            <input class="input" id="prospect-followup" name="nextFollowUp" type="date" />
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="prospect-notes">Notes</label>
+          <textarea class="input" id="prospect-notes" name="notes" rows="3" placeholder="What are they interested in?"></textarea>
+        </div>
+        <div class="dash-modal-actions">
+          <button class="btn btn-ghost" type="button" data-modal-close>Cancel</button>
+          <button class="btn btn-primary" type="submit">Add prospect</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Outreach Activity (log a touchpoint) -->
+    <div class="dash-modal glass-surface" data-modal="outreach-activity" role="dialog" aria-modal="true" aria-label="Log outreach activity">
+      <div class="dash-modal-header">
+        <div>
+          <h2>Log Outreach Activity</h2>
+          <p>Record a touchpoint with an existing prospect.</p>
+        </div>
+        <button class="icon-btn" type="button" data-modal-close aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <form id="form-outreach-activity">
+        <div class="field">
+          <label class="field-label" for="activity-prospect">Prospect</label>
+          <select class="input select" id="activity-prospect" name="prospectId" data-activity-prospect-select></select>
+        </div>
+        <div class="field">
+          <label class="field-label" for="activity-note">What happened?</label>
+          <input class="input" id="activity-note" name="note" type="text" placeholder="e.g. Sent portfolio via email" required />
+        </div>
+        <div class="dash-modal-actions">
+          <button class="btn btn-ghost" type="button" data-modal-close>Cancel</button>
+          <button class="btn btn-primary" type="submit">Log activity</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- New Campaign -->
+    <div class="dash-modal glass-surface mkt-campaign-modal" data-modal="new-campaign" role="dialog" aria-modal="true" aria-label="New campaign">
+      <div class="dash-modal-header">
+        <div>
+          <h2>New Campaign</h2>
+          <p>Set up a campaign to market the Studio itself.</p>
+        </div>
+        <button class="icon-btn" type="button" data-modal-close aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <form id="form-new-campaign">
+        <div class="field">
+          <label class="field-label" for="campaign-name">Campaign name</label>
+          <input class="input" id="campaign-name" name="name" type="text" placeholder="e.g. Motion Graphics — September" required />
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label class="field-label" for="campaign-objective">Objective</label>
+            <select class="input select" id="campaign-objective" name="objective">
+              <option>Generate leads</option>
+              <option>Generate enquiries</option>
+              <option>Build brand awareness</option>
+              <option>Promote a service launch</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label" for="campaign-service">Service</label>
+            <select class="input select" id="campaign-service" name="service">
+              <option>Motion Graphics</option>
+              <option>3D Commercial</option>
+              <option>Social Media Design</option>
+              <option>Website Design</option>
+              <option>Branding</option>
+              <option>Creative Retainer</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="campaign-description">Description</label>
+          <textarea class="input" id="campaign-description" name="description" rows="2" placeholder="What is this campaign about?"></textarea>
+        </div>
+        <div class="field">
+          <span class="field-label">Platforms</span>
+          <div class="mkt-checkbox-row">
+            <label class="mkt-checkbox"><input type="checkbox" name="platforms" value="Instagram" checked /> Instagram</label>
+            <label class="mkt-checkbox"><input type="checkbox" name="platforms" value="TikTok" checked /> TikTok</label>
+            <label class="mkt-checkbox"><input type="checkbox" name="platforms" value="Facebook" /> Facebook</label>
+            <label class="mkt-checkbox"><input type="checkbox" name="platforms" value="LinkedIn" /> LinkedIn</label>
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label class="field-label" for="campaign-start">Start date</label>
+            <input class="input" id="campaign-start" name="startDate" type="date" required />
+          </div>
+          <div class="field">
+            <label class="field-label" for="campaign-end">End date</label>
+            <input class="input" id="campaign-end" name="endDate" type="date" required />
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label class="field-label" for="campaign-budget">Budget (KES)</label>
+            <input class="input" id="campaign-budget" name="budget" type="number" min="0" step="500" placeholder="e.g. 5000" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="campaign-cta">Call to action</label>
+            <input class="input" id="campaign-cta" name="cta" type="text" placeholder="e.g. Get a quote" />
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="campaign-target">Target audience</label>
+          <input class="input" id="campaign-target" name="targetAudience" type="text" placeholder="e.g. Nairobi businesses" />
+        </div>
+        <div class="dash-modal-actions">
+          <button class="btn btn-ghost" type="button" data-modal-close>Cancel</button>
+          <button class="btn btn-primary" type="submit">Create Campaign</button>
+        </div>
+      </form>
+    </div>
+
+    <div data-scrim data-modal-scrim></div>
+
+    <div class="toast-stack" data-toast-stack></div>
+
+    <script src="js/env.js"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/auth/session.js"></script>
+    <script src="shell.js"></script>
+    <script src="marketing-data.js"></script>
+    <script src="marketing.js"></script>
+  </body>
+</html>

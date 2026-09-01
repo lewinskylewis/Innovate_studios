@@ -5,3 +5,13 @@
 /Hero Section/
 /Untitled Project.aep
 /.agents/
+
+# Studio Dashboard — generated locally by copying env.example.js, or by
+# scripts/build-env.mjs during a Vercel build. Never contains a secret
+# (see .env.example), but it's environment-specific and shouldn't be
+# committed.
+/dashboard/js/env.js
+
+# Local environment files
+.env
+.env.local

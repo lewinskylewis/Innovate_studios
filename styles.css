@@ -523,7 +523,7 @@ html.motion-ready {
 .motion-ready .services[data-stack-section] {
   box-shadow: rgba(0, 0, 0, 0.22) 0 -1.125rem 3.375rem;
   padding: clamp(3.375rem, 7svh, 4.75rem) 0 clamp(2.125rem, 5svh, 3.25rem);
-  border-radius: clamp(4.375rem, 7vw, 7rem) clamp(4.375rem, 7vw, 7rem) 0 0;
+  border-radius: var(--services-corner-radius, clamp(4.375rem, 7vw, 7rem)) var(--services-corner-radius, clamp(4.375rem, 7vw, 7rem)) 0 0;
   background: rgb(199, 199, 199);
   color: rgb(17, 17, 17);
 }
@@ -2603,7 +2603,7 @@ html:not(.nav-open) .site-nav {
   }
 
   .motion-ready .services[data-stack-section] {
-    border-radius: 3rem 3rem 0 0;
+    border-radius: var(--services-corner-radius, 3rem) var(--services-corner-radius, 3rem) 0 0;
   }
 
   .motion-ready .service-grid {
@@ -3279,5 +3279,462 @@ html:not(.nav-open) .site-nav {
   .motion-ready [data-motion-copy], .motion-ready [data-motion-card], .motion-ready .site-header, .motion-ready [data-parallax], .motion-ready .work-grid .work-media, .motion-ready .work-grid .work-item > h3, .motion-ready .work-grid .work-item > p {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* Revised portfolio artboard */
+
+.portfolio-page {
+  --container: 84.75rem;
+  --portfolio-dark: #262626;
+  --portfolio-orange: #ff5a00;
+  background: var(--portfolio-dark);
+}
+
+.portfolio-page .section-container,
+.portfolio-page .site-header .nav-shell,
+.portfolio-page .site-header.is-condensed .nav-shell {
+  width: min(var(--container), calc(100vw - 3rem));
+  margin-inline: auto;
+}
+
+.portfolio-page .site-header,
+.portfolio-page .site-header.is-condensed {
+  padding-inline: 0;
+}
+
+.portfolio-page .site-header .nav-shell,
+.portfolio-page .site-header.is-condensed .nav-shell {
+  padding-inline: 0;
+}
+
+.portfolio-page .site-header .menu-button,
+.portfolio-page .site-header.is-condensed .menu-button,
+.portfolio-page .nav-open .site-header .menu-button,
+.portfolio-page .nav-open .site-header.is-condensed .menu-button {
+  right: max(1.5rem, calc((100vw - var(--container)) / 2));
+}
+
+.portfolio-page .site-header.is-condensed .brand-mark {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.portfolio-page main {
+  background: var(--portfolio-dark);
+  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
+}
+
+.portfolio-hero {
+  position: relative;
+  min-height: clamp(42rem, 47.55vw, 57.125rem);
+  overflow: hidden;
+  background: var(--portfolio-orange);
+}
+
+.portfolio-hero-inner {
+  position: relative;
+  min-height: inherit;
+}
+
+.portfolio-hero-copy {
+  position: absolute;
+  top: 52.5%;
+  left: 0;
+  z-index: 2;
+  width: min(27rem, 32vw);
+  transform: translateY(-15%);
+}
+
+.portfolio-hero-copy h1 {
+  color: white;
+  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: clamp(2.75rem, 2.95vw, 3.55rem);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.portfolio-hero-copy p {
+  max-width: 26rem;
+  margin-top: 4.75rem;
+  color: white;
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.portfolio-hero-copy p + p {
+  margin-top: 1.75rem;
+}
+
+.portfolio-hero-duo {
+  position: absolute;
+  right: -2.3%;
+  top: -19%;
+  z-index: 1;
+  width: auto;
+  max-width: none;
+  height: 176%;
+  pointer-events: none;
+}
+
+.portfolio-section {
+  min-height: clamp(64rem, 68.25vw, 82rem);
+  background: var(--portfolio-dark);
+}
+
+.portfolio-section-inner {
+  height: auto;
+  min-height: inherit;
+  padding-block: clamp(7.5rem, 8.3vw, 10rem) clamp(6rem, 7vw, 8.5rem);
+}
+
+.portfolio-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(22rem, 34rem);
+  align-items: end;
+  gap: 5rem;
+}
+
+.portfolio-kicker {
+  gap: 1.625rem;
+}
+
+.portfolio-kicker span {
+  width: 3.75rem;
+}
+
+.portfolio-kicker p {
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+}
+
+.portfolio-section-title {
+  margin-top: 2rem;
+  color: var(--portfolio-orange);
+  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: clamp(3.25rem, 4.35vw, 5.25rem);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.055em;
+}
+
+.portfolio-intro {
+  max-width: 33rem;
+  padding-bottom: 0.55rem;
+  color: #f5f3ee;
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.48;
+}
+
+.portfolio-campaign-grid,
+.portfolio-brand-grid {
+  margin-top: clamp(7rem, 10.7vw, 12.875rem);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.125rem 1.875rem;
+}
+
+.portfolio-campaign-grid > img,
+.portfolio-brand-grid > img {
+  width: 100%;
+  aspect-ratio: 1.37 / 1;
+  object-fit: cover;
+}
+
+.portfolio-showreel {
+  min-height: clamp(39rem, 45.8vw, 55rem);
+}
+
+.portfolio-showreel > img {
+  object-position: center 57%;
+}
+
+.portfolio-showreel::after {
+  background: rgba(12, 17, 18, 0.48);
+}
+
+.portfolio-showreel-button {
+  min-width: 14.5rem;
+  min-height: 4.5rem;
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.22);
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.portfolio-brand {
+  min-height: clamp(64rem, 69vw, 83rem);
+}
+
+.portfolio-brand-feathers {
+  left: -3rem;
+  top: 68%;
+  width: clamp(18rem, 24vw, 28.75rem);
+  opacity: 0.15;
+}
+
+.portfolio-brand-grid {
+  margin-top: clamp(7rem, 9.3vw, 11.125rem);
+}
+
+.portfolio-digital-showreel {
+  min-height: clamp(44rem, 56.4vw, 67.75rem);
+}
+
+.portfolio-digital-showreel > img {
+  object-position: center;
+}
+
+.portfolio-web {
+  min-height: clamp(58rem, 54.7vw, 65.625rem);
+}
+
+.portfolio-web .portfolio-section-inner {
+  padding-top: clamp(7rem, 7.8vw, 9.375rem);
+}
+
+.portfolio-web-grid {
+  height: clamp(24rem, 28.25vw, 33.875rem);
+  margin-top: clamp(5rem, 7vw, 8.375rem);
+  display: grid;
+  grid-template-columns: 1fr 0.82fr 1.1fr 0.82fr 1fr;
+  gap: 0;
+  overflow: hidden;
+}
+
+.portfolio-web-grid > img {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  object-fit: cover;
+}
+
+.portfolio-web-grid > img:nth-child(1),
+.portfolio-web-grid > img:nth-child(4) {
+  object-position: center;
+}
+
+.portfolio-page .site-footer {
+  padding-block: clamp(4.5rem, 5vw, 6rem);
+  background: var(--portfolio-orange);
+  color: white;
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+}
+
+.portfolio-page .footer-grid {
+  grid-template-columns: 1.1fr 2.1fr 0.8fr 0.9fr;
+  gap: clamp(3rem, 6vw, 7rem);
+}
+
+.portfolio-page .footer-grid h2 {
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.portfolio-page .footer-brand img {
+  width: 11.5rem;
+}
+
+.portfolio-page .footer-brand p,
+.portfolio-page .footer-brand > a,
+.portfolio-page .footer-nav {
+  color: white;
+  font-size: 0.75rem;
+}
+
+.portfolio-page .footer-brand p,
+.portfolio-page .footer-brand > a {
+  margin-top: 1.75rem;
+  line-height: 1.65;
+}
+
+.portfolio-page .footer-subscribe input {
+  min-height: 3rem;
+  background: #eee;
+}
+
+.portfolio-page .footer-subscribe button {
+  min-width: 7rem;
+  background: #ec5700;
+}
+
+.portfolio-page .footer-subscribe > p {
+  margin-top: 2.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.portfolio-page .social-links a {
+  border-color: white;
+  color: white;
+}
+
+.portfolio-page .footer-nav a:hover {
+  color: #242424;
+}
+
+@media (max-width: 64rem) {
+  .portfolio-hero {
+    min-height: 48rem;
+  }
+
+  .portfolio-hero-copy {
+    top: 35%;
+    width: min(23rem, 46vw);
+  }
+
+  .portfolio-hero-duo {
+    right: -24%;
+    height: 150%;
+  }
+
+  .portfolio-section,
+  .portfolio-brand,
+  .portfolio-web {
+    min-height: auto;
+  }
+
+  .portfolio-heading {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .portfolio-campaign-grid,
+  .portfolio-brand-grid {
+    margin-top: 6rem;
+  }
+
+  .portfolio-web-grid {
+    margin-top: 5rem;
+  }
+
+  .portfolio-page .footer-grid {
+    grid-template-columns: 1fr 1.8fr;
+  }
+}
+
+@media (max-width: 55rem) {
+  .portfolio-page .site-header .nav-shell,
+  .portfolio-page .site-header.is-condensed .nav-shell {
+    width: calc(100% - 1.75rem);
+  }
+
+  .portfolio-page .site-header .menu-button,
+  .portfolio-page .site-header.is-condensed .menu-button,
+  .portfolio-page .nav-open .site-header .menu-button,
+  .portfolio-page .nav-open .site-header.is-condensed .menu-button {
+    right: 0.875rem;
+  }
+
+  .portfolio-heading {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .portfolio-intro {
+    max-width: 36rem;
+  }
+
+  .portfolio-campaign-grid,
+  .portfolio-brand-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .portfolio-web-grid {
+    height: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    overflow: visible;
+  }
+
+  .portfolio-web-grid > img {
+    aspect-ratio: 0.8 / 1;
+  }
+
+  .portfolio-web-grid > img:nth-child(3) {
+    grid-column: 1 / -1;
+    aspect-ratio: 1.65 / 1;
+  }
+}
+
+@media (max-width: 35rem) {
+  .portfolio-page .site-header .brand-mark img,
+  .portfolio-page .site-header.is-condensed .brand-mark img {
+    width: 9rem;
+  }
+
+  .portfolio-hero {
+    min-height: 46rem;
+  }
+
+  .portfolio-hero-copy {
+    top: 15rem;
+    width: 78%;
+    transform: none;
+  }
+
+  .portfolio-hero-copy h1 {
+    font-size: clamp(2.5rem, 12vw, 3.25rem);
+  }
+
+  .portfolio-hero-copy p {
+    max-width: 17rem;
+    margin-top: 2rem;
+    font-size: 0.75rem;
+  }
+
+  .portfolio-hero-copy p + p {
+    margin-top: 1rem;
+  }
+
+  .portfolio-hero-duo {
+    top: -2%;
+    right: -58%;
+    bottom: auto;
+    height: 80%;
+  }
+
+  .portfolio-section-inner {
+    padding-block: 6.5rem 5rem;
+  }
+
+  .portfolio-section-title {
+    font-size: clamp(2.75rem, 14vw, 4rem);
+  }
+
+  .portfolio-campaign-grid,
+  .portfolio-brand-grid {
+    margin-top: 4.25rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .portfolio-showreel,
+  .portfolio-digital-showreel {
+    min-height: 35rem;
+  }
+
+  .portfolio-brand-feathers {
+    display: none;
+  }
+
+  .portfolio-web-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-web-grid > img,
+  .portfolio-web-grid > img:nth-child(3) {
+    grid-column: auto;
+    aspect-ratio: 0.85 / 1;
+  }
+
+  .portfolio-page .footer-grid {
+    grid-template-columns: 1fr;
   }
 }

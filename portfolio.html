@@ -3,19 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Explore selected Innov8 Studios marketing campaigns, brand identities, and digital experiences."
-    />
-    <meta name="theme-color" content="#252525" />
+    <meta name="description" content="Explore selected Innov8 Studios campaigns, identities, and digital experiences." />
+    <meta name="theme-color" content="#ff6200" />
     <title>Portfolio | Innov8 Studios</title>
     <link rel="preload" href="Fonts/Comfortaa-Regular.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="preload" href="Fonts/Abel-Regular.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="preload" href="Fonts/CenturyGothicPaneuropeanRegular.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="stylesheet" href="styles.css" />
-    <script>
-      document.documentElement.classList.add("js");
-    </script>
+    <script>document.documentElement.classList.add("js");</script>
   </head>
   <body class="portfolio-page">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -74,71 +69,57 @@
     </header>
 
     <main id="main" class="portfolio-main">
-      <section class="portfolio-section portfolio-marketing" id="portfolio-top" aria-labelledby="marketing-title">
+      <section class="portfolio-hero" id="portfolio-top" aria-labelledby="portfolio-hero-title">
+        <div class="section-container portfolio-hero-inner">
+          <div class="portfolio-hero-copy">
+            <h1 id="portfolio-hero-title">Proof, Not <br />Promises.</h1>
+            <p>Every project you see here was created to solve a business challenge, strengthen perception, and move brands forward.</p>
+            <p>From cinematic campaigns to digital platforms, this is where strategy meets execution.</p>
+          </div>
+          <img
+            class="portfolio-hero-duo"
+            src="assets/images/portfolio/portfolio-hero-duo.webp"
+            alt="Two Innov8 duck characters, one operating a keyboard and one dressed in black"
+          />
+        </div>
+      </section>
+
+      <section class="portfolio-section portfolio-marketing" aria-labelledby="marketing-title">
         <div class="section-container portfolio-section-inner">
-          <div class="section-kicker portfolio-kicker"><span></span><p>Featured work</p></div>
-          <h1 class="portfolio-section-title" id="marketing-title">Marketing Campaigns</h1>
+          <div class="portfolio-heading">
+            <div>
+              <div class="section-kicker portfolio-kicker"><span></span><p>Featured work</p></div>
+              <h2 class="portfolio-section-title" id="marketing-title">Marketing <br />Commercials</h2>
+            </div>
+            <p class="portfolio-intro">Some ideas deserve more than conventional marketing, some messages are too important to be explained with words alone. Through cinematic 3D storytelling, we transform complex concepts into unforgettable visual experiences that inspire confidence, capture attention, and elevate how brands are perceived.</p>
+          </div>
 
           <div class="portfolio-campaign-grid">
-            <article class="portfolio-campaign-card">
-              <img src="assets/images/portfolio/marketing-stanbic.webp" alt="Stanbic Bank Vektor campaign artwork" />
-              <div>
-                <h2>Stanbic Bank</h2>
-                <dl>
-                  <div><dt>Industry</dt><dd>Energy</dd></div>
-                </dl>
-                <p>Every project you see here was created to solve a business challenge, strengthen perception, and move brands forward.</p>
-              </div>
-            </article>
-
-            <article class="portfolio-campaign-card">
-              <img src="assets/images/portfolio/marketing-grosvenor.webp" alt="Grosvenor residential development campaign" />
-              <div>
-                <h2>Grosvenor</h2>
-                <dl>
-                  <div><dt>Industry</dt><dd>Energy</dd></div>
-                </dl>
-                <p>Every project you see here was created to solve a business challenge, strengthen perception, and move brands forward.</p>
-              </div>
-            </article>
-
-            <div class="portfolio-campaign-divider" aria-hidden="true"></div>
-
-            <article class="portfolio-campaign-card">
-              <img src="assets/images/portfolio/marketing-hyundai.webp" alt="Hyundai technology campaign artwork" />
-              <div>
-                <h2>Hyundai</h2>
-                <dl>
-                  <div><dt>Industry</dt><dd>Energy</dd></div>
-                </dl>
-                <p>Every project you see here was created to solve a business challenge, strengthen perception, and move brands forward.</p>
-              </div>
-            </article>
-
-            <article class="portfolio-campaign-card">
-              <img src="assets/images/portfolio/marketing-jetour.webp" alt="Jetour Kenya G700 campaign artwork" />
-              <div>
-                <h2>Jetour Kenya</h2>
-                <dl>
-                  <div><dt>Industry</dt><dd>Energy</dd></div>
-                </dl>
-                <p>Every project you see here was created to solve a business challenge, strengthen perception, and move brands forward.</p>
-              </div>
-            </article>
+            <img src="assets/images/portfolio/marketing-stanbic.webp" alt="Vektor digital card campaign" />
+            <img src="assets/images/portfolio/marketing-grosvenor.webp" alt="Grosvenor residential towers campaign" />
+            <img src="assets/images/portfolio/marketing-stanbic.webp" alt="Vektor digital card campaign" />
+            <img src="assets/images/portfolio/marketing-hyundai.webp" alt="Electric mobility campaign" />
+            <img src="assets/images/portfolio/marketing-jetour.webp" alt="Jetour G700 campaign" />
+            <img src="assets/images/portfolio/marketing-hyundai.webp" alt="Electric mobility campaign" />
           </div>
         </div>
       </section>
 
       <section class="portfolio-showreel" aria-label="Architecture showreel">
         <img src="assets/images/portfolio/showreel-architecture.webp" alt="Luxury residential pool and garden" />
-        <a class="portfolio-showreel-button liquid-glass" href="#brand-folio">View showreel</a>
+        <a class="portfolio-showreel-button liquid-glass" href="#design-folio">View showreel</a>
       </section>
 
-      <section class="portfolio-section portfolio-brand" id="brand-folio" aria-labelledby="brand-title">
+      <section class="portfolio-section portfolio-brand" id="design-folio" aria-labelledby="brand-title">
         <img class="portfolio-brand-feathers" src="assets/images/portfolio/brand-feathers.webp" alt="" aria-hidden="true" />
         <div class="section-container portfolio-section-inner">
-          <div class="section-kicker portfolio-kicker"><span></span><p>Featured work</p></div>
-          <h2 class="portfolio-section-title" id="brand-title">Brand Folio</h2>
+          <div class="portfolio-heading">
+            <div>
+              <div class="section-kicker portfolio-kicker"><span></span><p>Featured work</p></div>
+              <h2 class="portfolio-section-title" id="brand-title">Design Folio</h2>
+            </div>
+            <p class="portfolio-intro">Some ideas deserve more than conventional marketing, some messages are too important to be explained with words alone. Through cinematic 3D storytelling, we transform complex concepts into unforgettable visual experiences that inspire confidence, capture attention, and elevate how brands are perceived.</p>
+          </div>
 
           <div class="portfolio-brand-grid">
             <img src="assets/images/portfolio/brand-virtuoso.webp" alt="Virtuoso Connoisseur Co. brand identity" />
@@ -151,43 +132,27 @@
         </div>
       </section>
 
-      <section class="portfolio-showreel" aria-label="Digital experience showreel">
+      <section class="portfolio-showreel portfolio-digital-showreel" aria-label="Digital experience showreel">
         <img src="assets/images/portfolio/showreel-digital.webp" alt="Financial analytics digital interface" />
         <a class="portfolio-showreel-button liquid-glass" href="#web-experiences">View showreel</a>
       </section>
 
       <section class="portfolio-section portfolio-web" id="web-experiences" aria-labelledby="web-title">
         <div class="section-container portfolio-section-inner">
-          <div class="section-kicker portfolio-kicker"><span></span><p>Featured work</p></div>
-          <h2 class="portfolio-section-title" id="web-title">Web Experiences</h2>
+          <div class="portfolio-heading">
+            <div>
+              <div class="section-kicker portfolio-kicker"><span></span><p>Featured work</p></div>
+              <h2 class="portfolio-section-title" id="web-title">Web <br />Experiences</h2>
+            </div>
+            <p class="portfolio-intro">Some ideas deserve more than conventional marketing, some messages are too important to be explained with words alone. Through cinematic 3D storytelling, we transform complex concepts into unforgettable visual experiences that inspire confidence, capture attention, and elevate how brands are perceived.</p>
+          </div>
 
-          <div class="portfolio-web-grid">
-            <article class="portfolio-web-card">
-              <img src="assets/images/portfolio/web-green-app.webp" alt="Green mobile booking experience" />
-              <h3>Stanbic Bank</h3>
-              <dl>
-                <div><dt>Industry</dt><dd>Financial Services</dd></div>
-                <div><dt>Objective</dt><dd>Increase trust around digital banking.</dd></div>
-              </dl>
-            </article>
-
-            <article class="portfolio-web-card">
-              <img src="assets/images/portfolio/web-purple-app.webp" alt="Purple mobile registration experience" />
-              <h3>Stanbic Bank</h3>
-              <dl>
-                <div><dt>Industry</dt><dd>Energy</dd></div>
-                <div><dt>Objective</dt><dd>Increase trust around digital banking.</dd></div>
-              </dl>
-            </article>
-
-            <article class="portfolio-web-card">
-              <img src="assets/images/portfolio/web-prysmtech.webp" alt="Prysmtech mobile image management experience" />
-              <h3>Stanbic Bank</h3>
-              <dl>
-                <div><dt>Industry</dt><dd>Real Estate</dd></div>
-                <div><dt>Objective</dt><dd>Apartment Grand opening campaign.</dd></div>
-              </dl>
-            </article>
+          <div class="portfolio-web-grid" aria-label="Selected mobile interface designs">
+            <img src="assets/images/portfolio/web-green-app.webp" alt="Green mobile design experience" />
+            <img src="assets/images/portfolio/web-purple-app.webp" alt="Purple mobile registration experience" />
+            <img src="assets/images/portfolio/web-prysmtech.webp" alt="Prysmtech mobile image management experience" />
+            <img src="assets/images/portfolio/web-green-app.webp" alt="Green mobile design experience" />
+            <img src="assets/images/portfolio/web-purple-app.webp" alt="Purple mobile registration experience" />
           </div>
         </div>
       </section>
@@ -197,7 +162,7 @@
       <div class="section-container footer-grid">
         <div class="footer-brand">
           <img src="assets/images/logo white.png" alt="Innov8 Studios" />
-          <p>Nairobi, Kenya<br />+254 798 900 992</p>
+          <p>Nairobi, Kenya<br />+254 708 600 002</p>
           <a href="mailto:innov8studios@gmail.com">innov8studios@gmail.com</a>
         </div>
         <div class="footer-subscribe">
@@ -209,11 +174,11 @@
           </form>
           <p>Socials</p>
           <div class="social-links">
-            <a href="#" aria-label="Facebook">f</a>
-            <a href="#" aria-label="Instagram">◎</a>
-            <a href="#" aria-label="LinkedIn">in</a>
-            <a href="#" aria-label="YouTube">▶</a>
-            <a href="#" aria-label="X">𝕏</a>
+            <a href="https://www.facebook.com/" aria-label="Facebook">f</a>
+            <a href="https://www.instagram.com/innov8_studios/" aria-label="Instagram">◎</a>
+            <a href="https://www.linkedin.com/in/lewiskariuki1/" aria-label="LinkedIn">in</a>
+            <a href="https://www.youtube.com/@Innov8Studios" aria-label="YouTube">▶</a>
+            <a href="https://x.com/" aria-label="X">X</a>
           </div>
         </div>
         <div>
@@ -223,18 +188,19 @@
             <a href="about.html">About Us</a>
             <a href="#portfolio-top">Portfolio</a>
             <a href="index.html#academy">Academy</a>
+            <a href="index.html#contact">Ventures</a>
           </nav>
         </div>
         <div>
           <h2>Explore</h2>
-          <nav class="footer-nav">
+          <nav class="footer-nav" aria-label="Explore">
             <a href="#portfolio-top">Our Portfolio</a>
             <a href="index.html#academy">Innov8 Academy</a>
-            <a href="index.html#contact">Who we are</a>
+            <a href="index.html#contact">Innovate Ventures</a>
+            <a href="about.html">Who we are</a>
           </nav>
         </div>
       </div>
-      <div class="section-container footer-bottom"><span>© 2026 Innov8 Studios</span><a href="#portfolio-top">Back to top ↑</a></div>
     </footer>
 
     <script src="script.js"></script>

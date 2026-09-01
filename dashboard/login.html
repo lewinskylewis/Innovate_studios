@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#030303" />
+    <title>Sign in — Innov8 Studios Dashboard</title>
+    <link rel="preload" href="fonts/Comfortaa-Regular.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="fonts/CenturyGothicPaneuropeanRegular.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="stylesheet" href="dashboard.css" />
+    <style>
+      .auth-shell {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+      }
+      .auth-card {
+        width: 100%;
+        max-width: 23rem;
+        padding: 2.25rem 2rem;
+      }
+      .auth-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        margin-bottom: 1.75rem;
+      }
+      .auth-brand img { height: 1.75rem; }
+      .auth-card h1 {
+        font-family: var(--font-display);
+        font-size: 1.375rem;
+        margin: 0 0 0.375rem;
+      }
+      .auth-card p.sub { color: var(--muted); font-size: 0.875rem; margin: 0 0 1.5rem; }
+      .auth-card form { display: flex; flex-direction: column; gap: 1rem; }
+      .auth-card .btn-primary { width: 100%; justify-content: center; }
+      .auth-switch {
+        margin-top: 1.5rem;
+        text-align: center;
+        font-size: 0.8125rem;
+        color: var(--faint);
+      }
+      .auth-switch button {
+        background: none;
+        border: none;
+        color: var(--orange-bright);
+        cursor: pointer;
+        font: inherit;
+        padding: 0;
+      }
+      .auth-error {
+        display: none;
+        font-size: 0.8125rem;
+        color: var(--danger);
+        background: rgba(255, 90, 95, 0.1);
+        border: 0.0625rem solid rgba(255, 90, 95, 0.3);
+        border-radius: var(--radius-sm);
+        padding: 0.625rem 0.75rem;
+      }
+      .auth-error.is-visible { display: block; }
+      .auth-note {
+        font-size: 0.75rem;
+        color: var(--faint);
+        margin-top: 1rem;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dash-ambient" aria-hidden="true"></div>
+    <div class="auth-shell">
+      <div class="panel glass-surface auth-card">
+        <div class="auth-brand">
+          <img src="assets/images/logo%20white.png" alt="Innov8 Studios" />
+        </div>
+        <h1 data-form-title>Sign in</h1>
+        <p class="sub" data-form-sub>Internal Studio access only.</p>
+
+        <p class="auth-error" data-auth-error></p>
+
+        <form data-signin-form>
+          <div class="field">
+            <label class="field-label" for="email">Email</label>
+            <input class="input" id="email" name="email" type="email" autocomplete="email" required />
+          </div>
+          <div class="field">
+            <label class="field-label" for="password">Password</label>
+            <input class="input" id="password" name="password" type="password" autocomplete="current-password" required minlength="6" />
+          </div>
+          <div class="field" data-fullname-field style="display:none;">
+            <label class="field-label" for="fullname">Full name</label>
+            <input class="input" id="fullname" name="fullname" type="text" autocomplete="name" />
+          </div>
+          <button class="btn btn-primary" type="submit" data-submit-btn>Sign in</button>
+        </form>
+
+        <p class="auth-switch">
+          <span data-switch-prompt>New to the Studio?</span>
+          <button type="button" data-switch-mode>Create an account</button>
+        </p>
+
+        <p class="auth-note">New accounts start as a team member. Admin access is granted separately — see <code>supabase/BOOTSTRAP_ADMIN.md</code>.</p>
+      </div>
+    </div>
+
+    <script src="js/env.js"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/login.js"></script>
+  </body>
+</html>

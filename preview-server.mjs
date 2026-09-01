@@ -18,7 +18,7 @@ http
   .createServer(async (request, response) => {
     try {
       let pathname = decodeURIComponent(request.url.split("?")[0]);
-      if (pathname === "/") pathname = "/index.html";
+      if (pathname.endsWith("/")) pathname += "index.html";
       const filePath = normalize(join(root, pathname));
 
       if (!filePath.startsWith(root)) {
