@@ -99,7 +99,7 @@ export async function loadStudioData() {
       .from("project_fields")
       .select("id, key, name, type, system, is_multi, currency, sort_order, width_px, project_field_options(id, label, color, sort_order)")
       .order("sort_order"),
-    client.from("clients").select("id, name, contact_name, email, phone")
+    client.from("contacts").select("id, brand_name, person_name, email, phone")
   ]);
   for (const res of [teamRes, optionsRes, fieldsRes, clientsRes]) if (res.error) throw res.error;
   const { data: team } = teamRes;
@@ -131,8 +131,8 @@ export async function loadStudioData() {
             : undefined
   }));
 
-  const clientsById = new Map((clients || []).map((c) => [c.id, c.name]));
-  const clientsByName = new Map((clients || []).map((c) => [c.name.toLowerCase(), c]));
+  const clientsById = new Map((clients || []).map((c) => [c.id, c.brand_name]));
+  const clientsByName = new Map((clients || []).map((c) => [c.brand_name.toLowerCase(), c]));
 
   const teamList = (team || []).map((t) => ({ id: t.id, name: t.full_name, role: t.job_title || "" }));
 
@@ -187,10 +187,10 @@ export async function findOrCreateClientId(name, clientsByName, clientsById) {
   if (existing) return existing.id;
 
   const client = requireClient();
-  const { data, error } = await client.from("clients").insert({ name: trimmed }).select().single();
+  const { data, error } = await client.from("contacts").insert({ brand_name: trimmed }).select().single();
   if (error) throw error;
-  clientsById.set(data.id, data.name);
-  clientsByName.set(data.name.toLowerCase(), data);
+  clientsById.set(data.id, data.brand_name);
+  clientsByName.set(data.brand_name.toLowerCase(), data);
   return data.id;
 }
 
