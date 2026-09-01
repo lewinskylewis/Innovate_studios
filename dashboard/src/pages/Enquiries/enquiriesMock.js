@@ -1,23 +1,36 @@
 /*
- * Innov8 Studios — ENQUIRIES mock data. UI/UX only, exactly like
- * Marketing's marketingMock.js and Relationships' relationshipsMock.js:
- * nothing here talks to Supabase, nothing survives a refresh. See
- * useEnquiries.js for the local, in-memory state built from this array.
+ * Innov8 Studios — ENQUIRIES mock data.
+ *
+ * DATA-LAYER INTEGRATION PHASE UPDATE: useEnquiries.js now loads real
+ * Enquiries from Supabase (see src/data/enquiries.js) — the ENQUIRIES
+ * array below is no longer the runtime source of truth and is not
+ * imported by any live component. Kept temporarily as fixture/
+ * reference material per the integration phase's mock-data rule.
+ *
+ * The constant lists below (TEAM, SOURCES, SERVICES, STATUSES,
+ * PRIORITIES, CONVERSION_TYPES) are NOT mock data in that sense —
+ * they're live dropdown/option config still imported directly by
+ * EnquiryList.jsx / EnquiryDetail.jsx / NewEnquiryModal.jsx and stay
+ * in active use.
  *
  * Enquiries is the intake funnel: Incoming Interest → Qualification →
- * Follow-up → Conversion → Relationship. A converted enquiry does NOT
- * create a second person/company record here — it just records which
- * Relationship type it became (see `conversion`), so a future backend
- * can point that at the canonical Relationships record instead of
- * inventing a competing one.
+ * Follow-up → Conversion → Contact. Converting an Enquiry never
+ * creates a second person/company record — see src/data/enquiries.js's
+ * convertEnquiry(), which resolves/reuses/creates exactly one
+ * canonical public.contacts row and links enquiries.contact_id to it.
+ *
+ * NOTE (data-layer integration phase): TEAM's names must match
+ * public.team_members.full_name exactly, same reason and same
+ * constraint as relationshipsMock.js's TEAM — a static snapshot of
+ * the real roster, not a live query, because the component files that
+ * import it do so as a plain module export.
  */
 
 export const TEAM = [
-  { name: "Lewis Kariuki", role: "Founder / Creative Director" },
-  { name: "Wanjiru Ndegwa", role: "Client Success Lead" },
-  { name: "Brian Otieno", role: "Business Development" },
-  { name: "Faith Achieng", role: "Account Manager" },
-  { name: "Kevin Mwas", role: "Partnerships Lead" }
+  { name: "Lewis Kariuki", role: "Creative Director" },
+  { name: "Winsky Otieno", role: "Art Director" },
+  { name: "Aisha Noor", role: "Motion Designer" },
+  { name: "Brian Mutua", role: "Web Developer" }
 ];
 
 export const SOURCES = ["Website", "Instagram", "TikTok", "Facebook", "WhatsApp", "Referral", "Direct", "Campaign", "Outreach", "Other"];
