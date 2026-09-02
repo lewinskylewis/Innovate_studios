@@ -180,20 +180,6 @@ export async function loadProjects(clientsById) {
 
 /* ---------- projects ---------- */
 
-export async function findOrCreateClientId(name, clientsByName, clientsById) {
-  const trimmed = (name || "").trim();
-  if (!trimmed) return null;
-  const existing = clientsByName.get(trimmed.toLowerCase());
-  if (existing) return existing.id;
-
-  const client = requireClient();
-  const { data, error } = await client.from("contacts").insert({ brand_name: trimmed }).select().single();
-  if (error) throw error;
-  clientsById.set(data.id, data.brand_name);
-  clientsByName.set(data.brand_name.toLowerCase(), data);
-  return data.id;
-}
-
 export async function createProject({ title = "", deadline, startDate, statusOptions, priorityOptions, createdBy }) {
   const client = requireClient();
   const { data, error } = await client
@@ -268,7 +254,7 @@ const SYSTEM_COLUMNS = {
   notes: "notes"
 };
 
-export async function updateProjectField(project, fieldId, value, { statusOptions, priorityOptions, clientsByName, clientsById }) {
+export async function updateProjectField(project, fieldId, value, { statusOptions, priorityOptions, clientsById }) {
   const client = requireClient();
   const patch = {};
 
@@ -284,10 +270,13 @@ export async function updateProjectField(project, fieldId, value, { statusOption
   }
 
   if (fieldId === "client") {
-    const clientId = await findOrCreateClientId(value, clientsByName, clientsById);
+    // value is an existing contacts.id (or null to unassign) — chosen
+    // from the real Contacts list in Cell.jsx's picker, never free
+    // text. Contacts are canonical: this never creates one.
+    const clientId = value || null;
     await mutate(client.from("projects").update({ client_id: clientId }).eq("id", project.id), "change the client");
     patch.clientId = clientId;
-    patch.client = value;
+    patch.client = clientId ? clientsById.get(clientId) || "" : "";
     return patch;
   }
 

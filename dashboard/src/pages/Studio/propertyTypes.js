@@ -55,6 +55,11 @@ export const PROPERTY_TYPE_ICONS = {
 
 export function effectiveType(field) {
   const key = field.id || "";
+  // "client" is stored as project_fields.type = "text" (see the 0007
+  // migration's system-column seed) but must never edit in place as
+  // free text — see Cell.jsx's "client" branch for why: Contacts are
+  // canonical, so this cell picks an existing contacts.id instead.
+  if (key === "client") return "client";
   if (field.type === "text" && key.startsWith("custom_email_")) return "email";
   if (field.type === "text" && key.startsWith("custom_phone_")) return "phone";
   if (field.type === "select" && field.multi) return "multiselect";

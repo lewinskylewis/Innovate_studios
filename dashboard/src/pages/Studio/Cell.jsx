@@ -107,6 +107,39 @@ function OptionList({ field, studio, currentValue, onPick }) {
   );
 }
 
+/* Contacts are canonical (see supabase/migrations/
+   20260901000001_contacts_foundation.sql) — this picks an existing
+   contacts.id rather than accepting free text, so editing a project's
+   client can never silently create a duplicate Contact. Only lists
+   existing Contacts; if the right one doesn't exist yet, it needs to
+   be created in Relationships first — there's no "create new" action
+   here, matching the existing (frozen) Relationships UI's own
+   deliberate-creation-only rule. */
+function ContactPicker({ studio, currentId, onPick }) {
+  const contacts = Array.from(studio.clientsById, ([id, name]) => ({ id, name })).sort((a, b) => a.name.localeCompare(b.name));
+  return (
+    <div className="popover-options-list">
+      {currentId && (
+        <div className="popover-person-row" style={{ cursor: "pointer" }} onClick={() => onPick(null)}>
+          <span>Unassign client</span>
+        </div>
+      )}
+      {contacts.length ? (
+        contacts.map((c) => (
+          <div key={c.id} className={`popover-option-row${c.id === currentId ? " is-selected" : ""}`} style={{ cursor: "pointer" }} onClick={() => onPick(c.id)}>
+            <span className="avatar avatar--sm" style={{ background: colorForName(c.name) }}>
+              {initials(c.name)}
+            </span>
+            <span className="option-label">{c.name}</span>
+          </div>
+        ))
+      ) : (
+        <p className="popover-empty">No Contacts yet — add one in Relationships first.</p>
+      )}
+    </div>
+  );
+}
+
 function PersonList({ project, studio, onChange }) {
   const selected = new Set(project.team);
   return (
@@ -233,6 +266,24 @@ export default function Cell({ project, field, studio }) {
         )}
         <Popover anchor={anchor} onClose={() => setAnchor(null)} width={220}>
           <PersonList project={project} studio={studio} onChange={(next) => commit(next)} />
+        </Popover>
+      </span>
+    );
+  }
+
+  if (type === "client") {
+    return (
+      <span className="cell-value" style={{ cursor: "pointer" }} onClick={(e) => setAnchor(e.currentTarget)}>
+        {value ? <span>{value}</span> : <span className="cell-placeholder">Set client…</span>}
+        <Popover anchor={anchor} onClose={() => setAnchor(null)} width={220}>
+          <ContactPicker
+            studio={studio}
+            currentId={project.clientId}
+            onPick={(contactId) => {
+              setAnchor(null);
+              commit(contactId);
+            }}
+          />
         </Popover>
       </span>
     );
