@@ -1,20 +1,32 @@
 /*
  * Innov8 Studios — "/" route. Ported from legacy/index.html +
- * legacy/home.js. "Active work" (the stat card + the Active Work list)
- * is real Supabase project data (src/data/home.js); everything else
- * (income, the other 3 stat cards, Recent enquiries, Relationships,
- * Website Analytics, Activity) stays the same placeholder content
- * legacy/home.js itself used, documented there as mock until those
- * modules exist — see src/pages/homeMock.js.
+ * legacy/home.js. "Active work" (the stat card + the Active Work list,
+ * src/data/home.js), "Recent enquiries" (useEnquiries.js) and the
+ * Relationships panel's list (useRelationships.js) are real Supabase
+ * data, each reusing the exact same hook its own module uses — no
+ * second data layer for Home. Everything else (income, the other 3
+ * stat cards, Website Analytics, Activity) stays the same placeholder
+ * content legacy/home.js itself used, documented as mock until wired
+ * up — see src/pages/homeMock.js. "View all work" / "View all
+ * enquiries" / "View all contacts" route to their real modules;
+ * "Message", "Add project to Portfolio" and "Collect a testimonial"
+ * stay inert — no Messages module or portfolio/testimonial backend
+ * exists yet.
  */
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Topbar from "../components/Topbar.jsx";
 import LineChart from "../components/LineChart.jsx";
 import Modal from "../components/Modal.jsx";
+import Drawer from "../components/Drawer.jsx";
 import { useAuth } from "../lib/AuthContext.jsx";
 import { useToast } from "../lib/ToastContext.jsx";
 import { colorForName, initials } from "../lib/avatar.js";
 import { loadActiveWork } from "../data/home.js";
+import { useEnquiries } from "./Enquiries/useEnquiries.js";
+import { useRelationships } from "./Relationships/useRelationships.js";
+import EnquiryDetail from "./Enquiries/EnquiryDetail.jsx";
+import { STATUS_BADGE, formatServiceList } from "./Enquiries/enquiriesFormat.js";
 import * as mock from "./homeMock.js";
 
 function greeting(fullName) {
@@ -68,6 +80,9 @@ function emptyState(title, body) {
 export default function Home() {
   const { profile } = useAuth();
   const { show } = useToast();
+  const navigate = useNavigate();
+  const enquiries = useEnquiries();
+  const relationships = useRelationships();
 
   const [incomePeriod, setIncomePeriod] = useState("last-month");
   const [analyticsPeriod, setAnalyticsPeriod] = useState("7d");
@@ -75,6 +90,7 @@ export default function Home() {
   const [workLoading, setWorkLoading] = useState(true);
   const [workError, setWorkError] = useState(null);
   const [openModal, setOpenModal] = useState(null); // "portfolio" | "testimonial" | null
+  const [openEnquiryId, setOpenEnquiryId] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -97,6 +113,9 @@ export default function Home() {
   const incomeData = mock.income.periods[incomePeriod] || mock.income.periods["last-month"];
   const analyticsData = mock.websiteAnalytics.periods[analyticsPeriod] || mock.websiteAnalytics.periods["7d"];
   const sessionsTotal = analyticsData.sessions.reduce((sum, v) => sum + v, 0).toLocaleString("en-KE");
+  const recentEnquiries = enquiries.enquiries.slice(0, 5);
+  const openEnquiry = enquiries.findEnquiry(openEnquiryId);
+  const recentContacts = [...relationships.relationships].sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded)).slice(0, 4);
 
   const stats = [
     { label: "Active work", value: activeWork.activeCount === null ? "—" : String(activeWork.activeCount) },
@@ -145,7 +164,7 @@ export default function Home() {
       <div className="panel">
         <div className="panel-header">
           <h2>Recent enquiries</h2>
-          <button className="panel-link" type="button" onClick={() => show("Full enquiry list will live in the Enquiries module.")}>
+          <button className="panel-link" type="button" onClick={() => navigate("/enquiries")}>
             View all enquiries
           </button>
         </div>
@@ -161,24 +180,42 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              {mock.enquiries.map((enquiry) => (
-                <tr key={enquiry.email}>
-                  <td className="dash-table-name">
-                    <span className="dash-table-person" style={{ cursor: "pointer" }} onClick={() => show(`Full profile for ${enquiry.name} will live in the Enquiries module.`)}>
-                      <span className="avatar" style={{ background: colorForName(enquiry.name) }}>
-                        {initials(enquiry.name)}
-                      </span>{" "}
-                      {enquiry.name}
-                    </span>
-                  </td>
-                  <td className="dash-table-muted">{enquiry.phone}</td>
-                  <td className="dash-table-muted">{enquiry.email}</td>
-                  <td>{enquiry.service}</td>
-                  <td>
-                    <span className={`badge badge--${enquiry.status}`}>{enquiry.status}</span>
+              {enquiries.loading ? (
+                <tr>
+                  <td colSpan={5}>
+                    <p className="sub" style={{ padding: "0.5rem 0" }}>
+                      Loading…
+                    </p>
                   </td>
                 </tr>
-              ))}
+              ) : enquiries.error ? (
+                <tr>
+                  <td colSpan={5}>{emptyState("Couldn't load enquiries", enquiries.error)}</td>
+                </tr>
+              ) : recentEnquiries.length ? (
+                recentEnquiries.map((enquiry) => (
+                  <tr key={enquiry.id}>
+                    <td className="dash-table-name">
+                      <span className="dash-table-person" style={{ cursor: "pointer" }} onClick={() => setOpenEnquiryId(enquiry.id)}>
+                        <span className="avatar" style={{ background: colorForName(enquiry.personName) }}>
+                          {initials(enquiry.personName)}
+                        </span>{" "}
+                        {enquiry.personName}
+                      </span>
+                    </td>
+                    <td className="dash-table-muted">{enquiry.phone || "—"}</td>
+                    <td className="dash-table-muted">{enquiry.email || "—"}</td>
+                    <td>{formatServiceList(enquiry.services)}</td>
+                    <td>
+                      <span className={`badge badge--${STATUS_BADGE[enquiry.status] || "soon"}`}>{enquiry.status}</span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5}>{emptyState("No enquiries yet", "New enquiries will appear here.")}</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -209,7 +246,7 @@ export default function Home() {
           <div className="panel">
             <div className="panel-header">
               <h2>Active work</h2>
-              <button className="panel-link" type="button" onClick={() => show("Full project list lives in the Studio module.")}>
+              <button className="panel-link" type="button" onClick={() => navigate("/studio")}>
                 View all work
               </button>
             </div>
@@ -250,27 +287,45 @@ export default function Home() {
           <div className="panel">
             <div className="panel-header">
               <h2>Relationships</h2>
-              <button className="panel-link" type="button" onClick={() => show("Full contact list will live in the Relationships module.")}>
+              <button className="panel-link" type="button" onClick={() => navigate("/relationships")}>
                 View all contacts
               </button>
             </div>
             <div className="dash-relationship-list">
-              {mock.relationships.map((person) => (
-                <div key={person.name} className="dash-relationship-row">
-                  <span className="avatar" style={{ background: colorForName(person.name) }}>
-                    {initials(person.name)}
-                  </span>
-                  <div className="dash-relationship-main">
-                    <p>{person.name}</p>
-                    <span>{person.source}</span>
-                  </div>
-                  <button className="message-btn" type="button" aria-label={`Message ${person.name}`} onClick={() => show(`Messaging ${person.name} will live in the Messages module.`)}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" />
-                    </svg>
-                  </button>
-                </div>
-              ))}
+              {relationships.loading ? (
+                <p className="sub" style={{ padding: "0 1.5rem 1.5rem" }}>
+                  Loading…
+                </p>
+              ) : relationships.error ? (
+                emptyState("Couldn't load contacts", relationships.error)
+              ) : recentContacts.length ? (
+                recentContacts.map((person) => {
+                  // Same person-name-may-be-empty fallback already used
+                  // elsewhere (e.g. NewRelationshipModal's brandName ||
+                  // personName) — some existing Contacts were created via
+                  // free text before Studio's Contact picker and have no
+                  // person_name on file.
+                  const displayName = person.personName || person.brandName;
+                  return (
+                    <div key={person.id} className="dash-relationship-row">
+                      <span className="avatar" style={{ background: colorForName(displayName) }}>
+                        {initials(displayName)}
+                      </span>
+                      <div className="dash-relationship-main">
+                        <p>{displayName}</p>
+                        <span>{person.source || "—"}</span>
+                      </div>
+                      <button className="message-btn" type="button" aria-label={`Message ${displayName}`} onClick={() => show(`Messaging ${displayName} will live in the Messages module.`)}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" />
+                        </svg>
+                      </button>
+                    </div>
+                  );
+                })
+              ) : (
+                emptyState("No contacts yet", "New contacts will appear here.")
+              )}
             </div>
           </div>
 
@@ -436,6 +491,10 @@ export default function Home() {
           </div>
         </form>
       </Modal>
+
+      <Drawer open={Boolean(openEnquiry)} onClose={() => setOpenEnquiryId(null)} ariaLabel="Enquiry detail">
+        {openEnquiry && <EnquiryDetail enquiry={openEnquiry} enquiries={enquiries} onClose={() => setOpenEnquiryId(null)} />}
+      </Drawer>
     </>
   );
 }

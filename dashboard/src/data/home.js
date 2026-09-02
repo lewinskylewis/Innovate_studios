@@ -15,15 +15,15 @@ function requireClient() {
 export async function loadActiveWork(limit = 4) {
   const client = requireClient();
 
-  // Plain columns + single-column FK embeds only (clients.id is a simple
-  // FK, safe to embed). Status labels are resolved client-side against a
-  // small lookup, avoiding a filtered embed on the composite
+  // Plain columns + single-column FK embeds only (contacts.id is a
+  // simple FK, safe to embed). Status labels are resolved client-side
+  // against a small lookup, avoiding a filtered embed on the composite
   // status_id/status_kind FK guard from 20260831000006_projects.sql.
   const [{ data: statusRows, error: statusError }, { data: projectRows, error: projectError }] = await Promise.all([
     client.from("project_option_lists").select("id, label").eq("kind", "project_status"),
     client
       .from("projects")
-      .select("id, title, due_date, status_id, clients(name), milestones(status_id)")
+      .select("id, title, due_date, status_id, contacts(brand_name, person_name), milestones(status_id)")
       .is("deleted_at", null)
       .order("due_date", { ascending: true })
   ]);
@@ -37,7 +37,7 @@ export async function loadActiveWork(limit = 4) {
     id: row.id,
     title: row.title,
     dueDate: row.due_date,
-    client: row.clients?.name || "",
+    client: row.contacts?.brand_name || "",
     status: statusLabel.get(row.status_id) || "—",
     milestoneTotal: row.milestones?.length || 0,
     milestoneDone: (row.milestones || []).filter((m) => m.status_id === completedStatusId).length
