@@ -228,7 +228,16 @@ export async function duplicateProject(original) {
 
 export async function softDeleteProject(project) {
   const client = requireClient();
-  await mutate(client.from("projects").update({ deleted_at: new Date().toISOString() }).eq("id", project.id), "delete that project");
+  // Also clears client_id: projects.client_id -> contacts.id is ON
+  // DELETE RESTRICT, and a soft-deleted row (deleted_at set) still
+  // physically exists — Postgres enforces the constraint against it
+  // regardless of the app-level deleted_at convention. Without
+  // clearing it here, "deleting" a project would leave its Contact
+  // permanently unable to be deleted, even though the project no
+  // longer shows up anywhere in the UI. The contact-delete RESTRICT
+  // itself is untouched — this only ever removes the link from a
+  // project the user has already deleted.
+  await mutate(client.from("projects").update({ deleted_at: new Date().toISOString(), client_id: null }).eq("id", project.id), "delete that project");
 }
 
 /* setCellValue's single choke point, ported from studio-data.js, but
