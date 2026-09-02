@@ -6,6 +6,7 @@
  * Supabase, matching this module's V1 UI/UX-only constraint.
  */
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Topbar from "../../components/Topbar.jsx";
 import Drawer from "../../components/Drawer.jsx";
 import { useEnquiries } from "./useEnquiries.js";
@@ -16,7 +17,11 @@ import NewEnquiryModal from "./NewEnquiryModal.jsx";
 
 export default function Enquiries() {
   const enquiries = useEnquiries();
-  const [tab, setTab] = useState("overview");
+  // Supports deep-linking straight to a tab (e.g. Home's "View all
+  // enquiries" → /enquiries?tab=enquiries) while /enquiries alone still
+  // defaults to Overview exactly as before.
+  const [searchParams] = useSearchParams();
+  const [tab, setTab] = useState(searchParams.get("tab") === "enquiries" ? "enquiries" : "overview");
   const [filters, setFilters] = useState(DEFAULT_LIST_FILTERS);
   const [openRecordId, setOpenRecordId] = useState(null);
   const [newOpen, setNewOpen] = useState(false);
@@ -64,7 +69,7 @@ export default function Enquiries() {
       )}
 
       <Drawer open={Boolean(openRecord)} onClose={() => setOpenRecordId(null)} ariaLabel="Enquiry detail">
-        {openRecord && <EnquiryDetail enquiry={openRecord} enquiries={enquiries} onClose={() => setOpenRecordId(null)} />}
+        {openRecord && <EnquiryDetail key={openRecord.id} enquiry={openRecord} enquiries={enquiries} onClose={() => setOpenRecordId(null)} />}
       </Drawer>
 
       <NewEnquiryModal open={newOpen} onClose={() => setNewOpen(false)} enquiries={enquiries} />

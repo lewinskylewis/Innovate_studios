@@ -110,7 +110,7 @@ export default function Studio() {
       )}
 
       <Drawer open={Boolean(openProject)} onClose={() => setOpenProjectId(null)} ariaLabel="Project detail">
-        {openProject && <ProjectDetail project={openProject} studio={studio} onClose={() => setOpenProjectId(null)} onDeleted={() => setOpenProjectId(null)} />}
+        {openProject && <ProjectDetail key={openProject.id} project={openProject} studio={studio} onClose={() => setOpenProjectId(null)} onDeleted={() => setOpenProjectId(null)} />}
       </Drawer>
     </>
   );

@@ -163,6 +163,24 @@ export function useRelationships() {
     }
   }
 
+  async function updateDetails(id, fields) {
+    await relationshipsData.updateContactDetails(id, fields);
+    patchContact(id, {
+      personName: fields.personName,
+      brandName: fields.brandName || fields.personName,
+      role: fields.role || "",
+      email: fields.email || "",
+      phone: fields.phone || "",
+      website: fields.website || "",
+      location: fields.location || ""
+    });
+  }
+
+  async function deleteContact(id) {
+    await relationshipsData.deleteContact(id);
+    setState((s) => ({ ...s, contacts: s.contacts.filter((c) => c.id !== id) }));
+  }
+
   async function updateTags(id, tags) {
     try {
       await relationshipsData.updateContactTags(id, tags);
@@ -238,6 +256,8 @@ export function useRelationships() {
     addNote,
     logInteraction,
     setFollowUp,
+    updateDetails,
+    deleteContact,
     updateTags,
     updateLeadStatus,
     updateClientHealth,

@@ -182,6 +182,37 @@ export async function updateEnquiryQualification(id, { estimatedValue, desiredTi
   await patchEnquiry(id, { estimated_value: estimatedValue, desired_timeline: desiredTimeline, qualification_notes: qualificationNotes }, "update that enquiry's qualification");
 }
 
+/* Core identity/enquiry fields editable from EnquiryDetail.jsx's Edit
+   workflow — deliberately excludes location (kept in the data model
+   for future Contact/Client use, just not surfaced here) and every
+   field that already has its own dedicated update function above. */
+export async function updateEnquiryDetails(id, { personName, brandName, email, phone, message, services, source, priority }) {
+  await patchEnquiry(
+    id,
+    {
+      person_name: personName,
+      brand_name: brandName || personName || null,
+      email: email || null,
+      phone: phone || null,
+      message: message || null,
+      services: services || [],
+      source: source || "Other",
+      priority: priority || "Normal"
+    },
+    "update that enquiry's details"
+  );
+}
+
+/* Hard delete — enquiries has no deleted_at column (unlike projects),
+   and enquiry_notes/enquiry_activity both cascade from enquiries.id,
+   so removing the row is enough. RLS restricts this to admins
+   (enquiries_delete policy); mutate() surfaces that as a clear
+   permission error for anyone else instead of a silent no-op. */
+export async function deleteEnquiry(id) {
+  const client = requireClient();
+  await mutate(client.from("enquiries").delete().eq("id", id), "delete that enquiry");
+}
+
 export async function setEnquiryFollowUp(id, { date, note }) {
   await patchEnquiry(id, { next_follow_up_date: date || null, follow_up_note: note || null }, "update that follow-up");
 }

@@ -277,6 +277,24 @@ export async function updateProjectField(project, fieldId, value, { statusOption
     await mutate(client.from("projects").update({ client_id: clientId }).eq("id", project.id), "change the client");
     patch.clientId = clientId;
     patch.client = clientId ? clientsById.get(clientId) || "" : "";
+
+    if (clientId) {
+      // Attaching a real Studio project to a Contact makes them a
+      // client in practice — promote them in Relationships too if
+      // they aren't already classified as one, so the two modules
+      // never silently drift out of sync. The `.or(...)` guard means
+      // an already-Client contact (or a second project for the same
+      // one) is left untouched — this never resets their existing
+      // health/since date. Best-effort: this side effect must not
+      // undo the client assignment that already succeeded above.
+      const { error: promoteError } = await client
+        .from("contacts")
+        .update({ contact_type: "Client", status: "Active", client_health: "Healthy", client_since: new Date().toISOString().slice(0, 10) })
+        .eq("id", clientId)
+        .or("contact_type.is.null,contact_type.neq.Client");
+      if (promoteError) console.error("[studio] auto-promote contact to Client failed", promoteError);
+    }
+
     return patch;
   }
 

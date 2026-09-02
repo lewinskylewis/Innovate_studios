@@ -5,12 +5,12 @@
  * always-in-the-DOM-but-hidden approach — simpler in React since there's
  * no risk of stale event listeners on a hidden node.
  */
-export default function Modal({ open, onClose, title, description, actions, children, ariaLabel }) {
+export default function Modal({ open, onClose, title, description, actions, children, ariaLabel, className = "", dismissOnBackdrop = true }) {
   if (!open) return null;
 
   return (
     <>
-      <div className="dash-modal glass-surface is-open" role="dialog" aria-modal="true" aria-label={ariaLabel || title}>
+      <div className={`dash-modal glass-surface is-open ${className}`.trim()} role="dialog" aria-modal="true" aria-label={ariaLabel || title}>
         {(title || onClose) && (
           <div className="dash-modal-header">
             <div>
@@ -30,7 +30,7 @@ export default function Modal({ open, onClose, title, description, actions, chil
         {children}
         {actions && <div className="dash-modal-actions">{actions}</div>}
       </div>
-      <div data-scrim className="is-open" onClick={onClose} />
+      <div data-scrim className="is-open" onClick={dismissOnBackdrop ? onClose : undefined} />
     </>
   );
 }

@@ -218,7 +218,7 @@ export default function Relationships() {
       )}
 
       <Drawer open={Boolean(openRecord)} onClose={() => setOpenRecordId(null)} ariaLabel="Relationship detail">
-        {openRecord && <RelationshipDetail record={openRecord} relationships={relationships} onClose={() => setOpenRecordId(null)} />}
+        {openRecord && <RelationshipDetail key={openRecord.id} record={openRecord} relationships={relationships} onClose={() => setOpenRecordId(null)} />}
       </Drawer>
 
       <NewRelationshipModal open={Boolean(newModalType)} type={newModalType || "Contact"} onClose={() => setNewModalType(null)} relationships={relationships} />

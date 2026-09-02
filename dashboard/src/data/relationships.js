@@ -266,6 +266,39 @@ export async function updateContactFollowUp(id, { date, reason }) {
   await patchContact(id, { next_follow_up_date: date || null, follow_up_note: reason || null }, "update that follow-up");
 }
 
+/* Core identity fields editable from RelationshipDetail.jsx's Edit
+   workflow — mirrors EnquiryDetail.jsx's updateEnquiryDetails. Classi-
+   fication (type/owner/source/tags) and the type-specific opportunity/
+   client fields keep their own dedicated update functions above/below;
+   this only ever touches personal/contact information. */
+export async function updateContactDetails(id, { personName, brandName, role, email, phone, website, location }) {
+  await patchContact(
+    id,
+    {
+      person_name: personName || null,
+      brand_name: (brandName || personName || "Untitled Contact").trim(),
+      role: role || null,
+      email: email || null,
+      phone: phone || null,
+      website: website || null,
+      location: location || null
+    },
+    "update that contact's details"
+  );
+}
+
+/* Hard delete — contact_notes/contact_activity both cascade from
+   contacts.id, and enquiries.contact_id sets null on delete, so no
+   manual child cleanup is needed. projects.client_id is ON DELETE
+   RESTRICT, so deleting a Contact who is assigned as a Studio
+   project's client fails with a clear Postgres FK error surfaced as a
+   toast — by design, not a bug: unassign or reassign the project
+   first. RLS restricts this to admins (contacts_delete policy). */
+export async function deleteContact(id) {
+  const client = requireClient();
+  await mutate(client.from("contacts").delete().eq("id", id), "delete that contact");
+}
+
 export async function updateContactTags(id, tags) {
   await patchContact(id, { tags }, "update those tags");
 }

@@ -65,6 +65,20 @@ export default function RelationshipDetail({ record, relationships, onClose }) {
   const [interactionNote, setInteractionNote] = useState("");
   const [followUpDate, setFollowUpDate] = useState(record.nextFollowUp || "");
   const [followUpReason, setFollowUpReason] = useState(record.followUpReason || "");
+  // Edit/Save/Cancel staging, mirroring EnquiryDetail.jsx's editing/
+  // draft pattern throughout: personal/contact info (this section),
+  // Lead status, and Client relationship health each get their own
+  // independent toggle so editing one never disturbs the others.
+  // Owner/Source/Tags still have no update function and stay read-only.
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [editingLead, setEditingLead] = useState(false);
+  const [draftLeadStatus, setDraftLeadStatus] = useState(record.status);
+  const [editingHealth, setEditingHealth] = useState(false);
+  const [draftHealth, setDraftHealth] = useState(record.relationshipHealth);
 
   if (!record) return null;
 
@@ -110,10 +124,96 @@ export default function RelationshipDetail({ record, relationships, onClose }) {
     }
   }
 
+  function setDraftField(key, value) {
+    setDraft((d) => ({ ...d, [key]: value }));
+  }
+
+  function startEdit() {
+    setDraft({
+      personName: record.personName,
+      brandName: record.brandName,
+      role: record.role,
+      email: record.email,
+      phone: record.phone,
+      website: record.website,
+      location: record.location
+    });
+    setEditing(true);
+  }
+
+  function cancelEdit() {
+    setDraft(null);
+    setEditing(false);
+  }
+
+  async function saveEdit(e) {
+    e.preventDefault();
+    if (!draft.personName.trim()) {
+      show("Name is required.");
+      return;
+    }
+    setSaving(true);
+    try {
+      await relationships.updateDetails(record.id, { ...draft, personName: draft.personName.trim(), brandName: draft.brandName.trim() || draft.personName.trim() });
+      setDraft(null);
+      setEditing(false);
+      show("Contact updated.");
+    } catch (err) {
+      show(err.message || "Couldn't save those changes — try again.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDeleteContact() {
+    setDeleting(true);
+    try {
+      await relationships.deleteContact(record.id);
+      show("Contact deleted.");
+      onClose();
+    } catch (err) {
+      show(err.message || "Couldn't delete that contact — try again.");
+      setDeleting(false);
+      setConfirmingDelete(false);
+    }
+  }
+
+  function startEditLead() {
+    setDraftLeadStatus(record.status);
+    setEditingLead(true);
+  }
+
+  function cancelEditLead() {
+    setEditingLead(false);
+  }
+
+  function saveEditLead(e) {
+    e.preventDefault();
+    relationships.updateLeadStatus(record.id, draftLeadStatus);
+    setEditingLead(false);
+    show("Status updated.");
+  }
+
+  function startEditHealth() {
+    setDraftHealth(record.relationshipHealth);
+    setEditingHealth(true);
+  }
+
+  function cancelEditHealth() {
+    setEditingHealth(false);
+  }
+
+  function saveEditHealth(e) {
+    e.preventDefault();
+    relationships.updateClientHealth(record.id, draftHealth);
+    setEditingHealth(false);
+    show("Relationship health updated.");
+  }
+
   const convertTarget = { Contact: "Prospect", Prospect: "Lead", Lead: "Client" }[record.type];
 
   return (
-    <>
+    <div className="rel-detail">
       <button className="icon-btn" type="button" onClick={onClose} aria-label="Close" style={{ position: "absolute", top: "1.25rem", right: "1.25rem" }}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M6 6l12 12" />
@@ -136,19 +236,32 @@ export default function RelationshipDetail({ record, relationships, onClose }) {
         </div>
         <div className="detail-actions">
           {convertTarget && (
-            <button className="btn btn-primary" type="button" onClick={() => handleConvert(convertTarget)}>
-              {record.type === "Lead" ? "Convert to Client" : `Mark as ${convertTarget}`}
-            </button>
+            <div className="field enq-status-field">
+              <span className="field-label">Conversion</span>
+              <button className="btn btn-primary" type="button" onClick={() => handleConvert(convertTarget)}>
+                {record.type === "Lead" ? "Convert to Client" : `Mark as ${convertTarget}`}
+              </button>
+            </div>
           )}
-          <button className="btn btn-ghost" type="button" onClick={handleToggleActive}>
-            {record.active ? "Mark Inactive" : "Reactivate"}
-          </button>
+          <div className="field enq-status-field">
+            <span className="field-label">Relationship status</span>
+            <button className="btn" type="button" onClick={handleToggleActive}>
+              {record.active ? "Mark Inactive" : "Reactivate"}
+            </button>
+          </div>
         </div>
       </div>
 
       <div className="detail-section">
-        <h3>Contact</h3>
-        <div className="detail-row">
+        <div className="detail-section-head">
+          <h3>Contact</h3>
+          {!editing && (
+            <button className="btn enq-edit-btn" type="button" onClick={startEdit}>
+              Edit
+            </button>
+          )}
+        </div>
+        <div className="detail-row enq-identity-row">
           <span className="avatar" style={{ background: colorForName(record.personName) }}>
             {initials(record.personName)}
           </span>
@@ -157,24 +270,94 @@ export default function RelationshipDetail({ record, relationships, onClose }) {
             <span>{record.role || "—"}</span>
           </div>
         </div>
-        <div className="detail-row">
-          <div className="detail-row-main">
-            <strong>Email</strong>
-            <span>{record.email || "—"}</span>
-          </div>
-        </div>
-        <div className="detail-row">
-          <div className="detail-row-main">
-            <strong>Phone</strong>
-            <span>{record.phone || "—"}</span>
-          </div>
-        </div>
-        <div className="detail-row">
-          <div className="detail-row-main">
-            <strong>Website</strong>
-            <span>{record.website || "—"}</span>
-          </div>
-        </div>
+
+        {editing ? (
+          <form onSubmit={saveEdit} style={{ marginTop: "0.75rem" }}>
+            <div className="field-grid">
+              <div className="field">
+                <label className="field-label" htmlFor="rel-edit-name">
+                  Name
+                </label>
+                <input className="input" id="rel-edit-name" type="text" value={draft.personName} onChange={(e) => setDraftField("personName", e.target.value)} required />
+              </div>
+              <div className="field">
+                <label className="field-label" htmlFor="rel-edit-brand">
+                  Brand name
+                </label>
+                <input className="input" id="rel-edit-brand" type="text" value={draft.brandName} onChange={(e) => setDraftField("brandName", e.target.value)} />
+              </div>
+            </div>
+            <div className="field-grid">
+              <div className="field">
+                <label className="field-label" htmlFor="rel-edit-role">
+                  Role / position
+                </label>
+                <input className="input" id="rel-edit-role" type="text" value={draft.role} onChange={(e) => setDraftField("role", e.target.value)} />
+              </div>
+              <div className="field">
+                <label className="field-label" htmlFor="rel-edit-location">
+                  Location
+                </label>
+                <input className="input" id="rel-edit-location" type="text" placeholder="e.g. Nairobi" value={draft.location} onChange={(e) => setDraftField("location", e.target.value)} />
+              </div>
+            </div>
+            <div className="field-grid">
+              <div className="field">
+                <label className="field-label" htmlFor="rel-edit-email">
+                  Email
+                </label>
+                <input className="input" id="rel-edit-email" type="email" value={draft.email} onChange={(e) => setDraftField("email", e.target.value)} />
+              </div>
+              <div className="field">
+                <label className="field-label" htmlFor="rel-edit-phone">
+                  Phone
+                </label>
+                <input className="input" id="rel-edit-phone" type="text" value={draft.phone} onChange={(e) => setDraftField("phone", e.target.value)} />
+              </div>
+            </div>
+            <div className="field">
+              <label className="field-label" htmlFor="rel-edit-website">
+                Website
+              </label>
+              <input className="input" id="rel-edit-website" type="text" value={draft.website} onChange={(e) => setDraftField("website", e.target.value)} />
+            </div>
+            <div className="detail-overview-actions">
+              <button className="btn btn-ghost" type="button" onClick={cancelEdit} disabled={saving}>
+                Cancel
+              </button>
+              <button className="btn btn-primary" type="submit" disabled={saving}>
+                {saving ? "Saving…" : "Save"}
+              </button>
+            </div>
+          </form>
+        ) : (
+          <>
+            <div className="detail-row">
+              <div className="detail-row-main">
+                <strong>Email</strong>
+                <span>{record.email || "—"}</span>
+              </div>
+            </div>
+            <div className="detail-row">
+              <div className="detail-row-main">
+                <strong>Phone</strong>
+                <span>{record.phone || "—"}</span>
+              </div>
+            </div>
+            <div className="detail-row">
+              <div className="detail-row-main">
+                <strong>Website</strong>
+                <span>{record.website || "—"}</span>
+              </div>
+            </div>
+            <div className="detail-row">
+              <div className="detail-row-main">
+                <strong>Location</strong>
+                <span>{record.location || "—"}</span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="detail-section">
@@ -231,7 +414,14 @@ export default function RelationshipDetail({ record, relationships, onClose }) {
 
       {record.type === "Lead" && (
         <div className="detail-section">
-          <h3>Opportunity</h3>
+          <div className="detail-section-head">
+            <h3>Opportunity</h3>
+            {!editingLead && (
+              <button className="btn enq-edit-btn" type="button" onClick={startEditLead}>
+                Edit
+              </button>
+            )}
+          </div>
           <div className="detail-row">
             <div className="detail-row-main">
               <strong>Opportunity</strong>
@@ -250,18 +440,37 @@ export default function RelationshipDetail({ record, relationships, onClose }) {
               <span>{formatMoney(record.estimatedValue)}</span>
             </div>
           </div>
-          <div className="detail-row">
-            <div className="detail-row-main">
-              <strong>Status</strong>
-              <select className="input select" value={record.status} onChange={(e) => relationships.updateLeadStatus(record.id, e.target.value)} style={{ marginTop: "0.375rem", maxWidth: "12rem" }}>
-                {LEAD_STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
+          {editingLead ? (
+            <form onSubmit={saveEditLead} style={{ marginTop: "0.5rem" }}>
+              <div className="field">
+                <label className="field-label" htmlFor="rel-lead-status">
+                  Status
+                </label>
+                <select id="rel-lead-status" className="input select" value={draftLeadStatus} onChange={(e) => setDraftLeadStatus(e.target.value)}>
+                  {LEAD_STATUSES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="detail-overview-actions">
+                <button className="btn btn-ghost" type="button" onClick={cancelEditLead}>
+                  Cancel
+                </button>
+                <button className="btn btn-primary" type="submit">
+                  Save
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="detail-row">
+              <div className="detail-row-main">
+                <strong>Status</strong>
+                <span>{record.status}</span>
+              </div>
             </div>
-          </div>
+          )}
           <div className="detail-row">
             <span className={`status-dot status-dot--${PRIORITY_DOT[record.priority] || ""}`} />
             <div className="detail-row-main">
@@ -274,7 +483,14 @@ export default function RelationshipDetail({ record, relationships, onClose }) {
 
       {record.type === "Client" && (
         <div className="detail-section">
-          <h3>Client relationship</h3>
+          <div className="detail-section-head">
+            <h3>Client relationship</h3>
+            {!editingHealth && (
+              <button className="btn enq-edit-btn" type="button" onClick={startEditHealth}>
+                Edit
+              </button>
+            )}
+          </div>
           <div className="detail-row">
             <div className="detail-row-main">
               <strong>Services used</strong>
@@ -287,18 +503,37 @@ export default function RelationshipDetail({ record, relationships, onClose }) {
               <span>{formatDate(record.clientSince)}</span>
             </div>
           </div>
-          <div className="detail-row">
-            <div className="detail-row-main">
-              <strong>Relationship health</strong>
-              <select className="input select" value={record.relationshipHealth} onChange={(e) => relationships.updateClientHealth(record.id, e.target.value)} style={{ marginTop: "0.375rem", maxWidth: "12rem" }}>
-                {["Healthy", "At Risk", "Inactive"].map((h) => (
-                  <option key={h} value={h}>
-                    {h}
-                  </option>
-                ))}
-              </select>
+          {editingHealth ? (
+            <form onSubmit={saveEditHealth} style={{ marginTop: "0.5rem" }}>
+              <div className="field">
+                <label className="field-label" htmlFor="rel-client-health">
+                  Relationship health
+                </label>
+                <select id="rel-client-health" className="input select" value={draftHealth} onChange={(e) => setDraftHealth(e.target.value)}>
+                  {["Healthy", "At Risk", "Inactive"].map((h) => (
+                    <option key={h} value={h}>
+                      {h}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="detail-overview-actions">
+                <button className="btn btn-ghost" type="button" onClick={cancelEditHealth}>
+                  Cancel
+                </button>
+                <button className="btn btn-primary" type="submit">
+                  Save
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="detail-row">
+              <div className="detail-row-main">
+                <strong>Relationship health</strong>
+                <span>{record.relationshipHealth}</span>
+              </div>
             </div>
-          </div>
+          )}
           <div className="detail-row">
             <div className="detail-row-main">
               <strong>Total project value</strong>
@@ -524,6 +759,23 @@ export default function RelationshipDetail({ record, relationships, onClose }) {
           </button>
         </form>
       </div>
-    </>
+
+      <div className="detail-section enq-delete-section">
+        {confirmingDelete ? (
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <button className="btn" type="button" style={{ flex: 1 }} onClick={() => setConfirmingDelete(false)} disabled={deleting}>
+              Cancel
+            </button>
+            <button className="btn" type="button" style={{ flex: 1, color: "#fff", background: "var(--danger)", borderColor: "transparent" }} onClick={handleDeleteContact} disabled={deleting}>
+              {deleting ? "Deleting…" : "Confirm delete"}
+            </button>
+          </div>
+        ) : (
+          <button className="btn" type="button" style={{ width: "100%", color: "var(--danger)", borderColor: "rgba(255,90,95,0.4)" }} onClick={() => setConfirmingDelete(true)}>
+            Delete Contact
+          </button>
+        )}
+      </div>
+    </div>
   );
 }

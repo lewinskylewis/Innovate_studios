@@ -165,6 +165,25 @@ export function useEnquiries() {
     }
   }
 
+  async function updateDetails(id, fields) {
+    await enquiriesData.updateEnquiryDetails(id, fields);
+    patchEnquiry(id, {
+      personName: fields.personName,
+      brandName: fields.brandName || fields.personName,
+      email: fields.email || "",
+      phone: fields.phone || "",
+      message: fields.message || "",
+      services: fields.services || [],
+      source: fields.source || "Other",
+      priority: fields.priority || "Normal"
+    });
+  }
+
+  async function deleteEnquiry(id) {
+    await enquiriesData.deleteEnquiry(id);
+    setState((s) => ({ ...s, enquiries: s.enquiries.filter((e) => e.id !== id) }));
+  }
+
   async function reassignOwner(id, owner) {
     try {
       await enquiriesData.reassignEnquiryOwner(id, owner, state.teamByName);
@@ -214,6 +233,8 @@ export function useEnquiries() {
     updateStatus,
     updatePriority,
     updateQualification,
+    updateDetails,
+    deleteEnquiry,
     reassignOwner,
     convertEnquiry
   };

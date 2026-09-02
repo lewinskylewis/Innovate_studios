@@ -28,8 +28,31 @@ import { loadActiveWork } from "../data/home.js";
 import { useEnquiries } from "./Enquiries/useEnquiries.js";
 import { useRelationships } from "./Relationships/useRelationships.js";
 import EnquiryDetail from "./Enquiries/EnquiryDetail.jsx";
-import { STATUS_BADGE, formatServiceList } from "./Enquiries/enquiriesFormat.js";
+import { STATUS_BADGE, isOpen, formatServiceList } from "./Enquiries/enquiriesFormat.js";
+import { relativeTime } from "../lib/format.js";
 import * as mock from "./homeMock.js";
+
+const DAY_MS = 86400000;
+
+/* Real activity feed for the Home dashboard, built from data Home
+   already loads for its own Recent Enquiries / Relationships panels —
+   no second query. Merges each Enquiry's and each Contact's own real
+   event log (enquiry_activity / contact_activity, both trigger-
+   generated — see data/enquiries.js and data/relationships.js) plus
+   manually-added notes, newest first. */
+function buildRecentActivity(enquiryList, contactList, limit = 5) {
+  const items = [];
+  for (const e of enquiryList) {
+    for (const ev of e.events || []) items.push({ id: `enq-ev-${ev.id}`, date: ev.date, text: ev.label, source: "enquiry" });
+    for (const n of e.notes || []) items.push({ id: `enq-note-${n.id}`, date: n.date, text: `Note on ${e.personName}: ${n.text}`, source: "enquiry" });
+  }
+  for (const c of contactList) {
+    const name = c.personName || c.brandName;
+    for (const ev of c.events || []) items.push({ id: `rel-ev-${ev.id}`, date: ev.date, text: ev.label, source: "relationship" });
+    for (const n of c.notes || []) items.push({ id: `rel-note-${n.id}`, date: n.date, text: `Note on ${name}: ${n.text}`, source: "relationship" });
+  }
+  return items.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, limit);
+}
 
 function greeting(fullName) {
   const hour = new Date().getHours();
@@ -118,9 +141,20 @@ export default function Home() {
   const openEnquiry = enquiries.findEnquiry(openEnquiryId);
   const recentContacts = [...relationships.relationships].sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded)).slice(0, 4);
 
+  // Real counts from the Enquiries module and Relationships' Conversion
+  // data (a "Lead" is a real conversion outcome, not a mock figure) —
+  // both hooks are already loaded for the panels below, so this reuses
+  // that data rather than adding a new query.
+  const openEnquiriesCount = enquiries.enquiries.filter(isOpen).length;
+  const newLeadsCount = relationships.relationships.filter((r) => r.type === "Lead" && Date.now() - new Date(r.dateUpdated).getTime() <= 7 * DAY_MS).length;
+  const websiteSessionsStat = mock.otherStats.find((s) => s.label === "Website sessions");
+  const recentActivity = buildRecentActivity(enquiries.enquiries, relationships.relationships);
+
   const stats = [
     { label: "Active work", value: activeWork.activeCount === null ? "—" : String(activeWork.activeCount) },
-    ...mock.otherStats
+    { label: "Open enquiries", value: enquiries.loading ? "—" : String(openEnquiriesCount) },
+    { label: "New leads", value: relationships.loading ? "—" : String(newLeadsCount) },
+    websiteSessionsStat
   ];
 
   function handlePlaceholderSubmit(event, successMessage) {
@@ -236,7 +270,7 @@ export default function Home() {
       <div className="panel">
         <div className="panel-header">
           <h2>Recent enquiries</h2>
-          <button className="panel-link" type="button" onClick={() => navigate("/enquiries")}>
+          <button className="panel-link" type="button" onClick={() => navigate("/enquiries?tab=enquiries")}>
             View all enquiries
           </button>
         </div>
@@ -404,33 +438,39 @@ export default function Home() {
           <div className="panel">
             <div className="panel-header">
               <h2>Activity</h2>
-              <span className="panel-meta">Website + Studio</span>
+              <span className="panel-meta">Enquiries + Relationships</span>
             </div>
             <div className="timeline" style={{ padding: "0 1.5rem 1.5rem" }}>
-              {mock.activity.map((event, i) => (
-                <div key={i} className="timeline-item">
-                  <span className="timeline-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      {event.type === "website" ? (
-                        <>
-                          <circle cx="12" cy="12" r="8.5" />
-                          <path d="M3.7 12h16.6" />
-                          <path d="M12 3.5c2.4 2.3 3.7 5.3 3.7 8.5s-1.3 6.2-3.7 8.5c-2.4-2.3-3.7-5.3-3.7-8.5S9.6 5.8 12 3.5z" />
-                        </>
-                      ) : (
-                        <>
-                          <path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 13 6 9z" />
-                          <path d="M9.5 17a2.5 2.5 0 0 0 5 0" />
-                        </>
-                      )}
-                    </svg>
-                  </span>
-                  <div className="timeline-body">
-                    <p>{event.text}</p>
-                    <time>{event.time}</time>
+              {enquiries.loading || relationships.loading ? (
+                <p className="sub">Loading…</p>
+              ) : recentActivity.length ? (
+                recentActivity.map((event) => (
+                  <div key={event.id} className="timeline-item">
+                    <span className="timeline-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        {event.source === "enquiry" ? (
+                          <>
+                            <path d="M3 12h4l2 3h6l2-3h4" />
+                            <path d="M5 12 3 6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1l-2 6" />
+                            <path d="M3 12v6a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-6" />
+                          </>
+                        ) : (
+                          <>
+                            <path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 13 6 9z" />
+                            <path d="M9.5 17a2.5 2.5 0 0 0 5 0" />
+                          </>
+                        )}
+                      </svg>
+                    </span>
+                    <div className="timeline-body">
+                      <p>{event.text}</p>
+                      <time>{relativeTime(event.date)}</time>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                emptyState("No activity yet", "Enquiry and contact updates will appear here.")
+              )}
             </div>
           </div>
         </div>
@@ -497,7 +537,7 @@ export default function Home() {
       </Modal>
 
       <Drawer open={Boolean(openEnquiry)} onClose={() => setOpenEnquiryId(null)} ariaLabel="Enquiry detail">
-        {openEnquiry && <EnquiryDetail enquiry={openEnquiry} enquiries={enquiries} onClose={() => setOpenEnquiryId(null)} />}
+        {openEnquiry && <EnquiryDetail key={openEnquiry.id} enquiry={openEnquiry} enquiries={enquiries} onClose={() => setOpenEnquiryId(null)} />}
       </Drawer>
     </>
   );

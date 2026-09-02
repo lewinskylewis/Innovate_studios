@@ -2258,6 +2258,184 @@ html.dash-collapsed .dash-account-trigger {
   color: var(--faint);
 }
 
+/* ---------- Enquiry + Relationship Detail panels ----------
+   Shared typography/control refinements for EnquiryDetail.jsx (scoped
+   under .enq-detail) and RelationshipDetail.jsx (scoped under
+   .rel-detail) — combined into one rule set so both panels stay
+   visually identical instead of maintaining two copies. Studio's
+   ProjectDetail, which shares the same generic .detail-drawer/.detail-
+   section/.detail-row markup via components/Drawer.jsx, carries
+   neither wrapper class and is completely unaffected. Reference: the
+   Ongoing Projects table's own body text (.studio-table tbody td) is
+   var(--font-table) (Roboto), which is what general text here matches. */
+
+.enq-detail,
+.enq-detail input,
+.enq-detail textarea,
+.enq-detail select,
+.rel-detail,
+.rel-detail input,
+.rel-detail textarea,
+.rel-detail select {
+  font-family: var(--font-table);
+}
+
+.enq-detail .detail-title-row h2,
+.rel-detail .detail-title-row h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+.enq-detail .detail-meta,
+.rel-detail .detail-meta {
+  font-size: var(--text-xs);
+}
+
+.enq-detail .detail-section h3,
+.rel-detail .detail-section h3 {
+  font-size: var(--text-md);
+}
+
+.enq-detail .field-label,
+.rel-detail .field-label {
+  font-size: var(--text-3xs);
+}
+
+.enq-detail .detail-description,
+.rel-detail .detail-description {
+  font-size: 0.9375rem;
+}
+
+/* General body/input text throughout both panels — inputs, selects,
+   textareas all carry the shared .input class. */
+.enq-detail .input,
+.rel-detail .input {
+  font-size: 0.9375rem;
+}
+
+/* Row label ("Email", "Source"...) reads as a small caption; the
+   actual value below it is the readable body text — a clear label/
+   value distinction that was missing before (both used to render at
+   the same cramped size). */
+.enq-detail .detail-row-main strong,
+.rel-detail .detail-row-main strong {
+  font-size: var(--text-3xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--faint);
+  margin-bottom: 0.25rem;
+}
+
+.enq-detail .detail-row-main span,
+.rel-detail .detail-row-main span {
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: var(--white);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* The one row that's an identity, not a label/value pair — the
+   person's name stays the prominent element, brand/role stays
+   secondary. */
+.enq-detail .enq-identity-row strong,
+.rel-detail .enq-identity-row strong {
+  font-size: var(--text-md);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--white);
+  margin-bottom: 0.125rem;
+}
+
+.enq-detail .enq-identity-row span,
+.rel-detail .enq-identity-row span {
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+/* Every native select in both panels gets a properly padded,
+   vertically centered chevron instead of the browser default, which
+   the OS renders flush against the edge with inconsistent spacing. */
+.enq-detail select.input,
+.rel-detail select.input {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23a9a7a4' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+}
+
+.enq-status-field {
+  min-width: 11rem;
+  margin-bottom: 0;
+}
+
+.enq-status-field select {
+  max-width: 12rem;
+}
+
+/* Section header — heading on the left, Edit (or similar labeled
+   action) on the right, flush with the drawer's right edge (same
+   column as the Close/X icon above it). .detail-section-head itself
+   has no justify-content by default (ProjectDetail's own use of it
+   doesn't need one), so that's added here rather than on the shared
+   rule. */
+.enq-detail .detail-section-head,
+.rel-detail .detail-section-head {
+  justify-content: space-between;
+}
+
+/* Idle .btn-ghost is transparent-on-transparent here — effectively
+   invisible against the drawer background. A subtle brand-orange
+   tint keeps it identifiable as an action without shouting. */
+.enq-edit-btn {
+  background: rgba(255, 106, 26, 0.12);
+  border-color: rgba(255, 106, 26, 0.4);
+  color: var(--orange-bright);
+}
+
+.enq-edit-btn:hover {
+  background: rgba(255, 106, 26, 0.2);
+}
+
+.enq-delete-section {
+  border-top: 0.0625rem solid var(--line-soft);
+  padding-top: var(--space-5);
+}
+
+/* Relationship section — deliberately more visually distinct than a
+   plain .detail-section (a subtle brand-orange tinted panel) so its
+   purpose and current state are never missed, converted or not. */
+.enq-relationship-panel {
+  border: 0.0625rem solid var(--line-orange);
+  background: rgba(255, 106, 26, 0.06);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.enq-relationship-panel h3 {
+  margin-bottom: var(--space-2);
+}
+
+/* Conversion actions as deliberate workflow buttons in a grid, not
+   cramped inline pills — same CONVERSION_TYPES values, same handler,
+   just a more substantial presentation. */
+.enq-convert-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.625rem;
+  margin-top: var(--space-3);
+}
+
+.enq-convert-btn {
+  justify-content: center;
+  text-align: center;
+}
+
 .icon-remove {
   display: inline-flex;
   align-items: center;
@@ -2472,6 +2650,78 @@ html.dash-collapsed .dash-account-trigger {
   width: min(34rem, 92vw);
   max-height: 88vh;
   overflow-y: auto;
+}
+
+/* New Enquiry modal — wider + larger-type variant (NewEnquiryModal.jsx
+   only). Scoped under this modifier class so no other modal built on
+   the shared Modal component is affected. */
+
+.dash-modal--enquiry-wide {
+  width: min(50rem, 94vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: var(--space-7);
+}
+
+.dash-modal--enquiry-wide .dash-modal-header h2 {
+  font-size: var(--text-xl);
+}
+
+.dash-modal--enquiry-wide .dash-modal-header p {
+  margin-top: 0.5rem;
+  font-size: var(--text-md);
+}
+
+.dash-modal--enquiry-wide .field-label {
+  font-size: var(--text-sm);
+  margin-bottom: 0.5rem;
+}
+
+.dash-modal--enquiry-wide .field {
+  margin-bottom: var(--space-5);
+}
+
+.dash-modal--enquiry-wide .field-grid {
+  gap: 0 var(--space-6);
+}
+
+.dash-modal--enquiry-wide .input {
+  padding: 1rem 1.25rem;
+  font-size: var(--text-md);
+}
+
+.dash-modal--enquiry-wide textarea.input {
+  min-height: 7rem;
+}
+
+.dash-modal--enquiry-wide .dash-modal-actions .btn {
+  font-size: var(--text-sm);
+  padding: 0.875rem 1.5rem;
+}
+
+.enq-service-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.enq-service-chevron {
+  width: 1rem;
+  height: 1rem;
+  color: var(--faint);
+  flex-shrink: 0;
+}
+
+.enq-service-popover {
+  font-size: var(--text-sm);
+}
+
+.enq-service-popover .popover-option-row {
+  padding: 0.625rem 0.75rem;
 }
 
 .field-grid {
