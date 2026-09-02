@@ -1064,7 +1064,7 @@ html.dash-collapsed .dash-account-trigger {
 .dash-hero-stat {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-6);
   padding: var(--space-6);
@@ -1074,13 +1074,23 @@ html.dash-collapsed .dash-account-trigger {
 
 .dash-hero-period {
   position: absolute;
-  top: var(--space-4);
+  top: var(--space-5);
   right: var(--space-4);
-  width: auto;
-  max-width: 11rem;
-  padding: 0.4375rem 1.875rem 0.4375rem 0.75rem;
+}
+
+/* Shared sizing/chevron for the Income and Website Analytics period
+   dropdowns only — makes the two controls match exactly without
+   touching either card's own layout. */
+.dash-period-select {
+  appearance: none;
+  cursor: pointer;
+  width: 11rem;
+  padding: 0.5rem 2.25rem 0.5rem 0.875rem;
   font-size: var(--text-2xs);
   font-weight: 600;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23a9a7a4' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
 }
 
 .dash-hero-stat-main .dash-hero-label {
@@ -1133,6 +1143,7 @@ html.dash-collapsed .dash-account-trigger {
   min-width: 12rem;
   max-width: 22rem;
   height: 5rem;
+  align-self: flex-end;
 }
 
 .dash-stat-trend.is-up { color: var(--success); }

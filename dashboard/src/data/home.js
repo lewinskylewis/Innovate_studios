@@ -23,7 +23,7 @@ export async function loadActiveWork(limit = 4) {
     client.from("project_option_lists").select("id, label").eq("kind", "project_status"),
     client
       .from("projects")
-      .select("id, title, due_date, status_id, contacts(brand_name, person_name), milestones(status_id)")
+      .select("id, title, due_date, status_id, estimated_value, contacts(brand_name, person_name), milestones(status_id)")
       .is("deleted_at", null)
       .order("due_date", { ascending: true })
   ]);
@@ -39,12 +39,46 @@ export async function loadActiveWork(limit = 4) {
     dueDate: row.due_date,
     client: row.contacts?.brand_name || "",
     status: statusLabel.get(row.status_id) || "—",
+    estimatedValue: row.estimated_value === null ? 0 : Number(row.estimated_value),
     milestoneTotal: row.milestones?.length || 0,
     milestoneDone: (row.milestones || []).filter((m) => m.status_id === completedStatusId).length
   }));
 
-  const activeCount = withStatus.filter((p) => !["Completed", "Archived"].includes(p.status)).length;
-  const items = withStatus.filter((p) => !["Completed", "Archived"].includes(p.status)).slice(0, limit);
+  // "Active/ongoing" = not Completed, not Archived, not soft-deleted
+  // (already excluded by the .is("deleted_at", null) query filter) —
+  // the exact same definition StudioOverview.jsx's "Active projects"
+  // stat and this same function's activeCount already use. Income is
+  // the sum of that set's Budget (projects.estimated_value) — a
+  // running total, not a monthly figure; there is no per-period
+  // income data to slice by yet.
+  const activeProjects = withStatus.filter((p) => !["Completed", "Archived"].includes(p.status));
+  const activeCount = activeProjects.length;
+  const totalBudget = activeProjects.reduce((sum, p) => sum + p.estimatedValue, 0);
+  const items = activeProjects.slice(0, limit);
+  const weeklyBudget = currentMonthWeeklyBudget(activeProjects);
 
-  return { activeCount, items };
+  return { activeCount, totalBudget, weeklyBudget, items };
+}
+
+/* Real, derived breakdown of the same Budget total the headline figure
+   sums — buckets each active project's Budget into whichever week
+   (1-7 / 8-14 / 15-21 / 22-end) of the CURRENT calendar month its
+   due_date falls in. A project with no due date, or one due outside
+   the current month, still counts toward the headline total but has
+   no week to show it in here — this is a supplementary view of a
+   subset, not a second income source. */
+function currentMonthWeeklyBudget(activeProjects) {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const buckets = [0, 0, 0, 0];
+  for (const p of activeProjects) {
+    if (!p.dueDate) continue;
+    const due = new Date(`${p.dueDate}T00:00:00`);
+    if (due.getFullYear() !== year || due.getMonth() !== month) continue;
+    const day = due.getDate();
+    const weekIndex = day <= 7 ? 0 : day <= 14 ? 1 : day <= 21 ? 2 : 3;
+    buckets[weekIndex] += p.estimatedValue;
+  }
+  return buckets;
 }

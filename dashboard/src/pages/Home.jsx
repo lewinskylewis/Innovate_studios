@@ -17,11 +17,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Topbar from "../components/Topbar.jsx";
 import LineChart from "../components/LineChart.jsx";
+import BarChart from "../components/BarChart.jsx";
 import Modal from "../components/Modal.jsx";
 import Drawer from "../components/Drawer.jsx";
 import { useAuth } from "../lib/AuthContext.jsx";
 import { useToast } from "../lib/ToastContext.jsx";
 import { colorForName, initials } from "../lib/avatar.js";
+import { formatMoney } from "../lib/format.js";
 import { loadActiveWork } from "../data/home.js";
 import { useEnquiries } from "./Enquiries/useEnquiries.js";
 import { useRelationships } from "./Relationships/useRelationships.js";
@@ -86,7 +88,7 @@ export default function Home() {
 
   const [incomePeriod, setIncomePeriod] = useState("last-month");
   const [analyticsPeriod, setAnalyticsPeriod] = useState("7d");
-  const [activeWork, setActiveWork] = useState({ activeCount: null, items: [] });
+  const [activeWork, setActiveWork] = useState({ activeCount: null, totalBudget: null, weeklyBudget: null, items: [] });
   const [workLoading, setWorkLoading] = useState(true);
   const [workError, setWorkError] = useState(null);
   const [openModal, setOpenModal] = useState(null); // "portfolio" | "testimonial" | null
@@ -110,7 +112,6 @@ export default function Home() {
     };
   }, []);
 
-  const incomeData = mock.income.periods[incomePeriod] || mock.income.periods["last-month"];
   const analyticsData = mock.websiteAnalytics.periods[analyticsPeriod] || mock.websiteAnalytics.periods["7d"];
   const sessionsTotal = analyticsData.sessions.reduce((sum, v) => sum + v, 0).toLocaleString("en-KE");
   const recentEnquiries = enquiries.enquiries.slice(0, 5);
@@ -133,19 +134,90 @@ export default function Home() {
     <>
       <Topbar title={greeting(profile?.full_name)} />
 
-      <section className="panel dash-hero-stat" aria-label="This month's income">
-        <select className="input select dash-hero-period" aria-label="Income period" value={incomePeriod} onChange={(e) => setIncomePeriod(e.target.value)}>
-          <option value="last-month">Last month</option>
-          <option value="avg-3">Avg. last 3 months</option>
-          <option value="avg-6">Avg. last 6 months</option>
-        </select>
-        <div className="dash-hero-stat-main">
-          <div className="dash-hero-label">This month's income</div>
-          <strong>{incomeData.value}</strong>
-          <span className={`dash-stat-trend is-${incomeData.direction}`}>{incomeData.trend}</span>
+      <section className="dash-grid" style={{ marginBottom: "var(--space-5)", alignItems: "stretch" }}>
+        <div className="panel dash-hero-stat" aria-label="This month's income" style={{ marginBottom: 0 }}>
+          <select className="input dash-period-select dash-hero-period" aria-label="Income period" value={incomePeriod} onChange={(e) => setIncomePeriod(e.target.value)}>
+            <option value="last-month">Last month</option>
+            <option value="avg-3">Avg. last 3 months</option>
+            <option value="avg-6">Avg. last 6 months</option>
+          </select>
+          <div className="dash-hero-stat-main">
+            <div className="dash-hero-label">
+              <span aria-hidden="true">💰</span> This month's income
+            </div>
+            <strong>{activeWork.totalBudget === null ? "—" : formatMoney(activeWork.totalBudget)}</strong>
+          </div>
+          <div className="dash-hero-chart">
+            <BarChart values={activeWork.weeklyBudget || [0, 0, 0, 0]} labels={["W1", "W2", "W3", "W4"]} height={80} width={280} />
+          </div>
         </div>
-        <div className="dash-hero-chart">
-          <LineChart series={incomeData.series} height={80} width={320} gridLines />
+
+        <div className="panel">
+          <div className="panel-header">
+            <h2>Website Analytics</h2>
+            <select className="input dash-period-select" aria-label="Analytics period" value={analyticsPeriod} onChange={(e) => setAnalyticsPeriod(e.target.value)}>
+              <option value="24h">Last 24 hours</option>
+              <option value="7d">Last 7 days</option>
+              <option value="14d">Last 14 days</option>
+              <option value="30d">Last 30 days</option>
+            </select>
+          </div>
+          <div className="dash-insights-chart">
+            <LineChart series={analyticsData.sessions} height={96} width={320} gridLines />
+          </div>
+          <div className="dash-insights-stats">
+            <div>
+              <strong>{sessionsTotal}</strong>
+              <span>Sessions</span>
+            </div>
+            <div>
+              <strong>
+                {analyticsData.bounceRate}
+                <Delta value={analyticsData.bounceDelta} />
+              </strong>
+              <span>Bounce rate</span>
+            </div>
+            <div>
+              <strong>
+                {analyticsData.avgSession}
+                <Delta value={analyticsData.avgSessionDelta} />
+              </strong>
+              <span>Avg. session</span>
+            </div>
+          </div>
+          <div className="dash-insights-gsc">
+            <div className="dash-insights-section-label" style={{ gridColumn: "1 / -1" }}>
+              Search Console
+            </div>
+            <div>
+              <strong>
+                {analyticsData.impressions}
+                <Delta value={analyticsData.impressionsDelta} />
+              </strong>
+              <span>Impressions</span>
+            </div>
+            <div>
+              <strong>
+                {analyticsData.clicks}
+                <Delta value={analyticsData.clicksDelta} />
+              </strong>
+              <span>Clicks</span>
+            </div>
+            <div>
+              <strong>
+                {analyticsData.ctr}
+                <Delta value={analyticsData.ctrDelta} />
+              </strong>
+              <span>CTR</span>
+            </div>
+            <div>
+              <strong>
+                {analyticsData.avgPosition}
+                <Delta value={analyticsData.avgPositionDelta} />
+              </strong>
+              <span>Avg. position</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -326,74 +398,6 @@ export default function Home() {
               ) : (
                 emptyState("No contacts yet", "New contacts will appear here.")
               )}
-            </div>
-          </div>
-
-          <div className="panel">
-            <div className="panel-header">
-              <h2>Website Analytics</h2>
-              <select className="input select" aria-label="Analytics period" value={analyticsPeriod} onChange={(e) => setAnalyticsPeriod(e.target.value)}>
-                <option value="24h">Last 24 hours</option>
-                <option value="7d">Last 7 days</option>
-                <option value="14d">Last 14 days</option>
-                <option value="30d">Last 30 days</option>
-              </select>
-            </div>
-            <div className="dash-insights-chart">
-              <LineChart series={analyticsData.sessions} height={96} width={320} gridLines />
-            </div>
-            <div className="dash-insights-stats">
-              <div>
-                <strong>{sessionsTotal}</strong>
-                <span>Sessions</span>
-              </div>
-              <div>
-                <strong>
-                  {analyticsData.bounceRate}
-                  <Delta value={analyticsData.bounceDelta} />
-                </strong>
-                <span>Bounce rate</span>
-              </div>
-              <div>
-                <strong>
-                  {analyticsData.avgSession}
-                  <Delta value={analyticsData.avgSessionDelta} />
-                </strong>
-                <span>Avg. session</span>
-              </div>
-            </div>
-            <div className="dash-insights-gsc">
-              <div className="dash-insights-section-label" style={{ gridColumn: "1 / -1" }}>
-                Search Console
-              </div>
-              <div>
-                <strong>
-                  {analyticsData.impressions}
-                  <Delta value={analyticsData.impressionsDelta} />
-                </strong>
-                <span>Impressions</span>
-              </div>
-              <div>
-                <strong>
-                  {analyticsData.clicks}
-                  <Delta value={analyticsData.clicksDelta} />
-                </strong>
-                <span>Clicks</span>
-              </div>
-              <div>
-                <strong>
-                  {analyticsData.ctr}
-                  <Delta value={analyticsData.ctrDelta} />
-                </strong>
-                <span>CTR</span>
-              </div>
-              <div>
-                <strong>
-                  {analyticsData.avgPosition}
-                  <Delta value={analyticsData.avgPositionDelta} />
-                </strong>
-                <span>Avg. position</span>
-              </div>
             </div>
           </div>
 
