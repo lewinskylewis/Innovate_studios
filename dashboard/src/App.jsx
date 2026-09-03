@@ -7,11 +7,15 @@ import Enquiries from "./pages/Enquiries/Enquiries.jsx";
 import Marketing from "./pages/Marketing/Marketing.jsx";
 import Relationships from "./pages/Relationships/Relationships.jsx";
 import Studio from "./pages/Studio/Studio.jsx";
+import SharedProject from "./pages/Studio/SharedProject.jsx";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      {/* Public, unauthenticated Client View — deliberately outside
+          ProtectedRoute/AppShell, no dashboard shell, no session check. */}
+      <Route path="/project/:projectSlug" element={<SharedProject />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>

@@ -52,10 +52,11 @@ const TAB_CONFIG = {
     columns: [
       { key: "person", header: "Person", cell: personCell },
       { key: "brand", header: "Brand", className: "dash-table-name", cell: (r) => r.brandName },
+      { key: "email", header: "Email", className: "dash-table-muted", cell: (r) => r.email || "—" },
+      { key: "location", header: "Location", className: "dash-table-muted", cell: (r) => r.location || "—" },
       { key: "source", header: "Source", className: "dash-table-muted", cell: (r) => r.source },
       { key: "owner", header: "Owner", className: "dash-table-muted", cell: ownerCell },
-      { key: "status", header: "Status", cell: (r) => <span className={`badge badge--${activeBadge(r)}`}>{r.active ? "Active" : "Inactive"}</span> },
-      { key: "followup", header: "Next Follow-up", cell: followUpCell }
+      { key: "status", header: "Status", cell: (r) => <span className={`badge badge--${activeBadge(r)}`}>{r.active ? "Active" : "Inactive"}</span> }
     ],
     extraFilters: [],
     summaryCards: (rows) => [

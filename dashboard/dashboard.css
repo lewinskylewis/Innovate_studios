@@ -1064,7 +1064,7 @@ html.dash-collapsed .dash-account-trigger {
 .dash-hero-stat {
   position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: space-between;
   gap: var(--space-6);
   padding: var(--space-6);
@@ -1093,7 +1093,14 @@ html.dash-collapsed .dash-account-trigger {
   background-position: right 0.875rem center;
 }
 
-.dash-hero-stat-main .dash-hero-label {
+.dash-hero-left {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 50%;
+  min-width: 14rem;
+}
+
+.dash-hero-left .dash-hero-label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1101,7 +1108,7 @@ html.dash-collapsed .dash-account-trigger {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--faint);
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-3);
 }
 
 .dash-hero-coin {
@@ -1119,8 +1126,21 @@ html.dash-collapsed .dash-account-trigger {
   height: 100%;
 }
 
-.dash-hero-stat-main strong {
-  display: block;
+.dash-hero-amount-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.625rem;
+}
+
+.dash-hero-currency {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--white);
+}
+
+.dash-hero-amount {
   font-family: var(--font-display);
   font-size: var(--text-3xl);
   font-weight: 700;
@@ -1131,19 +1151,105 @@ html.dash-collapsed .dash-account-trigger {
   color: transparent;
 }
 
-.dash-hero-stat-main .dash-stat-trend {
-  display: inline-block;
-  margin-top: 0.5rem;
-  font-size: var(--text-xs);
+.dash-hero-trend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--text-sm);
   font-weight: 600;
+  color: var(--success);
+}
+
+.dash-hero-trend-suffix {
+  font-weight: 400;
+  color: var(--faint);
+}
+
+.dash-hero-trend-icon {
+  width: 0.625rem;
+  height: 0.625rem;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.dash-hero-divider {
+  border-top: 0.0625rem solid var(--line-soft);
+  margin: var(--space-4) 0;
+}
+
+.dash-hero-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.dash-hero-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.dash-hero-legend-row strong {
+  color: var(--white);
+  font-weight: 700;
+}
+
+.dash-hero-legend-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 0.25rem;
+  flex-shrink: 0;
+}
+
+.dash-hero-legend-dot--collected {
+  background: var(--success);
+}
+
+.dash-hero-legend-dot--outstanding {
+  background: var(--danger);
+}
+
+.dash-hero-goal-label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--orange-bright);
+  margin-bottom: 0.625rem;
+}
+
+.dash-hero-goal-track {
+  height: 0.625rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.dash-hero-goal-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--orange), var(--orange-bright));
+}
+
+.dash-hero-goal-range {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: var(--text-2xs);
+  color: var(--faint);
 }
 
 .dash-hero-chart {
-  flex: 1;
-  min-width: 12rem;
-  max-width: 22rem;
-  height: 5rem;
-  align-self: flex-end;
+  flex: 1 1 40%;
+  min-width: 14rem;
+  max-width: 26rem;
+  align-self: stretch;
+}
+
+.dash-bar-chart {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
 .dash-stat-trend.is-up { color: var(--success); }
@@ -1569,7 +1675,7 @@ html.dash-collapsed .dash-account-trigger {
     font-size: var(--text-xl);
   }
 
-  .dash-hero-stat-main strong {
+  .dash-hero-amount {
     font-size: var(--text-2xl);
   }
 
@@ -1580,8 +1686,15 @@ html.dash-collapsed .dash-account-trigger {
   }
 
   .dash-hero-chart {
+    /* flex-basis "40%" from the base rule means 40% of the *column*
+       flex container's height once .dash-hero-stat switches to
+       flex-direction: column above — pin the size outright instead of
+       leaving flex-grow free to blow this up. */
+    flex: 0 0 12rem;
     max-width: 100%;
     width: 100%;
+    height: 12rem;
+    align-self: stretch;
   }
 
   .dash-stat-cards {
@@ -2258,17 +2371,19 @@ html.dash-collapsed .dash-account-trigger {
   color: var(--faint);
 }
 
-/* ---------- Enquiry + Relationship + Outreach Detail panels ----------
+/* ---------- Enquiry + Relationship + Outreach + Project Detail panels ----------
    Shared typography/control refinements for EnquiryDetail.jsx (scoped
-   under .enq-detail), RelationshipDetail.jsx (scoped under .rel-detail)
-   and Marketing/ProspectDetail.jsx (scoped under .mkt-detail) —
-   combined into one rule set so all three panels stay visually
-   identical instead of maintaining three copies. Studio's
-   ProjectDetail, which shares the same generic .detail-drawer/.detail-
-   section/.detail-row markup via components/Drawer.jsx, carries
-   neither wrapper class and is completely unaffected. Reference: the
-   Ongoing Projects table's own body text (.studio-table tbody td) is
-   var(--font-table) (Roboto), which is what general text here matches. */
+   under .enq-detail), RelationshipDetail.jsx (scoped under .rel-detail),
+   Marketing/ProspectDetail.jsx (scoped under .mkt-detail), and the
+   standalone public Studio/ProjectDetail.jsx (scoped under
+   .proj-standalone, see SharedProject.jsx) — combined into one rule set
+   so every panel stays visually identical instead of maintaining
+   separate copies. ProjectDetail's own header markup (.detail-title/
+   .detail-client-name/.detail-timeline, not .detail-title-row/.enq-
+   identity-row) gets its own small rule set further below, matched to
+   the same type scale. The in-dashboard drawer rendering of
+   ProjectDetail (inside components/Drawer.jsx, no wrapper class) is
+   untouched — only the public standalone page opts into this. */
 
 .enq-detail,
 .enq-detail input,
@@ -2281,7 +2396,11 @@ html.dash-collapsed .dash-account-trigger {
 .mkt-detail,
 .mkt-detail input,
 .mkt-detail textarea,
-.mkt-detail select {
+.mkt-detail select,
+.proj-standalone,
+.proj-standalone input,
+.proj-standalone textarea,
+.proj-standalone select {
   font-family: var(--font-table);
 }
 
@@ -2301,28 +2420,32 @@ html.dash-collapsed .dash-account-trigger {
 
 .enq-detail .detail-section h3,
 .rel-detail .detail-section h3,
-.mkt-detail .detail-section h3 {
+.mkt-detail .detail-section h3,
+.proj-standalone .detail-section h3 {
   font-size: var(--text-md);
   color: var(--orange-bright);
 }
 
 .enq-detail .field-label,
 .rel-detail .field-label,
-.mkt-detail .field-label {
+.mkt-detail .field-label,
+.proj-standalone .field-label {
   font-size: var(--text-2xs);
 }
 
 .enq-detail .detail-description,
 .rel-detail .detail-description,
-.mkt-detail .detail-description {
+.mkt-detail .detail-description,
+.proj-standalone .detail-description {
   font-size: 0.9375rem;
 }
 
-/* General body/input text throughout all three panels — inputs,
-   selects, textareas all carry the shared .input class. */
+/* General body/input text throughout every panel — inputs, selects,
+   textareas all carry the shared .input class. */
 .enq-detail .input,
 .rel-detail .input,
-.mkt-detail .input {
+.mkt-detail .input,
+.proj-standalone .input {
   font-size: 0.9375rem;
 }
 
@@ -2332,7 +2455,8 @@ html.dash-collapsed .dash-account-trigger {
    the same cramped size). */
 .enq-detail .detail-row-main strong,
 .rel-detail .detail-row-main strong,
-.mkt-detail .detail-row-main strong {
+.mkt-detail .detail-row-main strong,
+.proj-standalone .detail-row-main strong {
   font-size: var(--text-3xs);
   font-weight: 700;
   text-transform: uppercase;
@@ -2343,7 +2467,8 @@ html.dash-collapsed .dash-account-trigger {
 
 .enq-detail .detail-row-main span,
 .rel-detail .detail-row-main span,
-.mkt-detail .detail-row-main span {
+.mkt-detail .detail-row-main span,
+.proj-standalone .detail-row-main span {
   font-size: 0.9375rem;
   font-weight: 400;
   color: var(--white);
@@ -2372,18 +2497,38 @@ html.dash-collapsed .dash-account-trigger {
   color: var(--muted);
 }
 
-/* Every native select in all three panels gets a properly padded,
-   vertically centered chevron instead of the browser default, which
-   the OS renders flush against the edge with inconsistent spacing. */
+/* Every native select in every panel gets a properly padded, vertically
+   centered chevron instead of the browser default, which the OS
+   renders flush against the edge with inconsistent spacing. */
 .enq-detail select.input,
 .rel-detail select.input,
-.mkt-detail select.input {
+.mkt-detail select.input,
+.proj-standalone select.input {
   appearance: none;
   cursor: pointer;
   padding-right: 2.25rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23a9a7a4' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.875rem center;
+}
+
+/* ProjectDetail.jsx's own header markup (.detail-title/.detail-client-
+   name/.detail-timeline-date) doesn't match the .detail-title-row h2 /
+   .detail-meta pattern the other three panels share, so it gets its own
+   rules here rather than joining those selectors above — same type
+   scale (var(--text-xl)/900 for the title, matching .detail-title-row
+   h2; var(--text-xs)/muted for the client name, matching .detail-meta),
+   just mapped onto the classes that actually exist in this component. */
+.proj-standalone .detail-title {
+  font-size: var(--text-xl);
+  font-weight: 900;
+}
+
+.proj-standalone .detail-client-name {
+  font-family: var(--font-table);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--muted);
 }
 
 .enq-status-field {
@@ -2403,7 +2548,8 @@ html.dash-collapsed .dash-account-trigger {
    rule. */
 .enq-detail .detail-section-head,
 .rel-detail .detail-section-head,
-.mkt-detail .detail-section-head {
+.mkt-detail .detail-section-head,
+.proj-standalone .detail-section-head {
   justify-content: space-between;
 }
 
@@ -4759,4 +4905,61 @@ td.is-wrapped {
 
 .rel-quickbar .work-tab {
   padding: 0.4375rem 0.875rem;
+}
+
+/* ---------- Standalone public project page (/project/:projectSlug) ----------
+   pages/Studio/SharedProject.jsx — the unauthenticated Client View page.
+   Deliberately does NOT reuse .detail-drawer's fixed slide-over sizing
+   (position: fixed; width: min(38rem, 100vw)); this is a normal
+   document-flow page — full viewport width with fluid padding on
+   mobile, a centered max-width column on larger screens.
+   .proj-standalone itself already picks up the shared Enquiry-panel
+   typography via the combined rule set earlier in this file — the
+   rules here are purely page layout/sizing, verified with no
+   horizontal overflow from 320px through 1440px+. */
+
+.proj-standalone-shell {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--graphite);
+}
+
+.proj-standalone-header {
+  display: flex;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 0.0625rem solid var(--line-soft);
+}
+
+.proj-standalone-header img {
+  height: 1.75rem;
+  width: auto;
+}
+
+.proj-standalone {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5) var(--space-8);
+}
+
+/* Defensive against a long, unbreakable filename/title forcing a file
+   or milestone row wider than the viewport at narrow widths — the
+   in-dashboard drawer never hit this in practice at its own fixed
+   38rem width, so this stays scoped to the standalone page only. */
+.proj-standalone .detail-row-main {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 30rem) {
+  .proj-standalone-header {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .proj-standalone {
+    padding: var(--space-5) var(--space-4) var(--space-7);
+  }
 }

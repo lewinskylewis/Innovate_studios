@@ -9,6 +9,17 @@
  * upload/delete (FilesSection.jsx); Comments (Comments.jsx) never
  * render for the client at all; Activity (ActivityFeed.jsx) is
  * identical for both.
+ *
+ * `standalone` (new): true only when rendered by the public, unauthenticated
+ * pages/Studio/SharedProject.jsx (/project/:projectSlug — see App.jsx).
+ * clientPreview is permanently true in that mode (no toggle rendered to
+ * change it) and every Studio-only control — close button, the
+ * Studio/Client-preview toggle, Share, Delete — is hidden outright, not
+ * just disabled. `studio` is a minimal read-only stub there (see
+ * SharedProject.jsx), so the effect below skips calling the
+ * authenticated-only loadProjectComments/Files/Activity entirely —
+ * data/sharedProject.js's loadSharedProject() already fetched everything
+ * client-safe up front.
  */
 import { useEffect, useState } from "react";
 import { useToast } from "../../lib/ToastContext.jsx";
@@ -55,16 +66,23 @@ function EditableDate({ value, onSave, editable }) {
   );
 }
 
-export default function ProjectDetail({ project, studio, onClose, onDeleted }) {
+export default function ProjectDetail({ project, studio, onClose, onDeleted, standalone = false }) {
   const { show } = useToast();
   const [detailLoading, setDetailLoading] = useState(true);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
-  const [clientPreview, setClientPreview] = useState(false);
+  const [clientPreview, setClientPreview] = useState(standalone);
   const [shareOpen, setShareOpen] = useState(false);
   const [editingOverview, setEditingOverview] = useState(false);
   const [overviewDraft, setOverviewDraft] = useState(project.description || "");
 
   useEffect(() => {
+    if (standalone) {
+      // loadSharedProject() already fetched every client-safe field up
+      // front — nothing lazy to load, and the standalone stub `studio`
+      // has no loadProjectComments/Files/Activity to call.
+      setDetailLoading(false);
+      return;
+    }
     let active = true;
     setDetailLoading(true);
     setClientPreview(false);
@@ -80,7 +98,7 @@ export default function ProjectDetail({ project, studio, onClose, onDeleted }) {
       active = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project.id]);
+  }, [project.id, standalone]);
 
   useEffect(() => {
     setOverviewDraft(project.description || "");
@@ -140,14 +158,16 @@ export default function ProjectDetail({ project, studio, onClose, onDeleted }) {
 
   return (
     <>
-      <button className="icon-btn" type="button" onClick={onClose} aria-label="Close" style={{ position: "absolute", top: "1.25rem", right: "1.25rem" }}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M6 6l12 12" />
-          <path d="M18 6 6 18" />
-        </svg>
-      </button>
+      {!standalone && (
+        <button className="icon-btn" type="button" onClick={onClose} aria-label="Close" style={{ position: "absolute", top: "1.25rem", right: "1.25rem" }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M6 6l12 12" />
+            <path d="M18 6 6 18" />
+          </svg>
+        </button>
+      )}
 
-      {clientPreview && (
+      {clientPreview && !standalone && (
         <div className="client-preview-banner">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" />
@@ -158,14 +178,16 @@ export default function ProjectDetail({ project, studio, onClose, onDeleted }) {
       )}
 
       <div className="detail-header">
-        <div className="detail-actions">
-          <button className="btn" type="button" onClick={() => setClientPreview((v) => !v)}>
-            {clientPreview ? "Studio view" : "Preview as client"}
-          </button>
-          <button className="btn btn-primary" type="button" onClick={() => setShareOpen(true)}>
-            Share
-          </button>
-        </div>
+        {!standalone && (
+          <div className="detail-actions">
+            <button className="btn" type="button" onClick={() => setClientPreview((v) => !v)}>
+              {clientPreview ? "Studio view" : "Preview as client"}
+            </button>
+            <button className="btn btn-primary" type="button" onClick={() => setShareOpen(true)}>
+              Share
+            </button>
+          </div>
+        )}
         <h2 className="detail-title">Title: {project.title || "Untitled project"}</h2>
         <div className="detail-client-name">Brand: {project.client || "No client set"}</div>
         <div className="detail-timeline">

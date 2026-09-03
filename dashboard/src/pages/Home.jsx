@@ -102,6 +102,31 @@ function emptyState(title, body) {
   );
 }
 
+/* "KES 1,234,567" -> ["KES", "1,234,567"] — splits formatMoney's own
+   output on the first space so the currency and the figure can carry
+   different type sizes/weights, without touching formatMoney itself
+   or what it computes. */
+function splitMoney(text) {
+  const spaceIndex = text.indexOf(" ");
+  return spaceIndex === -1 ? [text, ""] : [text.slice(0, spaceIndex), text.slice(spaceIndex + 1)];
+}
+
+/* Compact axis-label formatter for the income hero's bar chart —
+   display only, derived from the same weeklyBudget values the bars
+   already plot. */
+function formatAxisMoney(value) {
+  if (value >= 1000) return `Kes ${Math.round(value / 1000)}K`;
+  return `Kes ${Math.round(value)}`;
+}
+
+function TrendTriangle() {
+  return (
+    <svg className="dash-hero-trend-icon" viewBox="0 0 12 10" aria-hidden="true">
+      <path d="M6 0 12 10 0 10Z" />
+    </svg>
+  );
+}
+
 export default function Home() {
   const { profile } = useAuth();
   const { show } = useToast();
@@ -134,6 +159,8 @@ export default function Home() {
       active = false;
     };
   }, []);
+
+  const [incomeCurrency, incomeAmount] = activeWork.totalBudget === null ? ["", "—"] : splitMoney(formatMoney(activeWork.totalBudget));
 
   const analyticsData = mock.websiteAnalytics.periods[analyticsPeriod] || mock.websiteAnalytics.periods["7d"];
   const sessionsTotal = analyticsData.sessions.reduce((sum, v) => sum + v, 0).toLocaleString("en-KE");
@@ -175,14 +202,73 @@ export default function Home() {
             <option value="avg-3">Avg. last 3 months</option>
             <option value="avg-6">Avg. last 6 months</option>
           </select>
-          <div className="dash-hero-stat-main">
+
+          <div className="dash-hero-left">
             <div className="dash-hero-label">
               <span aria-hidden="true">💰</span> This month's income
             </div>
-            <strong>{activeWork.totalBudget === null ? "—" : formatMoney(activeWork.totalBudget)}</strong>
+            <div className="dash-hero-amount-row">
+              <span className="dash-hero-currency">{incomeCurrency}</span>
+              <strong className="dash-hero-amount">{incomeAmount}</strong>
+            </div>
+            {/* Not wired up yet — no month-over-month comparison exists to
+                compute this from. Visual placement only; see the Card
+                Redesign task notes for the follow-up logic pass. */}
+            <div className="dash-hero-trend">
+              <TrendTriangle />
+              <span>
+                — <span className="dash-hero-trend-suffix">Vs last month</span>
+              </span>
+            </div>
+
+            <div className="dash-hero-divider" />
+
+            {/* Collected/Outstanding needs real payment data (invoices/
+                receipts), which nothing in the schema tracks yet — same
+                placeholder-until-wired treatment as the trend above. */}
+            <div className="dash-hero-legend">
+              <div className="dash-hero-legend-row">
+                <span className="dash-hero-legend-dot dash-hero-legend-dot--collected" />
+                <span>
+                  <strong>Collected</strong> - —
+                </span>
+              </div>
+              <div className="dash-hero-legend-row">
+                <span className="dash-hero-legend-dot dash-hero-legend-dot--outstanding" />
+                <span>
+                  <strong>Outstanding</strong> - —
+                </span>
+              </div>
+            </div>
+
+            <div className="dash-hero-divider" />
+
+            {/* No income goal exists to track progress against yet — the
+                left figure below reuses the real headline total (not a
+                placeholder); the goal target on the right is. */}
+            <div className="dash-hero-goal">
+              <div className="dash-hero-goal-label">Goal Progress —</div>
+              <div className="dash-hero-goal-track">
+                <div className="dash-hero-goal-fill" style={{ width: "0%" }} />
+              </div>
+              <div className="dash-hero-goal-range">
+                <span>
+                  {incomeCurrency} {incomeAmount}
+                </span>
+                <span>—</span>
+              </div>
+            </div>
           </div>
+
           <div className="dash-hero-chart">
-            <BarChart values={activeWork.weeklyBudget || [0, 0, 0, 0]} labels={["W1", "W2", "W3", "W4"]} height={80} width={280} />
+            <BarChart
+              values={activeWork.weeklyBudget || [0, 0, 0, 0]}
+              labels={["Wk 1", "Wk 2", "Wk 3", "Wk 4"]}
+              height={220}
+              width={300}
+              gridLines
+              formatValue={formatAxisMoney}
+            />
           </div>
         </div>
 

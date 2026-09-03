@@ -83,7 +83,8 @@ function mapProjectRow(row, membersByProject, milestonesByProject, clientsById) 
     files: [], // loaded lazily — see loadProjectFiles()
     activity: [], // loaded lazily — see loadProjectActivity()
     isDraft: row.is_draft,
-    deletedAt: row.deleted_at
+    deletedAt: row.deleted_at,
+    publicSlug: row.public_slug
   };
 }
 
@@ -602,7 +603,7 @@ export async function deleteFieldOption(option) {
 
 /* ---------- files (lazy-loaded when a project's detail drawer opens) ---------- */
 
-function formatBytes(bytes) {
+export function formatBytes(bytes) {
   if (!bytes) return "—";
   return bytes > 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1e3))} KB`;
 }
