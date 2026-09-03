@@ -22,3 +22,6 @@
 
 # Supabase CLI local cache
 /supabase/.temp/
+
+.vercel
+.env*
