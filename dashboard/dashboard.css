@@ -2258,11 +2258,12 @@ html.dash-collapsed .dash-account-trigger {
   color: var(--faint);
 }
 
-/* ---------- Enquiry + Relationship Detail panels ----------
+/* ---------- Enquiry + Relationship + Outreach Detail panels ----------
    Shared typography/control refinements for EnquiryDetail.jsx (scoped
-   under .enq-detail) and RelationshipDetail.jsx (scoped under
-   .rel-detail) — combined into one rule set so both panels stay
-   visually identical instead of maintaining two copies. Studio's
+   under .enq-detail), RelationshipDetail.jsx (scoped under .rel-detail)
+   and Marketing/ProspectDetail.jsx (scoped under .mkt-detail) —
+   combined into one rule set so all three panels stay visually
+   identical instead of maintaining three copies. Studio's
    ProjectDetail, which shares the same generic .detail-drawer/.detail-
    section/.detail-row markup via components/Drawer.jsx, carries
    neither wrapper class and is completely unaffected. Reference: the
@@ -2276,42 +2277,52 @@ html.dash-collapsed .dash-account-trigger {
 .rel-detail,
 .rel-detail input,
 .rel-detail textarea,
-.rel-detail select {
+.rel-detail select,
+.mkt-detail,
+.mkt-detail input,
+.mkt-detail textarea,
+.mkt-detail select {
   font-family: var(--font-table);
 }
 
 .enq-detail .detail-title-row h2,
-.rel-detail .detail-title-row h2 {
+.rel-detail .detail-title-row h2,
+.mkt-detail .detail-title-row h2 {
   font-family: var(--font-display);
   font-size: var(--text-xl);
   font-weight: 900;
 }
 
 .enq-detail .detail-meta,
-.rel-detail .detail-meta {
+.rel-detail .detail-meta,
+.mkt-detail .detail-meta {
   font-size: var(--text-xs);
 }
 
 .enq-detail .detail-section h3,
-.rel-detail .detail-section h3 {
+.rel-detail .detail-section h3,
+.mkt-detail .detail-section h3 {
   font-size: var(--text-md);
   color: var(--orange-bright);
 }
 
 .enq-detail .field-label,
-.rel-detail .field-label {
+.rel-detail .field-label,
+.mkt-detail .field-label {
   font-size: var(--text-2xs);
 }
 
 .enq-detail .detail-description,
-.rel-detail .detail-description {
+.rel-detail .detail-description,
+.mkt-detail .detail-description {
   font-size: 0.9375rem;
 }
 
-/* General body/input text throughout both panels — inputs, selects,
-   textareas all carry the shared .input class. */
+/* General body/input text throughout all three panels — inputs,
+   selects, textareas all carry the shared .input class. */
 .enq-detail .input,
-.rel-detail .input {
+.rel-detail .input,
+.mkt-detail .input {
   font-size: 0.9375rem;
 }
 
@@ -2320,7 +2331,8 @@ html.dash-collapsed .dash-account-trigger {
    value distinction that was missing before (both used to render at
    the same cramped size). */
 .enq-detail .detail-row-main strong,
-.rel-detail .detail-row-main strong {
+.rel-detail .detail-row-main strong,
+.mkt-detail .detail-row-main strong {
   font-size: var(--text-3xs);
   font-weight: 700;
   text-transform: uppercase;
@@ -2330,7 +2342,8 @@ html.dash-collapsed .dash-account-trigger {
 }
 
 .enq-detail .detail-row-main span,
-.rel-detail .detail-row-main span {
+.rel-detail .detail-row-main span,
+.mkt-detail .detail-row-main span {
   font-size: 0.9375rem;
   font-weight: 400;
   color: var(--white);
@@ -2342,7 +2355,8 @@ html.dash-collapsed .dash-account-trigger {
    person's name stays the prominent element, brand/role stays
    secondary. */
 .enq-detail .enq-identity-row strong,
-.rel-detail .enq-identity-row strong {
+.rel-detail .enq-identity-row strong,
+.mkt-detail .enq-identity-row strong {
   font-size: var(--text-md);
   font-weight: 600;
   text-transform: none;
@@ -2352,16 +2366,18 @@ html.dash-collapsed .dash-account-trigger {
 }
 
 .enq-detail .enq-identity-row span,
-.rel-detail .enq-identity-row span {
+.rel-detail .enq-identity-row span,
+.mkt-detail .enq-identity-row span {
   font-size: 0.9375rem;
   color: var(--muted);
 }
 
-/* Every native select in both panels gets a properly padded,
+/* Every native select in all three panels gets a properly padded,
    vertically centered chevron instead of the browser default, which
    the OS renders flush against the edge with inconsistent spacing. */
 .enq-detail select.input,
-.rel-detail select.input {
+.rel-detail select.input,
+.mkt-detail select.input {
   appearance: none;
   cursor: pointer;
   padding-right: 2.25rem;
@@ -2386,7 +2402,8 @@ html.dash-collapsed .dash-account-trigger {
    doesn't need one), so that's added here rather than on the shared
    rule. */
 .enq-detail .detail-section-head,
-.rel-detail .detail-section-head {
+.rel-detail .detail-section-head,
+.mkt-detail .detail-section-head {
   justify-content: space-between;
 }
 
@@ -2653,50 +2670,60 @@ html.dash-collapsed .dash-account-trigger {
   overflow-y: auto;
 }
 
-/* New Enquiry modal — wider + larger-type variant (NewEnquiryModal.jsx
-   only). Scoped under this modifier class so no other modal built on
-   the shared Modal component is affected. */
+/* New Enquiry / New Prospect modal — wider + larger-type variant
+   (NewEnquiryModal.jsx and Marketing/NewProspectModal.jsx only).
+   Scoped under these modifier classes so no other modal built on the
+   shared Modal component is affected. */
 
-.dash-modal--enquiry-wide {
+.dash-modal--enquiry-wide,
+.dash-modal--outreach-wide {
   width: min(50rem, 94vw);
   max-height: 88vh;
   overflow-y: auto;
   padding: var(--space-7);
 }
 
-.dash-modal--enquiry-wide .dash-modal-header h2 {
+.dash-modal--enquiry-wide .dash-modal-header h2,
+.dash-modal--outreach-wide .dash-modal-header h2 {
   font-size: var(--text-xl);
   color: var(--orange-bright);
 }
 
-.dash-modal--enquiry-wide .dash-modal-header p {
+.dash-modal--enquiry-wide .dash-modal-header p,
+.dash-modal--outreach-wide .dash-modal-header p {
   margin-top: 0.5rem;
   font-size: var(--text-sm);
 }
 
-.dash-modal--enquiry-wide .field-label {
+.dash-modal--enquiry-wide .field-label,
+.dash-modal--outreach-wide .field-label {
   font-size: var(--text-3xs);
   margin-bottom: 0.5rem;
 }
 
-.dash-modal--enquiry-wide .field {
+.dash-modal--enquiry-wide .field,
+.dash-modal--outreach-wide .field {
   margin-bottom: var(--space-3);
 }
 
-.dash-modal--enquiry-wide .field-grid {
+.dash-modal--enquiry-wide .field-grid,
+.dash-modal--outreach-wide .field-grid {
   gap: 0 var(--space-6);
 }
 
-.dash-modal--enquiry-wide .input {
+.dash-modal--enquiry-wide .input,
+.dash-modal--outreach-wide .input {
   padding: 1rem 1.25rem;
   font-size: var(--text-sm);
 }
 
-.dash-modal--enquiry-wide textarea.input {
+.dash-modal--enquiry-wide textarea.input,
+.dash-modal--outreach-wide textarea.input {
   min-height: 7rem;
 }
 
-.dash-modal--enquiry-wide .dash-modal-actions .btn {
+.dash-modal--enquiry-wide .dash-modal-actions .btn,
+.dash-modal--outreach-wide .dash-modal-actions .btn {
   font-size: var(--text-sm);
   padding: 0.875rem 1.5rem;
 }

@@ -12,12 +12,12 @@
  *
  * A "prospect" is not a second entity — it's contacts.id where
  * contact_type = 'Prospect'. Add Prospect always creates a new Contact
- * row: the frozen Add Prospect form collects no email/phone and has no
- * existing-Contact picker, so there is no reliable, non-fuzzy signal to
- * match against (unlike Enquiry conversion, which can safely match on
- * exact email — see convertEnquiry() in data/enquiries.js). This
- * mirrors Relationships' own NewRelationshipModal, which also always
- * inserts a new Contact for the same reason.
+ * row: the Add Prospect form has no existing-Contact picker and no
+ * dedup-by-email step, so there is no reliable, deliberate match
+ * workflow the way Enquiry conversion has (see convertEnquiry() in
+ * data/enquiries.js, which explicitly resolves against an existing
+ * Contact before creating one). This mirrors Relationships' own
+ * NewRelationshipModal, which also always inserts a new Contact.
  *
  * "Outreach history" / the Log Outreach Activity feature reuse
  * contact_notes with type = 'outreach' (already a value the type check
@@ -26,6 +26,13 @@
  * single freeform "notes" paragraph (set once, at creation, from the
  * Add Prospect form — the frozen UI never edits it afterwards) is the
  * oldest contact_notes row of type = 'note' for that contact.
+ *
+ * Editing Contact info / Follow-up (ProspectDetail.jsx's Edit/Save)
+ * does not add any mutation here — it reuses updateContactDetails() /
+ * updateContactFollowUp() from data/relationships.js unchanged (see
+ * useOutreach.js), since a Prospect is a contacts row and those
+ * functions already run in production against the exact same columns
+ * for RelationshipDetail.jsx.
  */
 import { supabase } from "../lib/supabaseClient.js";
 
@@ -59,12 +66,25 @@ function mapProspectRow(row, ctx) {
     industry: row.industry || "",
     serviceInterest: (row.services || [])[0] || "",
     channel: row.channel || "",
+    // Which platform this Prospect was originally found on — a
+    // different question from Channel (how they're currently being
+    // reached). Shares contacts.source with Relationships/Enquiries'
+    // own "how this Contact originated" usage of the same column.
+    source: row.source || "",
     status: row.outreach_status || "New",
     contact: { name: row.person_name || "", role: row.role || "" },
     email: row.email || "",
     phone: row.phone || "",
+    // Not rendered anywhere in Outreach's UI (never was) — carried
+    // through only so ProspectDetail's edit form can round-trip these
+    // via the reused updateContactDetails()/updateContactFollowUp()
+    // (see useOutreach.js) without silently clearing them for a
+    // Contact that already had them set from Relationships.
+    website: row.website || "",
+    location: row.location || "",
     lastContact,
     nextFollowUp: row.next_follow_up_date,
+    followUpReason: row.follow_up_note || "",
     notes: noteEntry?.content || "",
     history
   };
@@ -111,14 +131,16 @@ export async function addProspect(input, { authorProfileId }) {
     id,
     brand_name: (input.business || "Untitled Prospect").trim(),
     person_name: input.contact || null,
+    email: input.email || null,
+    phone: input.phone || null,
     contact_type: "Prospect",
     status: "Active",
     industry: input.industry || null,
     channel: input.channel || null,
+    source: input.source || null,
     outreach_status: "New",
     services: input.serviceInterest ? [input.serviceInterest] : [],
-    next_follow_up_date: input.nextFollowUp || null,
-    source: "Outreach"
+    next_follow_up_date: input.nextFollowUp || null
   };
   await mutate(client.from("contacts").insert(payload), "create that prospect");
 

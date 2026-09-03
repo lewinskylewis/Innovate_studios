@@ -79,6 +79,8 @@ export function useMarketing() {
     addProspect: outreach.addProspect,
     logOutreachActivity: outreach.logOutreachActivity,
     addProspectNote: outreach.addProspectNote,
+    updateProspectDetails: outreach.updateProspectDetails,
+    setFollowUp: outreach.setFollowUp,
 
     campaigns,
     findCampaign,
