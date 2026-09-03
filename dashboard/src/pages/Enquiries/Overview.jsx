@@ -169,7 +169,9 @@ export default function Overview({ enquiries, onOpenRecord }) {
               <h2>Conversion snapshot</h2>
               <span className="panel-meta">Enquiries → Contacted → Qualified → Converted</span>
             </div>
-            <Funnel stages={funnel} />
+            <div style={{ padding: "0 var(--space-5) var(--space-5)" }}>
+              <Funnel stages={funnel} />
+            </div>
           </div>
 
           <div className="panel">

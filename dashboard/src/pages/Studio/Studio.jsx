@@ -11,6 +11,7 @@ import Topbar from "../../components/Topbar.jsx";
 import Drawer from "../../components/Drawer.jsx";
 import { useToast } from "../../lib/ToastContext.jsx";
 import { todayISO } from "../../lib/format.js";
+import { useStoredTab } from "../../lib/useStoredTab.js";
 import { useStudio } from "./useStudio.js";
 import StudioTable from "./StudioTable.jsx";
 import TableToolbar from "./TableToolbar.jsx";
@@ -22,7 +23,7 @@ const DEFAULT_FILTERS = { search: "", status: "All", priority: "All", assignee: 
 export default function Studio() {
   const studio = useStudio();
   const { show } = useToast();
-  const [tab, setTab] = useState("overview");
+  const [tab, setTab] = useStoredTab("innov8-dashboard-tab-studio", "overview");
   const [creating, setCreating] = useState(false);
   const [openProjectId, setOpenProjectId] = useState(null);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
@@ -43,8 +44,12 @@ export default function Studio() {
     setCreating(true);
     setTab("projects");
     try {
-      const project = await studio.createProject({ deadline: todayISO(), startDate: todayISO() });
-      setOpenProjectId(project.id);
+      // Deliberately does not open the detail drawer — the new row lands
+      // in the table as a draft (see data/studio.js's isDraft) that the
+      // user fills in with ordinary in-place cell edits, exactly like
+      // every other row. Opening a drawer here would force a popup step
+      // the table's own edit-in-place design already makes unnecessary.
+      await studio.createProject({ deadline: todayISO(), startDate: todayISO() });
     } catch (err) {
       console.error("[studio] createProject failed", err);
       show("Couldn't create the project — try again.");

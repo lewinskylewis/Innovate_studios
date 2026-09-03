@@ -123,7 +123,7 @@ export default function Sidebar() {
               className="dash-nav-item"
               aria-disabled="true"
               tabIndex={-1}
-              title="Coming soon"
+              title={`${item.label} — coming soon`}
               role="button"
             >
               <Icon name={item.icon} />
@@ -136,6 +136,7 @@ export default function Sidebar() {
               to={item.to}
               end={item.to === "/"}
               className={({ isActive }) => `dash-nav-item${isActive ? " is-active" : ""}`}
+              title={item.label}
             >
               <Icon name={item.icon} />
               <span>{item.label}</span>

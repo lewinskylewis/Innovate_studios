@@ -10,6 +10,7 @@ import Topbar from "../../components/Topbar.jsx";
 import Drawer from "../../components/Drawer.jsx";
 import { colorForName, initials } from "../../lib/avatar.js";
 import { formatMoney } from "../../lib/format.js";
+import { useStoredTab } from "../../lib/useStoredTab.js";
 import { useRelationships } from "./useRelationships.js";
 import { SERVICES, PARTNER_TYPES, LEAD_STATUSES, PRIORITIES } from "./relationshipsMock.js";
 import { LEAD_STATUS_BADGE, HEALTH_BADGE, activeBadge, formatServiceList, activeProjects } from "./relationshipsFormat.js";
@@ -164,7 +165,7 @@ const TAB_CONFIG = {
 
 export default function Relationships() {
   const relationships = useRelationships();
-  const [tab, setTab] = useState("overview");
+  const [tab, setTab] = useStoredTab("innov8-dashboard-tab-relationships", "overview");
   const [filtersByTab, setFiltersByTab] = useState({});
   const [openRecordId, setOpenRecordId] = useState(null);
   const [newModalType, setNewModalType] = useState(null);

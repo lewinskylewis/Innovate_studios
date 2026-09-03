@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Topbar from "../../components/Topbar.jsx";
 import Drawer from "../../components/Drawer.jsx";
+import { useStoredTab } from "../../lib/useStoredTab.js";
 import { useEnquiries } from "./useEnquiries.js";
 import Overview from "./Overview.jsx";
 import EnquiryList, { DEFAULT_LIST_FILTERS } from "./EnquiryList.jsx";
@@ -18,10 +19,12 @@ import NewEnquiryModal from "./NewEnquiryModal.jsx";
 export default function Enquiries() {
   const enquiries = useEnquiries();
   // Supports deep-linking straight to a tab (e.g. Home's "View all
-  // enquiries" → /enquiries?tab=enquiries) while /enquiries alone still
-  // defaults to Overview exactly as before.
+  // enquiries" → /enquiries?tab=enquiries) while /enquiries alone falls
+  // back to the last tab you had open here (see useStoredTab), same as
+  // every other module — the query param only overrides that memory
+  // when explicitly present.
   const [searchParams] = useSearchParams();
-  const [tab, setTab] = useState(searchParams.get("tab") === "enquiries" ? "enquiries" : "overview");
+  const [tab, setTab] = useStoredTab("innov8-dashboard-tab-enquiries", "overview", searchParams.get("tab") === "enquiries" ? "enquiries" : undefined);
   const [filters, setFilters] = useState(DEFAULT_LIST_FILTERS);
   const [openRecordId, setOpenRecordId] = useState(null);
   const [newOpen, setNewOpen] = useState(false);

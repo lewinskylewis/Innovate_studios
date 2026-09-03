@@ -3027,8 +3027,14 @@ textarea.input {
   background: var(--orange-bright);
 }
 
-.studio-th-add {
+/* Overrides .studio-table thead th's boxed header treatment (background
+   + borders) for this one column — it holds only the "Add property"
+   icon button, not a real column, so it shouldn't read as one. */
+.studio-table thead th.studio-th-add {
   width: 2.75rem;
+  background: transparent;
+  border-right: none;
+  border-bottom: none;
 }
 
 .studio-th-add button {

@@ -7,6 +7,7 @@
 import { useState } from "react";
 import Topbar from "../../components/Topbar.jsx";
 import Drawer from "../../components/Drawer.jsx";
+import { useStoredTab } from "../../lib/useStoredTab.js";
 import { useMarketing } from "./useMarketing.js";
 import Overview from "./Overview.jsx";
 import Outreach, { OutreachFilterBar } from "./Outreach.jsx";
@@ -21,7 +22,7 @@ const DEFAULT_PROSPECT_FILTERS = { search: "", industry: "All", status: "All", c
 
 export default function Marketing() {
   const marketing = useMarketing();
-  const [tab, setTab] = useState("overview");
+  const [tab, setTab] = useStoredTab("innov8-dashboard-tab-marketing", "overview");
   const [prospectFilters, setProspectFilters] = useState(DEFAULT_PROSPECT_FILTERS);
   const [openProspectId, setOpenProspectId] = useState(null);
   const [activeCampaignId, setActiveCampaignId] = useState(null);

@@ -602,6 +602,10 @@ export default function StudioTable({ studio, onOpen, onNewProject, creating, fi
   }
 
   function renderAddRow() {
+    // No trailing <td> for the add-property column here (unlike the
+    // header row and calc footer) — ProjectRow.jsx's ordinary data rows
+    // already omit it the same way, which is why they never show the
+    // empty bordered cell this row used to have under the "+" column.
     return (
       <tr className="studio-add-row" onClick={creating ? undefined : onNewProject} aria-disabled={creating}>
         <td className="select-cell" />
@@ -622,7 +626,6 @@ export default function StudioTable({ studio, onOpen, onNewProject, creating, fi
             )}
           </td>
         ))}
-        <td />
       </tr>
     );
   }
