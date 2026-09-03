@@ -1,19 +1,11 @@
 /*
- * Innov8 Studios — MARKETING & SALES mock data, ported verbatim from
- * dashboard/legacy/marketing-data.js. UI/UX only — nothing here talks
- * to Supabase; that's a deliberate, explicit constraint carried over
- * from the legacy page, not an oversight. See useMarketing.js for the
- * local, in-memory state built from these arrays.
+ * Innov8 Studios — MARKETING & SALES mock data. Prospects/Outreach and
+ * the Overview KPIs/Next Actions built from them are now real (see
+ * data/outreach.js, useOutreach.js, Overview.jsx) — only MKT_STATUS_META
+ * (the Outreach status vocabulary, matched verbatim by the
+ * contacts.outreach_status check constraint) and MKT_CAMPAIGNS (Studio
+ * Campaigns, out of scope for this phase) remain here.
  */
-export const MKT_KPIS = [
-  { label: "Prospects Contacted", value: "132", meta: "+18% this month", direction: "up", icon: "megaphone" },
-  { label: "Responses", value: "54", meta: "12 this week", direction: "up", icon: "messages" },
-  { label: "Meetings", value: "19", meta: "5 this week", direction: "up", icon: "relationships" },
-  { label: "Active Opportunities", value: "27", meta: "8 near close", direction: "up", icon: "insights" },
-  { label: "Leads Generated", value: "63", meta: "+9 this week", direction: "up", icon: "enquiries" },
-  { label: "Revenue Generated", value: "KES 4.6M", meta: "+22% this quarter", direction: "up", icon: "coin" }
-];
-
 export const MKT_STATUS_META = {
   New: { badge: "soon", color: "#a9a7a4" },
   Contacted: { badge: "pending", color: "#4f8cff" },
@@ -22,137 +14,6 @@ export const MKT_STATUS_META = {
   "Follow-up Due": { badge: "urgent", color: "#ffb54d" },
   "Not Interested": { badge: "soon", color: "#756e6a" }
 };
-
-export const MKT_PROSPECTS = [
-  {
-    id: "pr-1", business: "Safari Lounge", industry: "Hospitality", serviceInterest: "Motion Graphics",
-    channel: "Instagram", status: "Contacted",
-    contact: { name: "Njeri Kamande", role: "Marketing Lead" }, email: "njeri@safarilounge.co.ke", phone: "+254 711 220 340",
-    lastContact: "2026-08-28", nextFollowUp: "2026-09-04",
-    notes: "Interested in a reel series for the new rooftop menu launch.",
-    history: [{ date: "2026-08-28", label: "Instagram DM sent" }]
-  },
-  {
-    id: "pr-2", business: "Nairobi Coffee Co.", industry: "Food & Beverage", serviceInterest: "Social Media Design",
-    channel: "Email", status: "Replied",
-    contact: { name: "Brian Odhiambo", role: "Founder" }, email: "brian@nairobicoffee.co.ke", phone: "+254 722 118 904",
-    lastContact: "2026-08-29", nextFollowUp: "2026-09-02",
-    notes: "Wants a consistent Instagram grid ahead of their Westlands branch opening.",
-    history: [
-      { date: "2026-08-26", label: "Cold email sent" },
-      { date: "2026-08-29", label: "Prospect replied — asked for a portfolio" }
-    ]
-  },
-  {
-    id: "pr-3", business: "Urban Living", industry: "Real Estate", serviceInterest: "3D Commercial",
-    channel: "LinkedIn", status: "Follow-up Due",
-    contact: { name: "Diana Wafula", role: "Sales & Marketing Manager" }, email: "diana@urbanliving.co.ke", phone: "+254 733 902 117",
-    lastContact: "2026-08-30", nextFollowUp: "2026-09-02",
-    notes: "Wants a 3D walkthrough for the Kiambu Road show-unit.",
-    history: [
-      { date: "2026-08-27", label: "Connected on LinkedIn" },
-      { date: "2026-08-28", label: "Prospect replied" },
-      { date: "2026-08-30", label: "Portfolio sent" },
-      { date: "2026-09-02", label: "Follow-up scheduled" }
-    ]
-  },
-  {
-    id: "pr-4", business: "Zuri Wellness Spa", industry: "Wellness & Beauty", serviceInterest: "Branding",
-    channel: "Instagram", status: "New",
-    contact: { name: "Achieng Otieno", role: "Owner" }, email: "achieng@zuriwellness.co.ke", phone: "+254 700 441 228",
-    lastContact: null, nextFollowUp: "2026-09-03",
-    notes: "Flagged via hashtag research — no outreach sent yet.",
-    history: []
-  },
-  {
-    id: "pr-5", business: "Kilimani Motors", industry: "Automotive", serviceInterest: "Website Design",
-    channel: "WhatsApp", status: "Meeting Scheduled",
-    contact: { name: "Samuel Kariuki", role: "General Manager" }, email: "samuel@kilimanimotors.co.ke", phone: "+254 720 556 812",
-    lastContact: "2026-08-25", nextFollowUp: "2026-09-05",
-    notes: "Booked a call to scope a new inventory-listing site.",
-    history: [
-      { date: "2026-08-20", label: "WhatsApp intro sent" },
-      { date: "2026-08-23", label: "Prospect replied" },
-      { date: "2026-08-25", label: "Discovery call booked for Sept 5" }
-    ]
-  },
-  {
-    id: "pr-6", business: "Baraka Foods", industry: "Food & Beverage", serviceInterest: "Motion Graphics",
-    channel: "Email", status: "Contacted",
-    contact: { name: "Faith Mumbi", role: "Brand Manager" }, email: "faith@barakafoods.co.ke", phone: "+254 715 330 776",
-    lastContact: "2026-08-27", nextFollowUp: "2026-09-06",
-    notes: "Sent a proposal for a product-launch commercial.",
-    history: [{ date: "2026-08-27", label: "Proposal emailed" }]
-  },
-  {
-    id: "pr-7", business: "Equity Heights Realty", industry: "Real Estate", serviceInterest: "Social Media Design",
-    channel: "LinkedIn", status: "Replied",
-    contact: { name: "Peter Njuguna", role: "Marketing Director" }, email: "peter@equityheights.co.ke", phone: "+254 733 118 660",
-    lastContact: "2026-08-30", nextFollowUp: "2026-09-04",
-    notes: "Comparing us against two other studios — wants case studies.",
-    history: [
-      { date: "2026-08-24", label: "LinkedIn message sent" },
-      { date: "2026-08-30", label: "Prospect replied — requested case studies" }
-    ]
-  },
-  {
-    id: "pr-8", business: "Savanna Fitness Club", industry: "Wellness & Beauty", serviceInterest: "3D Commercial",
-    channel: "Instagram", status: "Follow-up Due",
-    contact: { name: "Grace Chebet", role: "Marketing Coordinator" }, email: "grace@savannafitness.co.ke", phone: "+254 701 992 340",
-    lastContact: "2026-08-22", nextFollowUp: "2026-09-01",
-    notes: "Went quiet after the first portfolio share — due a nudge.",
-    history: [
-      { date: "2026-08-18", label: "Instagram DM sent" },
-      { date: "2026-08-22", label: "Portfolio shared" }
-    ]
-  },
-  {
-    id: "pr-9", business: "Nyati Bank", industry: "Finance & Banking", serviceInterest: "Branding",
-    channel: "LinkedIn", status: "New",
-    contact: { name: "Caroline Wambui", role: "Head of Marketing" }, email: "caroline@nyatibank.co.ke", phone: "+254 722 774 511",
-    lastContact: null, nextFollowUp: "2026-09-03",
-    notes: "High-value target — needs a tailored, formal first approach.",
-    history: []
-  },
-  {
-    id: "pr-10", business: "Little Nairobi Preschool", industry: "Education", serviceInterest: "Social Media Design",
-    channel: "WhatsApp", status: "Not Interested",
-    contact: { name: "Mercy Adhiambo", role: "Director" }, email: "mercy@littlenairobi.co.ke", phone: "+254 710 664 229",
-    lastContact: "2026-08-15", nextFollowUp: null,
-    notes: "Budget allocated elsewhere this term — revisit in January.",
-    history: [
-      { date: "2026-08-12", label: "WhatsApp intro sent" },
-      { date: "2026-08-15", label: "Prospect declined for now" }
-    ]
-  },
-  {
-    id: "pr-11", business: "Loft Interiors", industry: "Real Estate", serviceInterest: "Creative Retainer",
-    channel: "Instagram", status: "Meeting Scheduled",
-    contact: { name: "Kevin Mwas", role: "Creative Director" }, email: "kevin@loftinteriors.co.ke", phone: "+254 724 883 105",
-    lastContact: "2026-08-26", nextFollowUp: "2026-09-03",
-    notes: "Wants an ongoing monthly content retainer, not a one-off.",
-    history: [
-      { date: "2026-08-19", label: "Instagram DM sent" },
-      { date: "2026-08-22", label: "Prospect replied" },
-      { date: "2026-08-26", label: "Retainer call booked for Sept 3" }
-    ]
-  },
-  {
-    id: "pr-12", business: "Pesa Point Fintech", industry: "Technology", serviceInterest: "Website Design",
-    channel: "Email", status: "Contacted",
-    contact: { name: "Dennis Kiptoo", role: "Head of Growth" }, email: "dennis@pesapoint.co.ke", phone: "+254 706 552 981",
-    lastContact: "2026-08-31", nextFollowUp: "2026-09-07",
-    notes: "Wants a landing page refresh ahead of their Series A push.",
-    history: [{ date: "2026-08-31", label: "Cold email sent" }]
-  }
-];
-
-export const MKT_UPCOMING_ACTIONS = [
-  { icon: "clock", text: "Follow up with Urban Living", meta: "3D Commercial — due Sept 2" },
-  { icon: "insights", text: "Review Motion / 3D Commercials performance", meta: "Active campaign · ends Sept 30" },
-  { icon: "megaphone", text: "Contact Nyati Bank", meta: "New prospect — no outreach yet" },
-  { icon: "enquiries", text: "Check Social Media Design Showcase enquiries", meta: "3 new since last review" }
-];
 
 export const MKT_CAMPAIGNS = [
   {

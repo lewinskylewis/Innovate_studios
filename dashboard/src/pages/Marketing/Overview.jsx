@@ -2,10 +2,42 @@
  * Innov8 Studios — Marketing "Overview" tab, ported from marketing.js's
  * renderKpis/renderOverviewOutreachActivity/renderUpcomingActions/
  * renderCampaignPerformanceOverview.
+ *
+ * KPIs and Next Actions are now derived from real Outreach data
+ * (marketing.prospects, backed by useOutreach.js/data/outreach.js) —
+ * see kpisFor()/upcomingActionsFor() below. Revenue Generated stays at
+ * "—": there is no completed/paid revenue source anywhere in the
+ * schema yet (projects.estimated_value is a Budget estimate, not
+ * confirmed received revenue), so it is deliberately left unfabricated
+ * rather than computed from Outreach. Campaign Performance is
+ * unchanged — still marketing.campaigns' mock data; wiring it is a
+ * separate, later piece of work.
  */
-import { MKT_KPIS, MKT_STATUS_META, MKT_UPCOMING_ACTIONS } from "./marketingMock.js";
+import { MKT_STATUS_META } from "./marketingMock.js";
 import { daysUntil, formatDate } from "../../lib/format.js";
 import { formatCompact, CAMPAIGN_STATUS_BADGE } from "./marketingFormat.js";
+
+function kpisFor(prospects, leadsGenerated, activeOpportunities) {
+  const contacted = prospects.filter((p) => p.status !== "New").length;
+  const responses = prospects.filter((p) => ["Replied", "Meeting Scheduled"].includes(p.status)).length;
+  const meetings = prospects.filter((p) => p.status === "Meeting Scheduled").length;
+  return [
+    { label: "Prospects Contacted", value: String(contacted) },
+    { label: "Responses", value: String(responses) },
+    { label: "Meetings", value: String(meetings) },
+    { label: "Active Opportunities", value: String(activeOpportunities) },
+    { label: "Leads Generated", value: String(leadsGenerated) },
+    { label: "Revenue Generated", value: "—" }
+  ];
+}
+
+function upcomingActionsFor(prospects) {
+  return [...prospects]
+    .filter((p) => p.nextFollowUp)
+    .sort((a, b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp))
+    .slice(0, 4)
+    .map((p) => ({ icon: "clock", text: `Follow up with ${p.business}`, meta: `${p.serviceInterest || p.industry || "Prospect"} — due ${formatDate(p.nextFollowUp)}` }));
+}
 
 function emptyState(title, body) {
   return (
@@ -25,20 +57,22 @@ function allTouchpoints(prospects) {
 }
 
 export default function Overview({ marketing, onOpenProspect, onViewCampaign, onGotoTab }) {
-  const { prospects, campaigns } = marketing;
+  const { prospects, campaigns, leadsGenerated, activeOpportunities } = marketing;
   const touchpoints = allTouchpoints(prospects).slice(0, 7);
   const contactedThisWeek = prospects.filter((p) => p.lastContact && daysUntil(p.lastContact) >= -7).length;
   const activeCampaigns = campaigns.filter((c) => c.status === "Active").slice(0, 3);
+  const kpis = kpisFor(prospects, leadsGenerated, activeOpportunities);
+  const upcomingActions = upcomingActionsFor(prospects);
 
   return (
     <>
       <section className="dash-stat-cards" aria-label="Marketing & Sales metrics">
-        {MKT_KPIS.map((k) => (
+        {kpis.map((k) => (
           <div key={k.label} className="panel dash-stat-card">
             <div>
               <strong>{k.value}</strong>
               <span className="dash-stat-label">{k.label}</span>
-              <span className={`dash-stat-trend is-${k.direction}`}>{k.meta}</span>
+              {k.meta && <span className={`dash-stat-trend is-${k.direction}`}>{k.meta}</span>}
             </div>
           </div>
         ))}
@@ -91,8 +125,8 @@ export default function Overview({ marketing, onOpenProspect, onViewCampaign, on
               <span className="panel-meta">Today's focus</span>
             </div>
             <div>
-              {MKT_UPCOMING_ACTIONS.length ? (
-                MKT_UPCOMING_ACTIONS.map((a, i) => (
+              {upcomingActions.length ? (
+                upcomingActions.map((a, i) => (
                   <div key={i} className="action-item">
                     <div className="action-item-main">
                       <p>{a.text}</p>
