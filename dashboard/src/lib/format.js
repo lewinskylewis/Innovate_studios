@@ -54,12 +54,29 @@ export function toDatetimeLocalValue(iso) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+// "4days, 17 hrs. 14mins" — days omitted once it's 0 (same-day due
+// items are exactly what this granularity is for), hrs omitted only
+// once both days and hours are 0. Comma only after "Ndays" — "hrs."
+// and "Nmins" are just space-separated, matching the requested format
+// literally.
+function formatDueCountdown(ms) {
+  const totalMinutes = Math.max(0, Math.round(ms / 60000));
+  const days = Math.floor(totalMinutes / 1440);
+  const hours = Math.floor((totalMinutes % 1440) / 60);
+  const minutes = totalMinutes % 60;
+  if (days > 0) return `${days}days, ${hours} hrs. ${minutes}mins`;
+  if (hours > 0) return `${hours} hrs. ${minutes}mins`;
+  return `${minutes}mins`;
+}
+
 /* Project Timeline (Studio table, computed/read-only) — a friendly
    relative phrase derived from Start Date + Due Date and Time, not a
    literal date range (per explicit request: "displayed as e.g. 'Due in
-   2 days'"). Reuses daysUntil/formatDueLabel's existing day-rounding
-   convention rather than a stricter datetime diff, so the phrasing
-   stays consistent with every other relative-date label in the app. */
+   2 days'", later refined to "Due in 4days, 17 hrs. 14mins" so
+   same-day-due projects still show real granularity instead of just
+   "Due today"). Due Date and Time carries a real time now, so this
+   works off the exact millisecond diff to "now" rather than
+   calendar-day rounding. */
 export function formatProjectTimeline(startDate, dueDate) {
   if (!startDate && !dueDate) return null;
   if (startDate) {
@@ -69,7 +86,8 @@ export function formatProjectTimeline(startDate, dueDate) {
     }
   }
   if (!dueDate) return "In progress";
-  return formatDueLabel(dueDate, false);
+  const diffMs = new Date(dueDate) - new Date();
+  return diffMs >= 0 ? `Due in ${formatDueCountdown(diffMs)}` : `Overdue by ${formatDueCountdown(-diffMs)}`;
 }
 
 export function relativeTime(dateStr) {

@@ -8,8 +8,21 @@
  * clientPreview-filtered) list via arrow buttons, swipe, and
  * ArrowLeft/ArrowRight/Escape keys — one signed URL is fetched per
  * file as the user navigates (studio.getFileDownloadUrl, unchanged).
+ *
+ * Rendered via a portal into document.body — same reason as
+ * Popover.jsx: `.detail-drawer`/`.glass-surface` set backdrop-filter,
+ * which per the CSS spec makes that ancestor the containing block for
+ * any `position: fixed` descendant instead of the real viewport. Without
+ * the portal, this overlay renders pinned to the drawer's own on-screen
+ * box (fixed at the drawer's top edge, `min(38rem,100vw)` wide) rather
+ * than covering the full viewport — which is exactly why it looked like
+ * it "opens at the top of the page" regardless of scroll position, and
+ * why closing it never needed to touch scroll: the underlying page's
+ * scroll position was never actually altered, only the overlay itself
+ * was mispositioned.
  */
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 const IMAGE_EXT = new Set(["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg"]);
 const VIDEO_EXT = new Set(["mp4", "mov", "webm", "avi", "mkv", "m4v"]);
@@ -62,7 +75,7 @@ export default function FileLightbox({ files, index, onNavigate, onClose, studio
     if (delta < 0 && index < files.length - 1) onNavigate(index + 1);
   }
 
-  return (
+  return createPortal(
     <div className="file-lightbox-overlay" role="dialog" aria-modal="true" aria-label={file.name}>
       <div className="file-lightbox-topbar">
         <span className="file-lightbox-name">{file.name}</span>
@@ -129,6 +142,7 @@ export default function FileLightbox({ files, index, onNavigate, onClose, studio
           {index + 1} / {files.length}
         </div>
       )}
-    </div>
+    </div>,
+    document.body
   );
 }
