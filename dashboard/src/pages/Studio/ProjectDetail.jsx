@@ -1,14 +1,18 @@
 /*
- * Innov8 Studios — project detail drawer. Header reads Title, Brand,
- * then the start/due date timeline, in that fixed order — status and
- * priority aren't shown here at all; they're still editable from their
- * own columns in the Ongoing Projects table. Studio view vs. Client
- * Preview (a frontend presentation toggle — no client auth/role, same
- * as before): Milestones stay editable only for Studio (Milestones.jsx's
- * readOnly prop); Files offers Download for the client instead of
- * upload/delete (FilesSection.jsx); Comments (Comments.jsx) never
- * render for the client at all; Activity (ActivityFeed.jsx) is
- * identical for both.
+ * Innov8 Studios — project detail drawer. Header reads "Project" +
+ * project name, then Brand, then the start/due date timeline, in that
+ * fixed order — status and priority aren't shown here at all; they're
+ * still editable from their own columns in the Ongoing Projects table.
+ * Studio view vs. Client Preview (a frontend presentation toggle — no
+ * client auth/role, same as before): Milestones stay editable/
+ * reorderable only for Studio (Milestones.jsx's readOnly prop); Files
+ * offers Download for the client instead of upload/delete
+ * (FilesSection.jsx); Comments (Comments.jsx) renders in both, but at a
+ * different position — immediately after Files for the client, in its
+ * original spot for Studio — and is itself filtered client-side to
+ * client-authored + explicitly-published rows for that reader (enforced
+ * server-side too, see supabase/migrations/20260905*); Activity
+ * (ActivityFeed.jsx) is identical for both.
  *
  * `standalone` (new): true only when rendered by the public, unauthenticated
  * pages/Studio/SharedProject.jsx (/project/:projectSlug — see App.jsx).
@@ -188,12 +192,21 @@ export default function ProjectDetail({ project, studio, onClose, onDeleted, sta
             </button>
           </div>
         )}
-        <h2 className="detail-title">Title: {project.title || "Untitled project"}</h2>
-        <div className="detail-client-name">Brand: {project.client || "No client set"}</div>
+        <div className="detail-title-group">
+          <span className="detail-title-label">Project</span>
+          <h2 className="detail-title">{project.title || "Untitled project"}</h2>
+        </div>
+        <div className="detail-client-name">{project.client || "No client set"}</div>
         <div className="detail-timeline">
-          <EditableDate value={project.startDate} onSave={(v) => handleField("startDate", v)} editable={!clientPreview} />
+          <div className="detail-timeline-col">
+            <span className="detail-timeline-label">Start date</span>
+            <EditableDate value={project.startDate} onSave={(v) => handleField("startDate", v)} editable={!clientPreview} />
+          </div>
           <span className="detail-timeline-connector" />
-          <EditableDate value={project.deadline} onSave={(v) => handleField("deadline", v)} editable={!clientPreview} />
+          <div className="detail-timeline-col">
+            <span className="detail-timeline-label">Due date</span>
+            <EditableDate value={project.deadline} onSave={(v) => handleField("deadline", v)} editable={!clientPreview} />
+          </div>
         </div>
       </div>
 
@@ -247,6 +260,18 @@ export default function ProjectDetail({ project, studio, onClose, onDeleted, sta
         <Milestones project={project} studio={studio} readOnly={clientPreview} />
       </div>
 
+      <div className="detail-section">
+        <h3>Files &amp; deliverables</h3>
+        {detailLoading ? <p className="sub">Loading…</p> : <FilesSection project={project} studio={studio} clientPreview={clientPreview} />}
+      </div>
+
+      {clientPreview && (
+        <div className="detail-section">
+          <h3>Comments</h3>
+          {detailLoading ? <p className="sub">Loading…</p> : <Comments project={project} studio={studio} clientPreview={clientPreview} standalone={standalone} />}
+        </div>
+      )}
+
       {!clientPreview && (
         <div className="detail-section">
           <h3>Team</h3>
@@ -292,15 +317,10 @@ export default function ProjectDetail({ project, studio, onClose, onDeleted, sta
         </div>
       )}
 
-      <div className="detail-section">
-        <h3>Files &amp; deliverables</h3>
-        {detailLoading ? <p className="sub">Loading…</p> : <FilesSection project={project} studio={studio} clientPreview={clientPreview} />}
-      </div>
-
       {!clientPreview && (
         <div className="detail-section">
           <h3>Comments</h3>
-          {detailLoading ? <p className="sub">Loading…</p> : <Comments project={project} studio={studio} />}
+          {detailLoading ? <p className="sub">Loading…</p> : <Comments project={project} studio={studio} clientPreview={clientPreview} standalone={standalone} />}
         </div>
       )}
 

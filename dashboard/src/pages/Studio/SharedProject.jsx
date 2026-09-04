@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import logo from "../../../assets/images/logo white.png";
 import { ToastProvider } from "../../lib/ToastContext.jsx";
-import { loadSharedProject } from "../../data/sharedProject.js";
+import { loadSharedProject, postComment } from "../../data/sharedProject.js";
 import { getFileDownloadUrl } from "../../data/studio.js";
 import ProjectDetail from "./ProjectDetail.jsx";
 
@@ -49,7 +49,16 @@ export default function SharedProject() {
   // (updateProjectField, createMilestone, uploadProjectFile, ...) is
   // never reached because ProjectDetail's `standalone` prop keeps
   // clientPreview permanently true and hides every editing affordance.
-  const studioStub = { labelFor: state.labelFor || (() => ""), getFileDownloadUrl };
+  // addComment is the one real write anon Client View can make (Studio
+  // never posts from this stub) — appends locally so it appears without
+  // a full reload, matching useStudio's addComment.
+  async function addComment(project, content) {
+    const comment = await postComment(project.id, content);
+    setState((s) => ({ ...s, project: { ...s.project, comments: [...s.project.comments, comment] } }));
+    return comment;
+  }
+
+  const studioStub = { labelFor: state.labelFor || (() => ""), getFileDownloadUrl, addComment };
 
   return (
     // ProjectDetail.jsx (and ShareModal.jsx, rendered inert underneath

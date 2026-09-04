@@ -55,7 +55,8 @@ function mapMilestoneRow(row) {
     statusId: row.status_id,
     priorityId: row.priority_id,
     assignees: (row.milestone_assignees || []).map((a) => a.team_member_id),
-    clientVisible: row.client_visible
+    clientVisible: row.client_visible,
+    sortOrder: row.sort_order
   };
 }
 
@@ -413,6 +414,16 @@ export async function deleteMilestone(milestone) {
   await mutate(client.from("milestones").delete().eq("id", milestone.id), "delete that milestone");
 }
 
+/* Persists a new Studio-chosen order — orderedMilestones is the full
+   milestone list already spliced into its new order client-side; this
+   just writes each row's new position. Client View's sharedProject.js
+   query already orders by this same sort_order column, so this is the
+   only place milestone order is ever written. */
+export async function reorderMilestones(orderedMilestones) {
+  const client = requireClient();
+  await Promise.all(orderedMilestones.map((m, i) => client.from("milestones").update({ sort_order: i }).eq("id", m.id)));
+}
+
 /* ---------- comments (lazy-loaded when a project's detail drawer opens) ---------- */
 
 export async function loadProjectComments(projectId) {
@@ -424,19 +435,37 @@ export async function loadProjectComments(projectId) {
     author: c.author_display_name,
     authorType: c.author_type,
     content: c.content,
+    visibility: c.visibility,
     createdAt: c.created_at
   }));
 }
 
-export async function addComment(projectId, content, authorProfileId, authorDisplayName) {
+export async function addComment(projectId, content, authorProfileId, authorDisplayName, visibility = "internal") {
   const client = requireClient();
   const { data, error } = await client
     .from("project_comments")
-    .insert({ project_id: projectId, author_profile_id: authorProfileId, author_display_name: authorDisplayName, author_type: "studio", content })
+    .insert({ project_id: projectId, author_profile_id: authorProfileId, author_display_name: authorDisplayName, author_type: "studio", content, visibility })
     .select()
     .single();
   if (error) throw error;
-  return { id: data.id, author: data.author_display_name, authorType: data.author_type, content: data.content, createdAt: data.created_at };
+  return { id: data.id, author: data.author_display_name, authorType: data.author_type, content: data.content, visibility: data.visibility, createdAt: data.created_at };
+}
+
+/* Studio-only — flips whether a studio-authored comment is exposed to
+   the client. Meaningless (and never called) for author_type='client'
+   rows, which are always visible to both sides regardless. */
+export async function updateCommentVisibility(comment, visibility) {
+  const client = requireClient();
+  await mutate(client.from("project_comments").update({ visibility }).eq("id", comment.id), "change that comment's visibility");
+}
+
+/* Studio-only (never offered to the client). RLS: is_admin() or
+   author_profile_id = auth.uid() — an admin can delete any comment
+   including a client-authored one; a non-admin team member can only
+   delete their own studio comments. */
+export async function deleteComment(comment) {
+  const client = requireClient();
+  await mutate(client.from("project_comments").delete().eq("id", comment.id), "delete that comment");
 }
 
 /* ---------- fields (custom columns) ---------- */
@@ -649,6 +678,15 @@ export async function uploadProjectFile(project, file, { category = "Working Fil
     visibility,
     storagePath: path
   };
+}
+
+/* Studio-only — flips whether a file is visible to the client. This is
+   the only way a file ever becomes client-visible: upload always
+   defaults to "Internal" (see uploadProjectFile above), matching prior
+   behavior — Studio explicitly publishes a file via this toggle. */
+export async function updateFileVisibility(file, visibility) {
+  const client = requireClient();
+  await mutate(client.from("project_files").update({ visibility }).eq("id", file.id), "change that file's visibility");
 }
 
 export async function getFileDownloadUrl(file) {

@@ -2011,11 +2011,26 @@ html.dash-collapsed .dash-account-trigger {
   margin-bottom: var(--space-5);
 }
 
+.detail-title-group {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.detail-title-label {
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+  margin-bottom: 0.1875rem;
+}
+
 .detail-title {
   align-self: stretch;
   font-family: var(--font-display);
   font-size: var(--text-lg);
   font-weight: 600;
+  color: var(--orange-bright);
 }
 
 .detail-badge-row {
@@ -2066,13 +2081,26 @@ html.dash-collapsed .dash-account-trigger {
 
 .detail-timeline {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 0.625rem;
   width: 100%;
 }
 
+.detail-timeline-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+}
+
+.detail-timeline-label {
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+}
+
 .detail-timeline-date {
-  font-size: var(--text-xs);
+  font-size: calc(var(--text-xs) + 3px);
   color: var(--muted);
   white-space: nowrap;
 }
@@ -2082,6 +2110,7 @@ html.dash-collapsed .dash-account-trigger {
   min-width: 2rem;
   max-width: 6rem;
   height: 0;
+  margin-bottom: 0.375rem;
   border-top: 0.125rem dotted var(--line-strong);
 }
 
@@ -2091,7 +2120,7 @@ html.dash-collapsed .dash-account-trigger {
   border-radius: var(--radius-sm);
   color: var(--white);
   font: inherit;
-  font-size: var(--text-xs);
+  font-size: calc(var(--text-xs) + 3px);
   padding: 0.1875rem 0.4375rem;
 }
 
@@ -2207,8 +2236,9 @@ html.dash-collapsed .dash-account-trigger {
 
 .detail-section h3 {
   font-family: var(--font-display);
-  font-size: var(--text-sm);
+  font-size: calc(var(--text-sm) + 3px);
   font-weight: 600;
+  color: var(--orange-bright);
   margin-bottom: var(--space-3);
 }
 
@@ -2309,7 +2339,6 @@ html.dash-collapsed .dash-account-trigger {
 .milestone-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-3);
   flex-wrap: wrap;
 }
@@ -2331,6 +2360,63 @@ html.dash-collapsed .dash-account-trigger {
   gap: 0.5rem;
   font-size: var(--text-3xs);
   color: var(--faint);
+  margin-left: auto;
+  text-align: right;
+}
+
+.milestone-grip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--faint);
+  cursor: grab;
+  flex-shrink: 0;
+  opacity: 0.55;
+}
+
+.milestone-grip svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.milestone-item:hover .milestone-grip {
+  opacity: 1;
+}
+
+.milestone-item.is-dragging {
+  opacity: 0.45;
+}
+
+.milestone-item.is-drop-target {
+  outline: 0.0625rem dashed var(--orange);
+  outline-offset: 0.375rem;
+  border-radius: var(--radius-sm);
+}
+
+/* Delete moved onto the title row (was its own trailing block), 2x the
+   base .icon-remove size, and always red — not just on hover — so it
+   reads as clearly destructive at a glance. Compound selector
+   (.icon-remove.milestone-delete) needed so this beats the plain
+   .icon-remove rule defined later in this file — two single-class
+   selectors have equal specificity and would otherwise lose to
+   source order. */
+.icon-remove.milestone-delete {
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  color: var(--danger);
+}
+
+.icon-remove.milestone-delete svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.icon-remove.milestone-delete:hover {
+  color: var(--danger);
+  background: rgba(255, 90, 95, 0.16);
 }
 
 /* Assignments, team, files — simple row lists inside the drawer */
@@ -2524,11 +2610,24 @@ html.dash-collapsed .dash-account-trigger {
   font-weight: 900;
 }
 
+.proj-standalone .detail-title-label {
+  font-size: var(--text-xs);
+}
+
 .proj-standalone .detail-client-name {
   font-family: var(--font-table);
   font-size: var(--text-xs);
   font-weight: 400;
   color: var(--muted);
+}
+
+.proj-standalone .detail-timeline-label {
+  font-size: var(--text-xs);
+}
+
+.proj-standalone .detail-timeline-date,
+.proj-standalone .detail-timeline-input {
+  font-size: calc(var(--text-sm) + 3px);
 }
 
 .enq-status-field {
@@ -2691,6 +2790,276 @@ html.dash-collapsed .dash-account-trigger {
   height: 0.875rem;
 }
 
+/* Files & deliverables — medium desktop tiles, 2-col mobile grid */
+
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: var(--space-3);
+}
+
+.file-tile {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--charcoal);
+  cursor: pointer;
+  border: 0.0625rem solid var(--line-soft);
+}
+
+.file-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.file-tile-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+}
+
+.file-tile-fallback svg {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.file-tile-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.file-tile-play svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.file-tile-label {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: 0.5rem 0.625rem 0.375rem;
+  font-size: var(--text-3xs);
+  color: var(--white);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.78), transparent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-tile-delete {
+  position: absolute;
+  top: 0.375rem;
+  right: 0.375rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--white);
+}
+
+.file-tile-delete:hover {
+  color: var(--danger);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.file-tile-visibility {
+  position: absolute;
+  top: 0.375rem;
+  left: 0.375rem;
+  font-size: var(--text-3xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1875rem 0.5rem;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+}
+
+.file-tile-visibility.is-internal {
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--faint);
+}
+
+.file-tile-visibility.is-client {
+  background: rgba(79, 140, 255, 0.85);
+  color: var(--white);
+}
+
+@media (max-width: 30rem) {
+  .file-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Fullscreen file lightbox — a dedicated fixed overlay, not the
+   constrained centered Modal component (that clipped media and hid the
+   header/footer for tall content). Header/footer are fixed to the
+   viewport edges so Close/Download/nav are always visible regardless of
+   media size; the stage fills the remaining space with object-fit:
+   contain so nothing is cropped. */
+
+.file-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  background: rgba(3, 2, 2, 0.94);
+  backdrop-filter: blur(0.25rem);
+}
+
+.file-lightbox-topbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+}
+
+.file-lightbox-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.file-lightbox-name {
+  font-size: var(--text-sm);
+  color: var(--white);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.file-lightbox-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: var(--text-xs);
+  padding: 0.5rem 0.875rem;
+}
+
+.file-lightbox-download svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.file-lightbox-close {
+  color: var(--white);
+}
+
+.file-lightbox-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-6) var(--space-6);
+}
+
+.file-lightbox-stage img,
+.file-lightbox-stage video {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.file-lightbox-stage iframe {
+  width: 100%;
+  height: 100%;
+  max-width: 64rem;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--white);
+}
+
+.file-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 0.0625rem solid var(--line-strong);
+  color: var(--white);
+  cursor: pointer;
+  z-index: 1;
+}
+
+.file-lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.file-lightbox-nav svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.file-lightbox-nav.is-prev {
+  left: var(--space-4);
+}
+
+.file-lightbox-nav.is-next {
+  right: var(--space-4);
+}
+
+.file-lightbox-counter {
+  flex-shrink: 0;
+  text-align: center;
+  font-size: var(--text-2xs);
+  color: var(--faint);
+  padding-bottom: var(--space-4);
+}
+
+@media (max-width: 30rem) {
+  .file-lightbox-topbar {
+    padding: var(--space-3);
+  }
+
+  .file-lightbox-stage {
+    padding: 0 var(--space-3) var(--space-3);
+  }
+
+  .file-lightbox-nav {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .file-lightbox-nav.is-prev {
+    left: 0.25rem;
+  }
+
+  .file-lightbox-nav.is-next {
+    right: 0.25rem;
+  }
+
+  .file-lightbox-download span {
+    display: none;
+  }
+}
+
 /* Comments */
 
 .comment-item {
@@ -2759,6 +3128,82 @@ html.dash-collapsed .dash-account-trigger {
   margin-top: 0.375rem;
   font-size: var(--text-3xs);
   color: var(--faint);
+}
+
+.comment-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Green = internal (studio-only), Blue = visible to client — a
+   deliberately different pairing from the CLIENT/STUDIO author tags
+   above (orange/blue) so visibility state and authorship are never
+   confused for the same signal. */
+.comment-visibility-toggle {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1875rem 0.5625rem;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+}
+
+.comment-visibility-toggle.is-internal {
+  background: rgba(61, 220, 132, 0.16);
+  color: var(--success);
+}
+
+.comment-visibility-toggle.is-client {
+  background: rgba(79, 140, 255, 0.16);
+  color: #7fb2ff;
+}
+
+.comment-more-btn {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--faint);
+}
+
+.comment-more-btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.comment-reply-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border-left: 0.1875rem solid var(--orange);
+  background: var(--graphite-soft);
+}
+
+.comment-reply-preview-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.comment-reply-preview-text strong {
+  font-size: var(--text-3xs);
+  color: var(--orange-bright);
+}
+
+.comment-reply-preview-text span {
+  font-size: var(--text-2xs);
+  color: var(--faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .note-composer {

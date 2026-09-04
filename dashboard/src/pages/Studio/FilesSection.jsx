@@ -1,21 +1,23 @@
 /*
- * Innov8 Studios — project Files & deliverables, ported from
- * studio.js's buildFilesHtml() + the upload/delete wiring in
- * wireProjectDetail(). Uses the same private Storage bucket
- * ("project-files") via src/data/studio.js's uploadProjectFile —
- * uploads always default to category "Working Files" / visibility
- * "Internal", matching the legacy page (it never exposed a picker for
- * either).
+ * Innov8 Studios — project Files & deliverables. Upload/delete/download
+ * wiring is unchanged, still going through src/data/studio.js's
+ * uploadProjectFile (private Storage bucket "project-files") — uploads
+ * default to category "Working Files" / visibility "Internal", same as
+ * before. Rendering changed from a flat .detail-row list to a FileTile
+ * grid with real image/video/PDF previews and a fullscreen
+ * FileLightbox, both new companions in this same folder.
  */
 import { useState } from "react";
 import { useToast } from "../../lib/ToastContext.jsx";
-import { formatDate } from "../../lib/format.js";
+import FileTile from "./FileTile.jsx";
+import FileLightbox from "./FileLightbox.jsx";
 
 const FILE_CATEGORIES = ["Brief", "References", "Working Files", "Drafts", "Client Review", "Final Deliverables"];
 
 export default function FilesSection({ project, studio, clientPreview }) {
   const { show } = useToast();
   const [uploading, setUploading] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
 
   const files = clientPreview ? project.files.filter((f) => f.visibility === "Client") : project.files;
 
@@ -45,14 +47,21 @@ export default function FilesSection({ project, studio, clientPreview }) {
     }
   }
 
-  async function handleDownload(file) {
+  async function handleToggleVisibility(file, visibility) {
     try {
-      const url = await studio.getFileDownloadUrl(file);
-      window.open(url, "_blank", "noopener");
+      await studio.updateFileVisibility(project, file, visibility);
     } catch (err) {
-      console.error("[studio] getFileDownloadUrl failed", err);
-      show(err.message || "Couldn't download that file — try again.");
+      console.error("[studio] updateFileVisibility failed", err);
+      show(err.message || "Couldn't change that file's visibility — try again.");
     }
+  }
+
+  function openLightbox(file) {
+    setLightboxIndex(files.findIndex((f) => f.id === file.id));
+  }
+
+  function closeLightbox() {
+    setLightboxIndex(null);
   }
 
   const grouped = FILE_CATEGORIES.map((cat) => ({ cat, files: files.filter((f) => f.category === cat) })).filter((g) => g.files.length);
@@ -63,41 +72,19 @@ export default function FilesSection({ project, studio, clientPreview }) {
         grouped.map((group) => (
           <div key={group.cat}>
             <div className="file-category-label">{group.cat}</div>
-            {group.files.map((f) => (
-              <div key={f.id} className="detail-row">
-                <span className="file-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M7 3.5h7l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-16a1 1 0 0 1 1-1z" />
-                    <path d="M14 3.5v4h4" />
-                  </svg>
-                </span>
-                <div className="detail-row-main">
-                  <strong>{f.name}</strong>
-                  <span>
-                    {f.size} · {f.uploadedBy} · {formatDate(f.uploadedAt)}
-                  </span>
-                </div>
-                <span className={`badge badge--${f.visibility === "Client" ? "active" : "soon"}`}>{f.visibility}</span>
-                {clientPreview ? (
-                  <button className="btn file-download-btn" type="button" onClick={() => handleDownload(f)}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M12 15.5V5.5" />
-                      <path d="M7.5 11 12 15.5 16.5 11" />
-                      <path d="M5 16.5v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2" />
-                    </svg>
-                    Download
-                  </button>
-                ) : (
-                  <button className="icon-remove" type="button" aria-label="Delete file" onClick={() => handleDelete(f)}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M5 7h14" />
-                      <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                      <path d="M7 7l1 12a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1l1-12" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-            ))}
+            <div className="file-grid">
+              {group.files.map((f) => (
+                <FileTile
+                  key={f.id}
+                  file={f}
+                  studio={studio}
+                  clientPreview={clientPreview}
+                  onOpen={openLightbox}
+                  onDelete={handleDelete}
+                  onToggleVisibility={handleToggleVisibility}
+                />
+              ))}
+            </div>
           </div>
         ))
       ) : (
@@ -118,6 +105,8 @@ export default function FilesSection({ project, studio, clientPreview }) {
           <input type="file" onChange={handleFileChange} disabled={uploading} />
         </label>
       )}
+
+      <FileLightbox files={files} index={lightboxIndex} onNavigate={setLightboxIndex} onClose={closeLightbox} studio={studio} />
     </div>
   );
 }

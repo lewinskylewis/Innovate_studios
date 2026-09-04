@@ -39,8 +39,45 @@ function mapMilestoneRow(row) {
     description: row.description || "",
     dueDate: row.due_date,
     statusId: row.status_id,
-    clientVisible: row.client_visible
+    clientVisible: row.client_visible,
+    sortOrder: row.sort_order
   };
+}
+
+/* Plain query, no embed (see header comment) — RLS (20260905000004)
+   already scopes this to author_type='client' OR visibility='client'
+   rows, so no extra .eq() filtering is needed here, same pattern as
+   loadClientVisibleFiles/loadClientVisibleActivity below. */
+async function loadClientVisibleComments(client, projectId) {
+  const { data, error } = await client
+    .from("project_comments")
+    .select("id, author_display_name, author_type, content, visibility, created_at")
+    .eq("project_id", projectId)
+    .order("created_at");
+  if (error) throw error;
+  return (data || []).map((c) => ({
+    id: c.id,
+    author: c.author_display_name,
+    authorType: c.author_type,
+    content: c.content,
+    visibility: c.visibility,
+    createdAt: c.created_at
+  }));
+}
+
+/* The only way an anonymous Client View visitor can write anything —
+   always posts author_type='client', author_display_name='Client' (no
+   per-visitor identity; see 20260905000003's with-check, which requires
+   author_profile_id is null). */
+export async function postComment(projectId, content) {
+  const client = requireClient();
+  const { data, error } = await client
+    .from("project_comments")
+    .insert({ project_id: projectId, author_display_name: "Client", author_type: "client", content })
+    .select("id, project_id, author_display_name, author_type, content, visibility, created_at")
+    .single();
+  if (error) throw error;
+  return { id: data.id, author: data.author_display_name, authorType: data.author_type, content: data.content, visibility: data.visibility, createdAt: data.created_at };
 }
 
 /* Same output shape as data/studio.js's loadProjectFiles(), including
@@ -110,12 +147,18 @@ export async function loadSharedProject(slug) {
   if (error) throw error;
   if (!row) return null;
 
-  const [contactRes, milestonesRes, statusOptionsRes, files, activity] = await Promise.all([
+  const [contactRes, milestonesRes, statusOptionsRes, files, activity, comments] = await Promise.all([
     row.client_id ? client.from("contacts").select("brand_name").eq("id", row.client_id).maybeSingle() : Promise.resolve({ data: null, error: null }),
-    client.from("milestones").select("id, title, description, due_date, status_id, client_visible").eq("project_id", row.id).eq("client_visible", true).order("due_date"),
+    client
+      .from("milestones")
+      .select("id, title, description, due_date, status_id, client_visible, sort_order")
+      .eq("project_id", row.id)
+      .eq("client_visible", true)
+      .order("sort_order"),
     client.from("project_option_lists").select("id, label").eq("kind", "milestone_status"),
     loadClientVisibleFiles(client, row.id),
-    loadClientVisibleActivity(client, row.id)
+    loadClientVisibleActivity(client, row.id),
+    loadClientVisibleComments(client, row.id)
   ]);
   if (contactRes.error) throw contactRes.error;
   if (milestonesRes.error) throw milestonesRes.error;
@@ -135,7 +178,7 @@ export async function loadSharedProject(slug) {
       files,
       activity,
       team: [],
-      comments: [],
+      comments,
       isDraft: false
     },
     // Only the milestoneStatus kind resolves this way — the stub studio

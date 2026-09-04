@@ -156,16 +156,40 @@ export function useStudio() {
     removeMilestone(project.id, milestone.id);
   }
 
+  async function reorderMilestones(project, orderedMilestones) {
+    await studioData.reorderMilestones(orderedMilestones);
+    const withOrder = orderedMilestones.map((m, i) => ({ ...m, sortOrder: i }));
+    setState((s) => ({ ...s, projects: s.projects.map((p) => (p.id !== project.id ? p : { ...p, milestones: withOrder })) }));
+  }
+
   async function loadProjectComments(project) {
     const comments = await studioData.loadProjectComments(project.id);
     patchProject(project.id, { comments });
     return comments;
   }
 
-  async function addComment(project, content) {
-    const comment = await studioData.addComment(project.id, content, profile?.id, profile?.full_name || "Studio");
+  async function addComment(project, content, visibility = "internal") {
+    const comment = await studioData.addComment(project.id, content, profile?.id, profile?.full_name || "Studio", visibility);
     patchProject(project.id, { comments: [...project.comments, comment] });
     return comment;
+  }
+
+  async function updateCommentVisibility(project, comment, visibility) {
+    await studioData.updateCommentVisibility(comment, visibility);
+    setState((s) => ({
+      ...s,
+      projects: s.projects.map((p) =>
+        p.id !== project.id ? p : { ...p, comments: p.comments.map((c) => (c.id === comment.id ? { ...c, visibility } : c)) }
+      )
+    }));
+  }
+
+  async function deleteComment(project, comment) {
+    await studioData.deleteComment(comment);
+    setState((s) => ({
+      ...s,
+      projects: s.projects.map((p) => (p.id !== project.id ? p : { ...p, comments: p.comments.filter((c) => c.id !== comment.id) }))
+    }));
   }
 
   /* ---------- files ---------- */
@@ -185,6 +209,11 @@ export function useStudio() {
   async function deleteProjectFile(project, file) {
     await studioData.deleteProjectFile(file);
     patchProject(project.id, { files: project.files.filter((f) => f.id !== file.id) });
+  }
+
+  async function updateFileVisibility(project, file, visibility) {
+    await studioData.updateFileVisibility(file, visibility);
+    patchProject(project.id, { files: project.files.map((f) => (f.id === file.id ? { ...f, visibility } : f)) });
   }
 
   async function getFileDownloadUrl(file) {
@@ -324,11 +353,15 @@ export function useStudio() {
     updateMilestoneField,
     setMilestoneAssignees,
     deleteMilestone,
+    reorderMilestones,
     loadProjectComments,
     addComment,
+    updateCommentVisibility,
+    deleteComment,
     loadProjectFiles,
     uploadProjectFile,
     deleteProjectFile,
+    updateFileVisibility,
     getFileDownloadUrl,
     loadProjectActivity,
     createField,
