@@ -27,7 +27,7 @@
  */
 import { useEffect, useState } from "react";
 import { useToast } from "../../lib/ToastContext.jsx";
-import { formatDate } from "../../lib/format.js";
+import { formatDate, formatDateTime, toDatetimeLocalValue } from "../../lib/format.js";
 import { colorForName, initials } from "../../lib/avatar.js";
 import Milestones from "./Milestones.jsx";
 import FilesSection from "./FilesSection.jsx";
@@ -41,10 +41,29 @@ function computeProgress(project, labelFor) {
   return Math.round((done / project.milestones.length) * 100);
 }
 
-function EditableDate({ value, onSave, editable }) {
+function EditableDate({ value, onSave, editable, includeTime = false }) {
   const [editing, setEditing] = useState(false);
 
   if (editable && editing) {
+    if (includeTime) {
+      return (
+        <input
+          type="datetime-local"
+          className="detail-timeline-input"
+          autoFocus
+          defaultValue={toDatetimeLocalValue(value)}
+          onBlur={(e) => {
+            setEditing(false);
+            const next = e.target.value ? new Date(e.target.value).toISOString() : null;
+            if (next !== value) onSave(next);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") e.currentTarget.blur();
+            if (e.key === "Escape") setEditing(false);
+          }}
+        />
+      );
+    }
     return (
       <input
         type="date"
@@ -65,7 +84,7 @@ function EditableDate({ value, onSave, editable }) {
 
   return (
     <span className="detail-timeline-date" onClick={editable ? () => setEditing(true) : undefined} style={editable ? { cursor: "pointer" } : undefined}>
-      {value ? formatDate(value) : "Not set"}
+      {value ? (includeTime ? formatDateTime(value) : formatDate(value)) : "Not set"}
     </span>
   );
 }
@@ -205,7 +224,7 @@ export default function ProjectDetail({ project, studio, onClose, onDeleted, sta
           <span className="detail-timeline-connector" />
           <div className="detail-timeline-col">
             <span className="detail-timeline-label">Due date</span>
-            <EditableDate value={project.deadline} onSave={(v) => handleField("deadline", v)} editable={!clientPreview} />
+            <EditableDate value={project.deadline} onSave={(v) => handleField("deadline", v)} editable={!clientPreview} includeTime />
           </div>
         </div>
       </div>

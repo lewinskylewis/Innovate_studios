@@ -10,7 +10,8 @@ import { useState } from "react";
 import Popover from "../../components/Popover.jsx";
 import { useToast } from "../../lib/ToastContext.jsx";
 import { colorForName, initials } from "../../lib/avatar.js";
-import { formatDate, formatMoney } from "../../lib/format.js";
+import { formatDate, formatDateTime, formatMoney, formatProjectTimeline, toDatetimeLocalValue } from "../../lib/format.js";
+import { computeDeliveryStatus, DELIVERY_STATUS_COLOR } from "../../lib/deliveryStatus.js";
 import { effectiveType } from "./propertyTypes.js";
 
 export function getCellValue(project, field, studio) {
@@ -18,12 +19,21 @@ export function getCellValue(project, field, studio) {
   if (field.id === "client") return project.client;
   if (field.id === "status") return studio.labelFor("status", project.statusId);
   if (field.id === "priority") return studio.labelFor("priority", project.priorityId);
+  // Computed/read-only canonical columns — never stored, always
+  // derived fresh from other columns (see lib/deliveryStatus.js).
+  if (field.id === "timeline") return formatProjectTimeline(project.startDate, project.deadline);
+  if (field.id === "deliveryStatus") return computeDeliveryStatus(project, studio.labelFor("status", project.statusId));
+  if (field.id === "balance") {
+    if (project.estimatedValue == null && project.paid == null) return null;
+    return (project.estimatedValue || 0) - (project.paid || 0);
+  }
   return field.system ? project[field.id] : project.custom[field.id];
 }
 
 function badgeStyle(color) {
   return { background: `${color}22`, color, borderColor: `${color}55` };
 }
+
 
 function OptionList({ field, studio, currentValue, onPick }) {
   const { show } = useToast();
@@ -184,6 +194,27 @@ export default function Cell({ project, field, studio }) {
     return <input type="checkbox" className="cell-checkbox" checked={Boolean(value)} onChange={(e) => commit(e.target.checked)} />;
   }
 
+  if (type === "computed") {
+    // Project Timeline / Delivery Status / Balance — never editable in
+    // place, no click affordance at all, matching the spec's "system-
+    // controlled calculated result" requirement for Delivery Status
+    // (and the same read-only treatment for the other two computed
+    // canonical columns).
+    if (field.id === "deliveryStatus") {
+      return value ? (
+        <span className="option-badge" style={badgeStyle(DELIVERY_STATUS_COLOR[value])}>
+          {value}
+        </span>
+      ) : (
+        <span className="cell-value cell-placeholder">—</span>
+      );
+    }
+    if (field.id === "balance") {
+      return <span className="cell-value">{value === null || value === undefined ? <span className="cell-placeholder">—</span> : formatMoney(value, field.currency)}</span>;
+    }
+    return <span className="cell-value">{value || <span className="cell-placeholder">—</span>}</span>;
+  }
+
   if (type === "select" || type === "status") {
     const option = (field.options || []).find((o) => o.label === value);
     return (
@@ -311,6 +342,41 @@ export default function Cell({ project, field, studio }) {
     return (
       <span className="cell-value" onClick={(e) => e.target.closest(".date-cell-icon") && setEditing(true)}>
         {value ? <span className="date-cell-text">{formatDate(value)}</span> : <span className="cell-placeholder">Set date…</span>}
+        <span className="date-cell-icon" style={{ cursor: "pointer" }} onClick={() => setEditing(true)}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="2" />
+            <path d="M8 3.5v4" />
+            <path d="M16 3.5v4" />
+            <path d="M3.5 10.5h17" />
+          </svg>
+        </span>
+      </span>
+    );
+  }
+
+  if (type === "datetime") {
+    if (editing) {
+      return (
+        <input
+          className="cell-editor"
+          type="datetime-local"
+          autoFocus
+          defaultValue={toDatetimeLocalValue(value)}
+          onBlur={(e) => {
+            setEditing(false);
+            const next = e.target.value ? new Date(e.target.value).toISOString() : null;
+            if (next !== value) commit(next);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") e.currentTarget.blur();
+            if (e.key === "Escape") setEditing(false);
+          }}
+        />
+      );
+    }
+    return (
+      <span className="cell-value" onClick={(e) => e.target.closest(".date-cell-icon") && setEditing(true)}>
+        {value ? <span className="date-cell-text">{formatDateTime(value)}</span> : <span className="cell-placeholder">Set date &amp; time…</span>}
         <span className="date-cell-icon" style={{ cursor: "pointer" }} onClick={() => setEditing(true)}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <rect x="3.5" y="5.5" width="17" height="15" rx="2" />

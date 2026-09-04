@@ -74,7 +74,10 @@ function currentMonthWeeklyBudget(activeProjects) {
   const buckets = [0, 0, 0, 0];
   for (const p of activeProjects) {
     if (!p.dueDate) continue;
-    const due = new Date(`${p.dueDate}T00:00:00`);
+    // p.dueDate is now a full ISO datetime (Due Date and Time carries a
+    // real time/timezone) — parse it directly rather than assuming a
+    // bare date string, which this used to be.
+    const due = new Date(p.dueDate);
     if (due.getFullYear() !== year || due.getMonth() !== month) continue;
     const day = due.getDate();
     const weekIndex = day <= 7 ? 0 : day <= 14 ? 1 : day <= 21 ? 2 : 3;

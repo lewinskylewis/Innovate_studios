@@ -20,7 +20,9 @@ export function useStudio() {
     fields: [],
     clientsById: new Map(),
     clientsByName: new Map(),
-    projects: []
+    projects: [],
+    hiddenFieldKeys: [],
+    columnOrder: []
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,14 +32,29 @@ export function useStudio() {
     setError(null);
     try {
       const data = await studioData.loadStudioData();
-      setState(data);
+      // Per-user Studio table view preferences (column hide/order) —
+      // scoped to this profile, so loaded alongside but independently
+      // of the shared studio data above. Best-effort: a real project
+      // with no saved preference row yet (or a load failure) just
+      // falls back to the default hidden-none/global-sort_order view,
+      // same as before this feature existed — never blocks the page.
+      let prefs = { hiddenFieldKeys: [], columnOrder: [] };
+      if (profile?.id) {
+        try {
+          prefs = await studioData.loadTablePreferences(profile.id);
+        } catch (err) {
+          console.error("[studio] failed to load table preferences", err);
+        }
+      }
+      setState({ ...data, ...prefs });
     } catch (err) {
       console.error("[studio] failed to load", err);
       setError(err.message || "Check your connection and try reloading.");
     } finally {
       setLoading(false);
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.id]);
 
   useEffect(() => {
     reload();
@@ -266,6 +283,31 @@ export function useStudio() {
     setFields(orderedFields.map((f, i) => ({ ...f, order: i })));
   }
 
+  /* ---------- per-user table view preferences (column hide/order) ---------- */
+
+  async function persistTablePreferences(next) {
+    if (!profile?.id) return; // not signed in yet — nothing to scope this to
+    try {
+      await studioData.saveTablePreferences(profile.id, next);
+    } catch (err) {
+      console.error("[studio] failed to save table preferences", err);
+    }
+  }
+
+  async function toggleHideField(fieldId) {
+    const current = new Set(state.hiddenFieldKeys);
+    if (current.has(fieldId)) current.delete(fieldId);
+    else current.add(fieldId);
+    const hiddenFieldKeys = [...current];
+    setState((s) => ({ ...s, hiddenFieldKeys }));
+    await persistTablePreferences({ hiddenFieldKeys, columnOrder: state.columnOrder });
+  }
+
+  async function setColumnOrder(orderedFieldIds) {
+    setState((s) => ({ ...s, columnOrder: orderedFieldIds }));
+    await persistTablePreferences({ hiddenFieldKeys: state.hiddenFieldKeys, columnOrder: orderedFieldIds });
+  }
+
   async function duplicateField(field) {
     const { field: copy, patches } = await studioData.duplicateField(field, state.fields, state.projects);
     setFields((fields) => {
@@ -338,6 +380,9 @@ export function useStudio() {
 
   return {
     ...state,
+    hiddenFieldIds: new Set(state.hiddenFieldKeys),
+    toggleHideField,
+    setColumnOrder,
     loading,
     error,
     reload,

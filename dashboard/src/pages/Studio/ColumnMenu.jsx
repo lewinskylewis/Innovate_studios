@@ -101,7 +101,16 @@ export default function ColumnMenu({
   const [view, setView] = useState("root");
   const [nameDraft, setNameDraft] = useState(field.name);
   const type = effectiveType(field);
-  const isProtected = field.id === "title";
+  // Canonical (system) columns can never be deleted, and their
+  // underlying type is structurally load-bearing (Status/Priority/
+  // Assignee/Brand/Budget/Delivery Status/Project Timeline/Balance all
+  // have logic elsewhere keyed to a specific type) so type-changing is
+  // blocked too — the DB's own project_fields_delete RLS policy already
+  // enforces "not system" for delete, this just keeps the menu from
+  // ever offering an action that would fail (or, for type, one RLS
+  // doesn't guard at all). Renaming stays allowed for every field,
+  // system or not — canonical columns must stay title-editable.
+  const isProtected = field.system;
   const isNumeric = type === "number" || type === "money";
 
   async function handleRename(e) {
@@ -281,11 +290,13 @@ export default function ColumnMenu({
           <span className="menu-label">Edit property</span>
           <ChevronRight />
         </button>
-        <button type="button" onClick={() => setView("type")}>
-          <Icon name={type} />
-          <span className="menu-label">Change type</span>
-          <ChevronRight />
-        </button>
+        {!isProtected && (
+          <button type="button" onClick={() => setView("type")}>
+            <Icon name={type} />
+            <span className="menu-label">Change type</span>
+            <ChevronRight />
+          </button>
+        )}
         <button type="button" onClick={() => setView("filter")}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M7.5 12h9"/><path d="M10.5 18h3"/></svg>
           <span className="menu-label">Filter{filter ? " •" : ""}</span>

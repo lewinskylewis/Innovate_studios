@@ -27,18 +27,27 @@ export default function Studio() {
   const [creating, setCreating] = useState(false);
   const [openProjectId, setOpenProjectId] = useState(null);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
-  const [hiddenFields, setHiddenFields] = useState(() => new Set());
 
-  const orderedFields = useMemo(() => [...studio.fields].sort((a, b) => a.order - b.order), [studio.fields]);
-
-  function toggleHideField(fieldId) {
-    setHiddenFields((prev) => {
-      const next = new Set(prev);
-      if (next.has(fieldId)) next.delete(fieldId);
-      else next.add(fieldId);
-      return next;
-    });
-  }
+  // Column order is per-user (studio.columnOrder, from
+  // studio_table_preferences) layered over the shared default order
+  // (studio.fields' own sort_order) — any field the user hasn't
+  // explicitly reordered yet (a brand-new custom column, or simply no
+  // saved preference at all) falls back to its default position rather
+  // than disappearing.
+  const orderedFields = useMemo(() => {
+    const defaultOrder = [...studio.fields].sort((a, b) => a.order - b.order);
+    if (!studio.columnOrder?.length) return defaultOrder;
+    const byId = new Map(studio.fields.map((f) => [f.id, f]));
+    const seen = new Set();
+    const fromPreference = studio.columnOrder
+      .map((id) => byId.get(id))
+      .filter((f) => {
+        if (!f || seen.has(f.id)) return false;
+        seen.add(f.id);
+        return true;
+      });
+    return [...fromPreference, ...defaultOrder.filter((f) => !seen.has(f.id))];
+  }, [studio.fields, studio.columnOrder]);
 
   async function handleNewProject() {
     setCreating(true);
@@ -82,8 +91,8 @@ export default function Studio() {
             priorityOptions={studio.priorityOptions}
             team={studio.team}
             fields={orderedFields}
-            hiddenFields={hiddenFields}
-            onToggleHide={toggleHideField}
+            hiddenFields={studio.hiddenFieldIds}
+            onToggleHide={studio.toggleHideField}
           />
         )}
       </div>
@@ -108,8 +117,8 @@ export default function Studio() {
           onNewProject={handleNewProject}
           creating={creating}
           filters={filters}
-          hiddenFields={hiddenFields}
-          onToggleHide={toggleHideField}
+          hiddenFields={studio.hiddenFieldIds}
+          onToggleHide={studio.toggleHideField}
           orderedFields={orderedFields}
         />
       )}

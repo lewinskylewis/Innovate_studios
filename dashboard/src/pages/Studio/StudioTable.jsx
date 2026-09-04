@@ -404,9 +404,13 @@ export default function StudioTable({ studio, onOpen, onNewProject, creating, fi
       const [moved] = sorted.splice(fromIndex, 1);
       sorted.splice(toIndex, 0, moved);
       try {
-        await studio.reorderFields(sorted);
+        // Per-user preference (studio_table_preferences), not the
+        // shared project_fields.sort_order — dragging a column here
+        // only ever changes this account's own view, never every
+        // Studio user's table at once.
+        await studio.setColumnOrder(sorted.map((f) => f.id));
       } catch (err) {
-        console.error("[studio] reorderFields failed", err);
+        console.error("[studio] setColumnOrder failed", err);
         show(err.message || "Couldn't reorder columns — try again.");
       }
     };

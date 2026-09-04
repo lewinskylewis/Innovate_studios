@@ -75,6 +75,8 @@ function mapProjectRow(row, membersByProject, milestonesByProject, clientsById) 
     startDate: row.start_date,
     deadline: row.due_date,
     estimatedValue: row.estimated_value === null ? null : Number(row.estimated_value),
+    paid: row.paid_value === null ? null : Number(row.paid_value),
+    completedAt: row.completed_at,
     notes: row.notes || "",
     custom: row.custom_fields || {},
     team: members.map((m) => m.team_member_id),
@@ -262,6 +264,7 @@ const SYSTEM_COLUMNS = {
   startDate: "start_date",
   deadline: "due_date",
   estimatedValue: "estimated_value",
+  paid: "paid_value",
   notes: "notes"
 };
 
@@ -314,8 +317,28 @@ export async function updateProjectField(project, fieldId, value, { statusOption
     const dbColumn = fieldId === "status" ? "status_id" : "priority_id";
     const idKey = fieldId === "status" ? "statusId" : "priorityId";
     const id = optionId(options, value);
-    await mutate(client.from("projects").update({ [dbColumn]: id }).eq("id", project.id), `change ${fieldId}`);
+    const updatePayload = { [dbColumn]: id };
+
+    // Drives the Delivery Status automation (see lib/deliveryStatus.js):
+    // record the moment a project transitions INTO Completed, so a
+    // later comparison against the due date can tell GOOD from LATE.
+    // Never overwritten while it stays Completed (guarded by the
+    // statusId !== id check — a no-op "Completed -> Completed" write
+    // never reaches here anyway since Cell.jsx only commits on an
+    // actual pick, but this keeps the intent explicit). Cleared back to
+    // null the moment it leaves Completed, so a later re-completion
+    // records a fresh timestamp rather than reusing a stale one.
+    if (fieldId === "status") {
+      if (value === "Completed") {
+        if (project.statusId !== id) updatePayload.completed_at = new Date().toISOString();
+      } else {
+        updatePayload.completed_at = null;
+      }
+    }
+
+    await mutate(client.from("projects").update(updatePayload).eq("id", project.id), `change ${fieldId}`);
     patch[idKey] = id;
+    if (fieldId === "status" && "completed_at" in updatePayload) patch.completedAt = updatePayload.completed_at;
     return patch;
   }
 
@@ -720,6 +743,30 @@ export async function loadProjectActivity(projectId) {
     .limit(50);
   if (error) throw error;
   return (data || []).map((a) => ({ id: a.id, type: a.type, description: a.description, createdAt: a.created_at, visibility: a.visibility }));
+}
+
+/* ---------- per-user Studio table view preferences (column
+   visibility + order) — supabase/migrations/20260906000001, RLS-scoped
+   to profile_id = auth.uid() so each Studio account has its own. ---------- */
+
+export async function loadTablePreferences(profileId, tableKey = "projects") {
+  const client = requireClient();
+  const { data, error } = await client
+    .from("studio_table_preferences")
+    .select("hidden_field_keys, column_order")
+    .eq("profile_id", profileId)
+    .eq("table_key", tableKey)
+    .maybeSingle();
+  if (error) throw error;
+  return { hiddenFieldKeys: data?.hidden_field_keys || [], columnOrder: data?.column_order || [] };
+}
+
+export async function saveTablePreferences(profileId, { hiddenFieldKeys, columnOrder }, tableKey = "projects") {
+  const client = requireClient();
+  const { error } = await client
+    .from("studio_table_preferences")
+    .upsert({ profile_id: profileId, table_key: tableKey, hidden_field_keys: hiddenFieldKeys, column_order: columnOrder, updated_at: new Date().toISOString() }, { onConflict: "profile_id,table_key" });
+  if (error) throw error;
 }
 
 export { optionId, optionLabel };

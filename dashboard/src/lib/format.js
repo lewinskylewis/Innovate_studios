@@ -37,6 +37,41 @@ export function formatDueLabel(dateStr, isDone) {
   return `Due ${formatDate(dateStr)}`;
 }
 
+export function formatDateTime(dateStr) {
+  if (!dateStr) return "—";
+  return new Date(dateStr).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+}
+
+// <input type="datetime-local"> needs "YYYY-MM-DDTHH:mm" in the
+// browser's local time, with no timezone suffix — reused by both
+// Cell.jsx (Ongoing Projects table) and ProjectDetail.jsx (drawer) for
+// the Due Date and Time editor.
+export function toDatetimeLocalValue(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+/* Project Timeline (Studio table, computed/read-only) — a friendly
+   relative phrase derived from Start Date + Due Date and Time, not a
+   literal date range (per explicit request: "displayed as e.g. 'Due in
+   2 days'"). Reuses daysUntil/formatDueLabel's existing day-rounding
+   convention rather than a stricter datetime diff, so the phrasing
+   stays consistent with every other relative-date label in the app. */
+export function formatProjectTimeline(startDate, dueDate) {
+  if (!startDate && !dueDate) return null;
+  if (startDate) {
+    const startDiff = daysUntil(startDate);
+    if (startDiff !== null && startDiff > 0) {
+      return startDiff === 1 ? "Starts tomorrow" : `Starts in ${startDiff}d`;
+    }
+  }
+  if (!dueDate) return "In progress";
+  return formatDueLabel(dueDate, false);
+}
+
 export function relativeTime(dateStr) {
   if (!dateStr) return "—";
   const diff = daysUntil(dateStr.slice(0, 10));
