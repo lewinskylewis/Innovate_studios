@@ -136,7 +136,7 @@ export default function Home() {
 
   const [incomePeriod, setIncomePeriod] = useState("last-month");
   const [analyticsPeriod, setAnalyticsPeriod] = useState("7d");
-  const [activeWork, setActiveWork] = useState({ activeCount: null, totalBudget: null, weeklyBudget: null, items: [] });
+  const [activeWork, setActiveWork] = useState({ activeCount: null, totalBudget: null, collected: null, outstanding: null, weeklyBudget: null, items: [] });
   const [workLoading, setWorkLoading] = useState(true);
   const [workError, setWorkError] = useState(null);
   const [openModal, setOpenModal] = useState(null); // "portfolio" | "testimonial" | null
@@ -223,20 +223,21 @@ export default function Home() {
 
             <div className="dash-hero-divider" />
 
-            {/* Collected/Outstanding needs real payment data (invoices/
-                receipts), which nothing in the schema tracks yet — same
-                placeholder-until-wired treatment as the trend above. */}
+            {/* Collected = SUM(Paid), Outstanding = SUM(Balance) across
+                the same active-projects set totalBudget sums above —
+                the Projects Table's own Paid/Balance automation
+                (data/home.js's loadActiveWork), not a separate figure. */}
             <div className="dash-hero-legend">
               <div className="dash-hero-legend-row">
                 <span className="dash-hero-legend-dot dash-hero-legend-dot--collected" />
                 <span>
-                  <strong>Collected</strong> - —
+                  <strong>Collected</strong> - {activeWork.collected === null ? "—" : formatMoney(activeWork.collected)}
                 </span>
               </div>
               <div className="dash-hero-legend-row">
                 <span className="dash-hero-legend-dot dash-hero-legend-dot--outstanding" />
                 <span>
-                  <strong>Outstanding</strong> - —
+                  <strong>Outstanding</strong> - {activeWork.outstanding === null ? "—" : formatMoney(activeWork.outstanding)}
                 </span>
               </div>
             </div>

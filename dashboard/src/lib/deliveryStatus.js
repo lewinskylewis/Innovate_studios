@@ -1,12 +1,15 @@
 /*
- * Innov8 Studios — the Delivery Status automation (Studio table,
- * computed/read-only column). Deliberately NOT a stored column: GOOD/
- * PENDING/LATE depends on the current wall-clock time, so a value
- * written at one moment can silently go stale the instant a deadline
- * passes with nothing re-touching the row. Computing it at read time
- * instead means it's always correct on every load/render, with no
- * cron/trigger needed to "catch" the deadline passing — see
- * supabase/migrations/20260906000002's header comment.
+ * Innov8 Studios — the Studio Projects table's computed financial/
+ * delivery columns (Delivery Status, Balance). Deliberately NOT stored
+ * columns: Delivery Status (GOOD/PENDING/LATE) depends on the current
+ * wall-clock time, so a value written at one moment can silently go
+ * stale the instant a deadline passes with nothing re-touching the row.
+ * Computing both at read time instead means they're always correct on
+ * every load/render, with no cron/trigger needed to "catch" the
+ * deadline passing — see supabase/migrations/20260906000002's header
+ * comment. computeBalance is also reused by Home.jsx's Income Card
+ * (Collected/Outstanding) so the two places summing project money never
+ * drift out of sync on the null-handling rules.
  */
 
 const PENDING_STATUSES = new Set(["Under Review", "Stuck", "Archived"]);
@@ -33,4 +36,12 @@ export function computeDeliveryStatus(project, statusLabel) {
   if (PENDING_STATUSES.has(statusLabel)) return "PENDING";
   if (LATE_STATUSES.has(statusLabel)) return "LATE";
   return null;
+}
+
+// Balance = Budget (estimatedValue) - Paid. null only when neither is
+// set at all — a project with a Budget but no Paid yet still owes the
+// full Budget (Paid treated as 0), and vice versa.
+export function computeBalance(project) {
+  if (project?.estimatedValue == null && project?.paid == null) return null;
+  return (project?.estimatedValue || 0) - (project?.paid || 0);
 }

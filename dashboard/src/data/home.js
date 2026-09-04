@@ -6,6 +6,7 @@
  * not the whole Studio module's team/fields/milestone graph.
  */
 import { supabase } from "../lib/supabaseClient.js";
+import { computeBalance } from "../lib/deliveryStatus.js";
 
 function requireClient() {
   if (!supabase) throw new Error("Supabase is not configured — see dashboard/public/env.example.js.");
@@ -23,7 +24,7 @@ export async function loadActiveWork(limit = 4) {
     client.from("project_option_lists").select("id, label").eq("kind", "project_status"),
     client
       .from("projects")
-      .select("id, title, due_date, status_id, estimated_value, contacts(brand_name, person_name), milestones(status_id)")
+      .select("id, title, due_date, status_id, estimated_value, paid_value, contacts(brand_name, person_name), milestones(status_id)")
       .is("deleted_at", null)
       .order("due_date", { ascending: true })
   ]);
@@ -40,6 +41,7 @@ export async function loadActiveWork(limit = 4) {
     client: row.contacts?.brand_name || "",
     status: statusLabel.get(row.status_id) || "—",
     estimatedValue: row.estimated_value === null ? 0 : Number(row.estimated_value),
+    paid: row.paid_value === null ? null : Number(row.paid_value),
     milestoneTotal: row.milestones?.length || 0,
     milestoneDone: (row.milestones || []).filter((m) => m.status_id === completedStatusId).length
   }));
@@ -57,7 +59,16 @@ export async function loadActiveWork(limit = 4) {
   const items = activeProjects.slice(0, limit);
   const weeklyBudget = currentMonthWeeklyBudget(activeProjects);
 
-  return { activeCount, totalBudget, weeklyBudget, items };
+  // Collected/Outstanding — the Income Card's legend under the headline
+  // Budget total above, so scoped to the exact same activeProjects set
+  // that total already sums, using the Projects Table's own Paid/
+  // Balance automation (computeBalance, shared with Cell.jsx) rather
+  // than a second calculation. Collected + Outstanding therefore always
+  // equals totalBudget for whatever's currently active.
+  const collected = activeProjects.reduce((sum, p) => sum + (p.paid || 0), 0);
+  const outstanding = activeProjects.reduce((sum, p) => sum + (computeBalance(p) || 0), 0);
+
+  return { activeCount, totalBudget, collected, outstanding, weeklyBudget, items };
 }
 
 /* Real, derived breakdown of the same Budget total the headline figure

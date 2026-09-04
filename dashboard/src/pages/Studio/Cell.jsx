@@ -11,7 +11,7 @@ import Popover from "../../components/Popover.jsx";
 import { useToast } from "../../lib/ToastContext.jsx";
 import { colorForName, initials } from "../../lib/avatar.js";
 import { formatDate, formatDateTime, formatMoney, formatProjectTimeline, toDatetimeLocalValue } from "../../lib/format.js";
-import { computeDeliveryStatus, DELIVERY_STATUS_COLOR } from "../../lib/deliveryStatus.js";
+import { computeBalance, computeDeliveryStatus, DELIVERY_STATUS_COLOR } from "../../lib/deliveryStatus.js";
 import { effectiveType } from "./propertyTypes.js";
 
 export function getCellValue(project, field, studio) {
@@ -23,10 +23,7 @@ export function getCellValue(project, field, studio) {
   // derived fresh from other columns (see lib/deliveryStatus.js).
   if (field.id === "timeline") return formatProjectTimeline(project.startDate, project.deadline);
   if (field.id === "deliveryStatus") return computeDeliveryStatus(project, studio.labelFor("status", project.statusId));
-  if (field.id === "balance") {
-    if (project.estimatedValue == null && project.paid == null) return null;
-    return (project.estimatedValue || 0) - (project.paid || 0);
-  }
+  if (field.id === "balance") return computeBalance(project);
   return field.system ? project[field.id] : project.custom[field.id];
 }
 
