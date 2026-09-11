@@ -915,6 +915,14 @@ html.dash-collapsed .dash-account-trigger {
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 1px 2px rgba(0, 0, 0, 0.9);
 }
 
+.dash-subtitle {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: var(--text-xs);
+  color: var(--muted);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
 .dash-header-actions {
   display: flex;
   align-items: center;
@@ -5406,5 +5414,300 @@ td.is-wrapped {
 
   .proj-standalone {
     padding: var(--space-5) var(--space-4) var(--space-7);
+  }
+}
+
+/* ==========================================================================
+   Insights module — reuses the panel, dash-grid, dash-stat-cards,
+   work-tab, badge, mkt-funnel, mkt-insight and mkt-asset classes
+   wherever they already fit (see src/pages/Insights) — only the
+   handful of primitives that genuinely don't exist elsewhere (5-up KPI
+   row, metric switcher, the compact attention list, and the stepped
+   acquisition/business funnel) get new rules here.
+   ========================================================================== */
+
+.insights-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.insights-toolbar .btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.insights-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.insights-kpi-card {
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+}
+
+.insights-kpi-card strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+.insights-kpi-label {
+  display: block;
+  font-size: var(--text-2xs);
+  color: var(--faint);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.25rem;
+}
+
+.insights-kpi-sub {
+  display: block;
+  font-size: var(--text-3xs);
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+.insights-metric-switch {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-pill);
+  border: 0.0625rem solid var(--line);
+  background: rgba(9, 7, 7, 0.72);
+}
+
+.insights-metric-btn {
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--muted);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  padding: 0.375rem 0.875rem;
+  cursor: pointer;
+}
+
+.insights-metric-btn.is-active {
+  color: var(--orange-bright);
+  background: rgba(255, 106, 26, 0.14);
+}
+
+.insights-attention-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.insights-attention-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-2);
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--white);
+  cursor: default;
+}
+
+button.insights-attention-item {
+  cursor: pointer;
+}
+
+button.insights-attention-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.insights-attention-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.insights-attention-dot.is-critical {
+  background: var(--danger);
+  box-shadow: 0 0 0.5rem rgba(255, 90, 95, 0.55);
+}
+
+.insights-attention-dot.is-warning {
+  background: var(--ember);
+}
+
+.insights-attention-dot.is-neutral {
+  background: var(--faint);
+}
+
+.insights-attention-item span:last-child {
+  font-size: var(--text-sm);
+}
+
+.insights-funnel-steps {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.insights-funnel-step {
+  flex: 1;
+  min-width: 7rem;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--graphite-raised);
+  border: 0.0625rem solid var(--line-soft);
+  text-align: center;
+}
+
+.insights-funnel-step strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+
+.insights-funnel-step span {
+  display: block;
+  font-size: var(--text-3xs);
+  color: var(--faint);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.25rem;
+}
+
+.insights-funnel-arrow {
+  display: flex;
+  align-items: center;
+  color: var(--faint);
+  flex-shrink: 0;
+}
+
+.insights-funnel-arrow svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.insights-health-row,
+.insights-pipeline-row {
+  display: flex;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.insights-health-item,
+.insights-pipeline-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.insights-health-item strong,
+.insights-pipeline-item strong {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+
+.insights-health-item span,
+.insights-pipeline-item span {
+  font-size: var(--text-2xs);
+  color: var(--faint);
+}
+
+.insights-delivery-row {
+  display: flex;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.insights-delivery-item strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+
+.insights-delivery-item span {
+  font-size: var(--text-2xs);
+  color: var(--faint);
+}
+
+.insights-finance-row {
+  display: flex;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.insights-finance-item strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+
+.insights-finance-item.is-collected strong {
+  color: var(--success);
+}
+
+.insights-finance-item.is-outstanding strong {
+  color: var(--danger);
+}
+
+.insights-finance-item span {
+  font-size: var(--text-2xs);
+  color: var(--faint);
+}
+
+.insights-section-gap {
+  margin-bottom: var(--space-6);
+}
+
+.insights-major-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--orange-bright);
+  margin: var(--space-7) 0 var(--space-4);
+}
+
+.insights-major-heading:first-child {
+  margin-top: 0;
+}
+
+@media (max-width: 1100px) {
+  .insights-kpi-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .insights-kpi-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .insights-toolbar {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .insights-funnel-steps {
+    flex-direction: column;
+  }
+
+  .insights-funnel-arrow {
+    transform: rotate(90deg);
+    align-self: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .insights-kpi-row {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

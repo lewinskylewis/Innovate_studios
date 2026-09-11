@@ -51,7 +51,7 @@ const NAV_ITEMS = [
   { id: "marketing", label: "Marketing", icon: "megaphone", to: "/marketing" },
   { id: "enquiries", label: "Enquiries", icon: "enquiries", to: "/enquiries" },
   { id: "relationships", label: "Relationships", icon: "relationships", to: "/relationships" },
-  { id: "insights", label: "Insights", icon: "insights", enabled: false },
+  { id: "insights", label: "Insights", icon: "insights", to: "/insights" },
   { id: "messages", label: "Messages", icon: "messages", enabled: false },
   { id: "settings", label: "Settings", icon: "settings", enabled: false }
 ];
