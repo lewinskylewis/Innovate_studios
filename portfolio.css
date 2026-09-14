@@ -1,0 +1,592 @@
+/*
+ * Innov8 Studios — Portfolio listing page. A dark, cinematic register
+ * (deliberately distinct from About's white and Services' gray — three
+ * tonal registers, one visual language) so the work itself reads as the
+ * hero. Everything under `.portfolio-page` that used to live in
+ * styles.css now lives here, alongside the new "Index" discovery system.
+ */
+
+.portfolio-page {
+  --container: 84.75rem;
+  --page-w: min(calc((100vw + var(--container)) / 2), calc(100vw - 1.5rem));
+  --page-w-pct: min(calc((100% + var(--container)) / 2), calc(100% - 1.5rem));
+  --page-gutter: max(0.75rem, calc((100vw - var(--container)) / 4));
+  --portfolio-dark: #262626;
+  --portfolio-orange: #ff5a00;
+  background: var(--portfolio-dark);
+}
+
+.portfolio-page .section-container,
+.portfolio-page .site-header .nav-shell,
+.portfolio-page .site-header.is-condensed .nav-shell {
+  width: var(--page-w);
+  margin-inline: auto;
+}
+
+.portfolio-page .site-header,
+.portfolio-page .site-header.is-condensed {
+  padding-inline: 0;
+}
+
+.portfolio-page .site-header .nav-shell,
+.portfolio-page .site-header.is-condensed .nav-shell {
+  padding-inline: 0;
+}
+
+.portfolio-page .site-header .menu-button,
+.portfolio-page .site-header.is-condensed .menu-button,
+.portfolio-page .nav-open .site-header .menu-button,
+.portfolio-page .nav-open .site-header.is-condensed .menu-button {
+  right: var(--page-gutter);
+}
+
+.portfolio-page .site-header.is-condensed .brand-mark {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.portfolio-page main {
+  background: var(--portfolio-dark);
+  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
+}
+
+/* ---------- hero (content unchanged, kept as the page's own anchor) ---------- */
+
+.portfolio-hero {
+  position: relative;
+  min-height: clamp(42rem, 47.55vw, 57.125rem);
+  overflow: hidden;
+  background: var(--portfolio-orange);
+}
+
+.portfolio-hero-inner {
+  position: relative;
+  min-height: inherit;
+}
+
+.portfolio-hero-copy {
+  position: absolute;
+  top: 52.5%;
+  left: 0;
+  z-index: 2;
+  width: min(27rem, 32vw);
+  transform: translateY(-15%);
+}
+
+.portfolio-hero-copy h1 {
+  color: white;
+  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: clamp(2.75rem, 2.95vw, 3.55rem);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.portfolio-hero-copy p {
+  max-width: 26rem;
+  margin-top: 4.75rem;
+  color: white;
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.portfolio-hero-copy p + p {
+  margin-top: 1.75rem;
+}
+
+.portfolio-hero-duo {
+  position: absolute;
+  right: -2.3%;
+  top: -19%;
+  z-index: 1;
+  width: auto;
+  max-width: none;
+  height: 176%;
+  pointer-events: none;
+}
+
+/* ---------- chapter heading (kicker/title/intro, kept verbatim) ---------- */
+
+.pf-chapter {
+  position: relative;
+  background: var(--portfolio-dark);
+}
+
+.pf-chapter-heading {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(22rem, 34rem);
+  align-items: end;
+  gap: 5rem;
+  opacity: 0;
+  transform: translateY(1.5rem);
+  filter: blur(0.375rem);
+  transition: opacity 900ms var(--ease), transform 900ms var(--ease), filter 900ms var(--ease);
+}
+
+.pf-chapter.is-in .pf-chapter-heading {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+}
+
+.portfolio-kicker {
+  gap: 1.625rem;
+}
+
+.portfolio-kicker span {
+  width: 3.75rem;
+}
+
+.portfolio-kicker p {
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+}
+
+.pf-chapter-title {
+  margin-top: 2rem;
+  color: var(--portfolio-orange);
+  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: clamp(3.25rem, 4.35vw, 5.25rem);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.055em;
+}
+
+.pf-chapter-intro {
+  max-width: 33rem;
+  padding-bottom: 0.55rem;
+  color: #f5f3ee;
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.48;
+}
+
+/* ---------- chapter body: the Index (left) + sticky Stage (right) ---------- */
+
+.pf-chapter-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  column-gap: clamp(3rem, 6vw, 5rem);
+  padding-block: clamp(7.5rem, 8.3vw, 10rem) clamp(6rem, 7vw, 8.5rem);
+}
+
+.pf-index {
+  grid-column: 1;
+  grid-row: 2;
+  margin: clamp(4rem, 7vw, 6rem) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 0.0625rem solid rgba(255, 255, 255, 0.14);
+}
+
+.pf-row {
+  border-bottom: 0.0625rem solid rgba(255, 255, 255, 0.14);
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 620ms var(--ease), transform 620ms var(--ease);
+}
+
+.pf-row.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.pf-row-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  padding-block: clamp(1.375rem, 2.6vw, 1.875rem);
+  color: inherit;
+  text-decoration: none;
+}
+
+.pf-row-link:focus-visible {
+  outline: 0.125rem solid var(--portfolio-orange);
+  outline-offset: -0.125rem;
+  border-radius: 0.25rem;
+}
+
+.pf-row-index {
+  flex: 0 0 auto;
+  width: 2.25rem;
+  color: rgba(255, 255, 255, 0.32);
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: color 320ms ease;
+}
+
+.pf-row-thumb {
+  flex: 0 0 auto;
+  width: 3.75rem;
+  height: 3.75rem;
+  object-fit: cover;
+  border-radius: 0.375rem;
+  opacity: 0.78;
+  transition: transform 480ms var(--ease), opacity 320ms ease;
+}
+
+.pf-row-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.pf-row-title {
+  display: block;
+  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: clamp(1.1875rem, 1.9vw, 1.625rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.62);
+  transition: color 320ms ease;
+}
+
+.pf-row-meta {
+  display: block;
+  color: rgba(255, 255, 255, 0.32);
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: var(--text-xs);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.pf-row-arrow {
+  flex: 0 0 auto;
+  color: var(--portfolio-orange);
+  font-size: 1.125rem;
+  opacity: 0;
+  transform: translate(-0.25rem, 0.25rem);
+  transition: opacity 280ms ease, transform 280ms ease;
+}
+
+.pf-row-link:hover .pf-row-index,
+.pf-row-link:focus-visible .pf-row-index {
+  color: var(--portfolio-orange);
+}
+
+.pf-row-link:hover .pf-row-title,
+.pf-row-link:focus-visible .pf-row-title {
+  color: white;
+}
+
+.pf-row-link:hover .pf-row-thumb,
+.pf-row-link:focus-visible .pf-row-thumb {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+.pf-row-link:hover .pf-row-arrow,
+.pf-row-link:focus-visible .pf-row-arrow {
+  opacity: 1;
+  transform: none;
+}
+
+.pf-row--opener .pf-row-title {
+  font-size: clamp(1.75rem, 3.1vw, 2.75rem);
+}
+
+.pf-row--opener .pf-row-thumb {
+  width: 5.25rem;
+  height: 5.25rem;
+}
+
+.pf-row--opener .pf-row-meta {
+  font-size: var(--text-sm);
+}
+
+/* ---------- stage: sticky, crossfades to whichever row is hovered/focused ---------- */
+
+.pf-stage {
+  grid-column: 2;
+  grid-row: 2;
+  position: sticky;
+  top: clamp(6.5rem, 11vh, 8.5rem);
+  align-self: start;
+  margin-top: clamp(4rem, 7vw, 6rem);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.pf-stage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+}
+
+.pf-stage img.is-settling {
+  animation: pf-stage-settle 480ms var(--ease);
+}
+
+@keyframes pf-stage-settle {
+  0% { opacity: 0.4; transform: scale(1.025); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ---------- interlude: chapter break, reusing the real showreel imagery ---------- */
+
+.pf-interlude {
+  position: relative;
+  margin: 0;
+  min-height: clamp(28rem, 34vw, 42rem);
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 900ms var(--ease);
+}
+
+.pf-interlude.is-in {
+  opacity: 1;
+}
+
+.pf-interlude img {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+}
+
+.pf-interlude::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 12, 12, 0.5);
+}
+
+.pf-interlude-mark {
+  position: absolute;
+  z-index: 1;
+  right: clamp(1.5rem, 4vw, 4rem);
+  bottom: clamp(-1.5rem, -3vw, -0.5rem);
+  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: clamp(7rem, 15vw, 12rem);
+  font-weight: 300;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+/* ---------- footer (portfolio's own orange treatment, unchanged) ---------- */
+
+.portfolio-page .site-footer {
+  padding-block: clamp(4.5rem, 5vw, 6rem);
+  background: var(--portfolio-orange);
+  color: white;
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+}
+
+.portfolio-page .footer-grid {
+  grid-template-columns: 1.1fr 2.1fr 0.8fr 0.9fr;
+  gap: clamp(3rem, 6vw, 7rem);
+}
+
+.portfolio-page .footer-grid h2 {
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.portfolio-page .footer-brand img {
+  width: 11.5rem;
+}
+
+.portfolio-page .footer-brand p,
+.portfolio-page .footer-brand > a,
+.portfolio-page .footer-nav {
+  color: white;
+  font-size: 0.75rem;
+}
+
+.portfolio-page .footer-brand p,
+.portfolio-page .footer-brand > a {
+  margin-top: 1.75rem;
+  line-height: 1.65;
+}
+
+.portfolio-page .footer-subscribe input {
+  min-height: 3rem;
+  background: #eee;
+}
+
+.portfolio-page .footer-subscribe button {
+  min-width: 7rem;
+  background: #ec5700;
+}
+
+.portfolio-page .footer-subscribe > p {
+  margin-top: 2.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.portfolio-page .social-links a {
+  border-color: white;
+  color: white;
+}
+
+.portfolio-page .footer-nav a:hover {
+  color: #242424;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 64rem) {
+  .portfolio-hero {
+    min-height: 48rem;
+  }
+
+  .portfolio-hero-copy {
+    top: 35%;
+    width: min(23rem, 46vw);
+  }
+
+  .portfolio-hero-duo {
+    right: -24%;
+    height: 150%;
+  }
+
+  .pf-chapter-heading {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .pf-chapter-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .pf-stage {
+    display: none;
+  }
+
+  .pf-index {
+    grid-column: 1;
+  }
+
+  .portfolio-page .footer-grid {
+    grid-template-columns: 1fr 1.8fr;
+  }
+}
+
+@media (max-width: 55rem) {
+  .portfolio-page .site-header .nav-shell,
+  .portfolio-page .site-header.is-condensed .nav-shell {
+    width: calc(100% - 1.75rem);
+  }
+
+  .portfolio-page .site-header .menu-button,
+  .portfolio-page .site-header.is-condensed .menu-button,
+  .portfolio-page .nav-open .site-header .menu-button,
+  .portfolio-page .nav-open .site-header.is-condensed .menu-button {
+    right: 0.875rem;
+  }
+
+  .pf-chapter-heading {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .pf-chapter-intro {
+    max-width: 36rem;
+  }
+
+  .pf-row-thumb {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+
+  .pf-row--opener .pf-row-thumb {
+    width: 4.25rem;
+    height: 4.25rem;
+  }
+}
+
+@media (max-width: 35rem) {
+  .portfolio-page .site-header .brand-mark img,
+  .portfolio-page .site-header.is-condensed .brand-mark img {
+    width: 9rem;
+  }
+
+  .portfolio-hero {
+    min-height: 46rem;
+  }
+
+  .portfolio-hero-copy {
+    top: 15rem;
+    width: 78%;
+    transform: none;
+  }
+
+  .portfolio-hero-copy h1 {
+    font-size: clamp(2.5rem, 12vw, 3.25rem);
+  }
+
+  .portfolio-hero-copy p {
+    max-width: 17rem;
+    margin-top: 2rem;
+    font-size: 0.75rem;
+  }
+
+  .portfolio-hero-copy p + p {
+    margin-top: 1rem;
+  }
+
+  .portfolio-hero-duo {
+    top: -2%;
+    right: -58%;
+    bottom: auto;
+    height: 80%;
+  }
+
+  .pf-chapter-inner {
+    padding-block: 6.5rem 5rem;
+  }
+
+  .pf-chapter-title {
+    font-size: clamp(2.75rem, 14vw, 4rem);
+  }
+
+  .pf-row-link {
+    gap: 0.875rem;
+  }
+
+  .pf-row-index {
+    width: 1.75rem;
+  }
+
+  .pf-row-thumb {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .pf-row--opener .pf-row-thumb {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .pf-row-arrow {
+    display: none;
+  }
+
+  .pf-interlude {
+    min-height: 20rem;
+  }
+
+  .pf-interlude-mark {
+    font-size: clamp(5rem, 24vw, 7rem);
+  }
+
+  .portfolio-page .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}

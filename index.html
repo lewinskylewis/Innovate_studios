@@ -226,97 +226,85 @@
             </p>
           </div>
 
-          <div class="services-panel">
-            <div class="services-panel-list">
-              <button class="services-row is-active" type="button" data-service="1">
-                <img class="services-row-icon" src="assets/images/icons/target.webp" alt="" loading="lazy" width="500" height="500" />
-                <span class="services-row-text">
-                  <span class="services-row-title">Strategy &amp; Positioning</span>
-                  <span class="services-row-desc">Make the business easier to choose.</span>
-                </span>
-                <span class="services-row-chevron" aria-hidden="true"></span>
-              </button>
-
-              <button class="services-row" type="button" data-service="2">
-                <img class="services-row-icon" src="assets/images/icons/megaphone.webp" alt="" loading="lazy" width="500" height="500" />
-                <span class="services-row-text">
-                  <span class="services-row-title">Brand &amp; Communication</span>
-                  <span class="services-row-desc">Make the value impossible to miss.</span>
-                </span>
-                <span class="services-row-chevron" aria-hidden="true"></span>
-              </button>
-
-              <button class="services-row" type="button" data-service="3">
-                <img class="services-row-icon" src="assets/images/icons/cube.webp" alt="" loading="lazy" width="500" height="500" />
-                <span class="services-row-text">
-                  <span class="services-row-title">3D &amp; Visual Experiences</span>
-                  <span class="services-row-desc">Show what words cannot.</span>
-                </span>
-                <span class="services-row-chevron" aria-hidden="true"></span>
-              </button>
-
-              <button class="services-row" type="button" data-service="4">
-                <img class="services-row-icon" src="assets/images/icons/computer.webp" alt="" loading="lazy" width="500" height="500" />
-                <span class="services-row-text">
-                  <span class="services-row-title">Digital &amp; Technology</span>
-                  <span class="services-row-desc">Build experiences that move the business forward.</span>
-                </span>
-                <span class="services-row-chevron" aria-hidden="true"></span>
-              </button>
+          <div class="svc-interface" data-svc-interface>
+            <span class="svc-ghost" aria-hidden="true">4</span>
+            <div class="svc-spine" aria-hidden="true">
+              <span class="svc-spine-fill" data-spine-fill></span>
+              <span class="svc-spine-dot" data-spine-dot></span>
             </div>
 
-            <div class="services-panel-detail">
-              <div class="services-detail is-active" data-service="1">
-                <ul class="services-detail-list">
+            <div class="svc-tablist" role="tablist" aria-label="Our capabilities" data-svc-tablist>
+              <button class="svc-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="svc-panel-1" id="svc-tab-1" data-service="1" tabindex="0">
+                <span class="svc-tab-tag">01 / Strategy</span>
+                <span class="svc-tab-word">Strategy &amp; Positioning</span>
+                <span class="svc-tab-line">Make the business easier to choose.</span>
+              </button>
+              <div class="svc-panel is-active" role="tabpanel" id="svc-panel-1" aria-labelledby="svc-tab-1" data-service="1">
+                <ul class="svc-panel-list">
                   <li>Brand Strategy</li>
                   <li>Market Positioning</li>
                   <li>Competitive Analysis</li>
                   <li>Messaging Framework</li>
                   <li>Go-To-Market Planning</li>
                 </ul>
-                <p class="services-detail-copy">
+                <p class="svc-panel-copy">
                   We start with the business problem, not the deliverable - clarifying who you serve,
                   why you're different, and how that gets said consistently everywhere.
                 </p>
               </div>
 
-              <div class="services-detail" data-service="2">
-                <ul class="services-detail-list">
+              <button class="svc-tab" type="button" role="tab" aria-selected="false" aria-controls="svc-panel-2" id="svc-tab-2" data-service="2" tabindex="-1">
+                <span class="svc-tab-tag">02 / Brand</span>
+                <span class="svc-tab-word">Brand &amp; Communication</span>
+                <span class="svc-tab-line">Make the value impossible to miss.</span>
+              </button>
+              <div class="svc-panel" role="tabpanel" id="svc-panel-2" aria-labelledby="svc-tab-2" data-service="2">
+                <ul class="svc-panel-list">
                   <li>Visual Identity</li>
                   <li>Brand Guidelines</li>
                   <li>Marketing Collateral</li>
                   <li>Campaign Concepts</li>
                   <li>Brand Voice &amp; Messaging</li>
                 </ul>
-                <p class="services-detail-copy">
+                <p class="svc-panel-copy">
                   We translate strategy into a visual and verbal system that's instantly recognizable,
                   so every touchpoint reinforces the same story.
                 </p>
               </div>
 
-              <div class="services-detail" data-service="3">
-                <ul class="services-detail-list">
+              <button class="svc-tab" type="button" role="tab" aria-selected="false" aria-controls="svc-panel-3" id="svc-tab-3" data-service="3" tabindex="-1">
+                <span class="svc-tab-tag">03 / 3D</span>
+                <span class="svc-tab-word">3D &amp; Visual Experiences</span>
+                <span class="svc-tab-line">Show what words cannot.</span>
+              </button>
+              <div class="svc-panel" role="tabpanel" id="svc-panel-3" aria-labelledby="svc-tab-3" data-service="3">
+                <ul class="svc-panel-list">
                   <li>3D Product Visualization</li>
                   <li>Cinematic Commercial</li>
                   <li>Motion Graphics</li>
                   <li>Product Animation</li>
                   <li>Visual Storytelling</li>
                 </ul>
-                <p class="services-detail-copy">
+                <p class="svc-panel-copy">
                   We build cinematic 3D and motion content that makes complex ideas instantly clear and
                   impossible to scroll past.
                 </p>
               </div>
 
-              <div class="services-detail" data-service="4">
-                <ul class="services-detail-list">
+              <button class="svc-tab" type="button" role="tab" aria-selected="false" aria-controls="svc-panel-4" id="svc-tab-4" data-service="4" tabindex="-1">
+                <span class="svc-tab-tag">04 / Digital</span>
+                <span class="svc-tab-word">Digital &amp; Technology</span>
+                <span class="svc-tab-line">Build experiences that move the business forward.</span>
+              </button>
+              <div class="svc-panel" role="tabpanel" id="svc-panel-4" aria-labelledby="svc-tab-4" data-service="4">
+                <ul class="svc-panel-list">
                   <li>Web Design &amp; Development</li>
                   <li>Conversion Optimization</li>
                   <li>E-Commerce Systems</li>
                   <li>Digital Platforms</li>
                   <li>Technical Integration</li>
                 </ul>
-                <p class="services-detail-copy">
+                <p class="svc-panel-copy">
                   We design and build the digital systems that turn attention into measurable outcomes,
                   from first click to final conversion.
                 </p>
@@ -489,7 +477,7 @@
     <script src="motion.js"></script>
     <!-- whatsapp-float.js disabled site-wide for now - hidden, not deleted, for later use -->
     <script src="why-panel.js" defer></script>
-    <script src="services-panel.js" defer></script>
+    <script src="services-interface.js" defer></script>
     <script src="process-carousel.js" defer></script>
   </body>
 </html>
