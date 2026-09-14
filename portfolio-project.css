@@ -1,0 +1,276 @@
+/* Innov8 Studios — Portfolio Project page (Phase 1).
+   Reuses .portfolio-page's dark/orange tokens (already loaded from
+   styles.css) for full visual parity with the Portfolio landing page;
+   everything below is specific to the long-form project canvas itself -
+   header, content blocks, credits/nav footer. Nothing here overrides a
+   selector styles.css already owns. */
+
+.portfolio-project-main {
+  font-family: "Innov8 Century Gothic", Arial, Helvetica, sans-serif;
+}
+
+/* ---------- project header ---------- */
+
+.pp-header {
+  padding-block: clamp(7.5rem, 12vw, 10.5rem) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.pp-meta {
+  color: var(--portfolio-orange);
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.pp-title {
+  margin-top: 1.25rem;
+  max-width: 54rem;
+  color: white;
+  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: clamp(2.75rem, 6vw, 5.5rem);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.pp-description {
+  margin-top: 1.75rem;
+  max-width: 34rem;
+  color: #cfcbc3;
+  font-size: var(--text-lg);
+  line-height: 1.55;
+}
+
+.pp-services {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.625rem 0.875rem;
+  list-style: none;
+  padding: 0;
+}
+
+.pp-services li {
+  padding: 0.4375rem 1rem;
+  border: 0.0625rem solid rgba(255, 255, 255, 0.18);
+  border-radius: 62.4375rem;
+  color: #e9e6e0;
+  font-size: var(--text-sm);
+  letter-spacing: 0.02em;
+}
+
+.pp-cover {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: clamp(3.5rem, 6vw, 5.5rem);
+}
+
+/* ---------- content blocks ---------- */
+
+.pp-blocks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: clamp(4rem, 7vw, 6.5rem);
+}
+
+.pp-block {
+  width: 100%;
+}
+
+.pp-block + .pp-block {
+  margin-top: clamp(0.6rem, 1vw, 0.9rem);
+}
+
+.pp-width-contained {
+  max-width: 32.2rem;
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+.pp-width-narrow {
+  max-width: 26.6rem;
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+.pp-width-full {
+  width: calc(var(--page-w) * 0.7);
+  margin-inline: auto;
+}
+
+.pp-block--image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.pp-align-center { text-align: center; }
+.pp-align-right { text-align: right; }
+
+.pp-block--image.pp-align-left { margin-right: auto; }
+.pp-block--image.pp-align-right { margin-left: auto; }
+.pp-block--image.pp-align-center { margin-inline: auto; }
+
+.pp-caption {
+  margin-top: 0.875rem;
+  color: #a8a49c;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.pp-block--text .pp-block-heading {
+  color: white;
+  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: clamp(1.5rem, 2.4vw, 2.125rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.pp-block-body {
+  color: #d6d2ca;
+  font-size: var(--text-lg);
+  line-height: 1.7;
+}
+
+.pp-block-body a {
+  color: var(--portfolio-orange);
+  text-decoration: underline;
+  text-underline-offset: 0.1875rem;
+}
+
+.pp-block--video video {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #0f0f0f;
+}
+
+.pp-block--spacer.pp-spacer-sm { height: 2rem; }
+.pp-block--spacer.pp-spacer-md { height: 4rem; }
+.pp-block--spacer.pp-spacer-lg { height: 6rem; }
+.pp-block--spacer.pp-spacer-xl { height: 9rem; }
+
+.pp-block--embed iframe {
+  width: 100%;
+  aspect-ratio: var(--pp-embed-ratio, 16 / 9);
+  border: 0;
+  display: block;
+}
+
+/* ---------- credits + prev/next/back ---------- */
+
+.pp-footer {
+  padding-block: clamp(4rem, 7vw, 6rem) clamp(6rem, 9vw, 8.5rem);
+  border-top: 0.0625rem solid rgba(255, 255, 255, 0.1);
+}
+
+.pp-footer-description {
+  max-width: 40rem;
+  color: #d6d2ca;
+  font-size: var(--text-lg);
+  line-height: 1.7;
+  text-align: left;
+}
+
+.pp-project-nav {
+  margin-top: clamp(4rem, 7vw, 6rem);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.pp-nav-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  color: #e9e6e0;
+  min-width: 0;
+}
+
+.pp-nav-next { align-items: flex-end; text-align: right; }
+
+.pp-nav-label {
+  color: #8f8b83;
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pp-nav-title {
+  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: clamp(1rem, 1.6vw, 1.3125rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.pp-nav-spacer { min-width: 0; }
+
+.pp-nav-back {
+  justify-self: center;
+  padding: 0.875rem 1.75rem;
+  border-radius: 62.4375rem;
+  color: white;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---------- not-found state ---------- */
+
+.pp-not-found {
+  padding-block: clamp(9rem, 16vw, 13rem) clamp(6rem, 10vw, 9rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.pp-not-found .pp-nav-back {
+  margin-top: 2.5rem;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 55rem) {
+  .pp-services li {
+    font-size: var(--text-xs);
+    padding: 0.375rem 0.875rem;
+  }
+
+  .pp-width-contained,
+  .pp-width-narrow {
+    max-width: none;
+  }
+
+  .pp-project-nav {
+    grid-template-columns: 1fr;
+    text-align: center;
+    justify-items: center;
+  }
+
+  .pp-nav-next { align-items: center; text-align: center; }
+  .pp-nav-back { order: -1; }
+}
+
+@media (max-width: 35rem) {
+  .pp-header {
+    padding-block: clamp(6.5rem, 20vw, 8rem) 0;
+  }
+
+  .pp-nav-title {
+    white-space: normal;
+  }
+}

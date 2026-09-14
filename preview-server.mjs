@@ -19,6 +19,15 @@ http
     try {
       let pathname = decodeURIComponent(request.url.split("?")[0]);
       if (pathname.endsWith("/")) pathname += "index.html";
+
+      // Pretty-URL rewrite for individual portfolio project pages, mirroring
+      // the production Vercel rewrite in vercel.json.
+      const portfolioMatch = pathname.match(/^\/portfolio\/([^/]+)\/?$/);
+      if (portfolioMatch) pathname = "/portfolio-project.html";
+
+      // Pretty-URL rewrite for the consultation page, mirroring vercel.json.
+      if (pathname === "/consultation" || pathname === "/consultation/") pathname = "/consultation.html";
+
       const filePath = normalize(join(root, pathname));
 
       if (!filePath.startsWith(root)) {

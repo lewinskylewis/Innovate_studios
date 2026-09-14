@@ -53,7 +53,7 @@ const NAV_ITEMS = [
   { id: "relationships", label: "Relationships", icon: "relationships", to: "/relationships" },
   { id: "insights", label: "Insights", icon: "insights", to: "/insights" },
   { id: "messages", label: "Messages", icon: "messages", enabled: false },
-  { id: "settings", label: "Settings", icon: "settings", enabled: false }
+  { id: "settings", label: "Settings", icon: "settings", to: "/settings" }
 ];
 
 const SIDEBAR_KEY = "innov8-dashboard-sidebar-collapsed";

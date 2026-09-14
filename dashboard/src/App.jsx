@@ -7,6 +7,7 @@ import Enquiries from "./pages/Enquiries/Enquiries.jsx";
 import Marketing from "./pages/Marketing/Marketing.jsx";
 import Relationships from "./pages/Relationships/Relationships.jsx";
 import Insights from "./pages/Insights/Insights.jsx";
+import Settings from "./pages/Settings/Settings.jsx";
 import Studio from "./pages/Studio/Studio.jsx";
 import SharedProject from "./pages/Studio/SharedProject.jsx";
 
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/enquiries" element={<Enquiries />} />
           <Route path="/relationships" element={<Relationships />} />
           <Route path="/insights" element={<Insights />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>
 

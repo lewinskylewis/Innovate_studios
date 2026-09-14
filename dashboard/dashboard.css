@@ -5711,3 +5711,592 @@ button.insights-attention-item:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* ==========================================================================
+   Settings module — control-center layout: a landing grid of category
+   cards, then a two-column nav+content shell per category. Reuses
+   .panel/.badge/.dash-table/.empty-state/Modal/Popover throughout;
+   the only genuinely new primitives are the toggle switch (no existing
+   equivalent anywhere in the app), the settings nav list, and the
+   label/description/control row pattern the whole module is built from.
+   ========================================================================== */
+
+.settings-landing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.settings-nav-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  text-align: left;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  width: 100%;
+}
+
+.settings-nav-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 106, 26, 0.12);
+  color: var(--orange-bright);
+  flex-shrink: 0;
+}
+
+.settings-nav-card-icon svg {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+.settings-nav-card-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-nav-card-main strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.settings-nav-card-main span {
+  display: block;
+  font-size: var(--text-2xs);
+  color: var(--faint);
+  margin-top: 0.1875rem;
+}
+
+.settings-nav-card-chevron {
+  color: var(--faint);
+  flex-shrink: 0;
+}
+
+.settings-nav-card-chevron svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* Settings' "category" view (side nav + content) is a fixed-height
+   frame, not a page that scrolls as a whole: the header and side nav
+   are sized to their own content and never move, only the content
+   panel below has real overflow — so it needs its own explicit height
+   rather than relying on position: sticky (which .dash-main's
+   overflow-x: hidden quirk makes unreliable as a page-scroll anchor). */
+.settings-frame {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--space-6) - var(--space-8));
+  min-height: 0;
+}
+
+.settings-frame .dash-content-header {
+  flex: 0 0 auto;
+}
+
+.settings-shell {
+  display: grid;
+  grid-template-columns: 14rem minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.settings-side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.settings-content-col {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.settings-panel-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.settings-side-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.settings-side-nav-item:hover {
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.settings-side-nav-item.is-active {
+  color: var(--orange-bright);
+  background: rgba(255, 106, 26, 0.14);
+}
+
+.settings-back {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  padding: 0.5rem 0;
+  margin-bottom: var(--space-3);
+  cursor: pointer;
+}
+
+.settings-back svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.settings-content-header {
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  border-bottom: 0.0625rem solid var(--line-soft);
+  margin-bottom: var(--space-5);
+}
+
+.settings-content-header h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.settings-content-header p {
+  font-size: var(--text-xs);
+  color: var(--faint);
+  margin-top: 0.25rem;
+}
+
+.settings-panel-body {
+  padding: 0 var(--space-5) var(--space-5);
+}
+
+.settings-section {
+  margin-bottom: var(--space-7);
+}
+
+.settings-section:last-child {
+  margin-bottom: 0;
+}
+
+.settings-section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--orange-bright);
+}
+
+.settings-section-desc {
+  font-size: var(--text-2xs);
+  color: var(--faint);
+  margin-top: 0.1875rem;
+  margin-bottom: var(--space-3);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 0.0625rem solid var(--line-soft);
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-row-main {
+  min-width: 0;
+}
+
+.settings-row-main strong {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.settings-row-main span {
+  display: block;
+  font-size: var(--text-2xs);
+  color: var(--faint);
+  margin-top: 0.1875rem;
+}
+
+.settings-row-control {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.settings-row-control .input {
+  min-width: 11rem;
+}
+
+.settings-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+}
+
+/* Toggle switch — no equivalent exists anywhere else in the app
+   (Studio/Files use a checkbox or a text pill toggle instead). */
+.switch {
+  position: relative;
+  display: inline-flex;
+  width: 2.75rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.switch-track {
+  position: absolute;
+  inset: 0;
+  background: var(--charcoal);
+  border: 0.0625rem solid var(--line);
+  border-radius: var(--radius-pill);
+  transition: background var(--dur-fast) var(--ease);
+}
+
+.switch-track::before {
+  content: "";
+  position: absolute;
+  width: 1.0625rem;
+  height: 1.0625rem;
+  left: 0.1875rem;
+  top: 0.1875rem;
+  background: var(--white);
+  border-radius: 50%;
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.switch input:checked + .switch-track {
+  background: var(--orange);
+  border-color: var(--orange);
+}
+
+.switch input:checked + .switch-track::before {
+  transform: translateX(1.25rem);
+}
+
+.switch input:disabled + .switch-track {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.switch input:focus-visible + .switch-track {
+  box-shadow: 0 0 0 0.1875rem rgba(255, 106, 26, 0.35);
+}
+
+/* Segmented control — Theme (Dark/Light/System) */
+.settings-segmented {
+  display: inline-flex;
+  padding: 0.25rem;
+  border-radius: var(--radius-pill);
+  border: 0.0625rem solid var(--line);
+  background: rgba(9, 7, 7, 0.72);
+}
+
+.settings-segmented button {
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 0.5rem 1.125rem;
+  cursor: pointer;
+}
+
+.settings-segmented button.is-active {
+  color: var(--orange-bright);
+  background: rgba(255, 106, 26, 0.14);
+}
+
+.settings-save-bar {
+  position: sticky;
+  bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  margin-top: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--graphite-raised);
+  border: 0.0625rem solid var(--line-orange);
+  box-shadow: var(--shadow-elevated);
+}
+
+.settings-save-bar span {
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+.settings-saved-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: var(--text-2xs);
+  color: var(--success);
+  font-weight: 600;
+}
+
+.settings-saved-indicator svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.settings-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.settings-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-bottom: 0.0625rem solid var(--line-soft);
+}
+
+.settings-status-row:last-child {
+  border-bottom: none;
+}
+
+.settings-status-row-label {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: var(--text-sm);
+}
+
+.settings-status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.settings-status-dot.is-healthy {
+  background: var(--success);
+}
+
+.settings-status-dot.is-warning {
+  background: var(--ember);
+}
+
+.settings-status-dot.is-critical {
+  background: var(--danger);
+}
+
+.settings-status-dot.is-disabled {
+  background: var(--faint);
+}
+
+.settings-integration-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 0.0625rem solid var(--line-soft);
+}
+
+.settings-integration-row:last-child {
+  border-bottom: none;
+}
+
+.settings-integration-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-md);
+  background: var(--graphite-raised);
+  border: 0.0625rem solid var(--line-soft);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.settings-integration-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-integration-main strong {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.settings-integration-main p {
+  font-size: var(--text-2xs);
+  color: var(--faint);
+  margin-top: 0.1875rem;
+}
+
+.settings-danger-zone {
+  border: 0.0625rem solid rgba(255, 90, 95, 0.35);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.settings-danger-zone .settings-section-title {
+  color: var(--danger);
+}
+
+.settings-danger-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 0.0625rem solid rgba(255, 90, 95, 0.16);
+}
+
+.settings-danger-row:last-child {
+  border-bottom: none;
+}
+
+.settings-permission-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.settings-permission-table th,
+.settings-permission-table td {
+  padding: 0.625rem var(--space-3);
+  font-size: var(--text-2xs);
+  text-align: center;
+  border-bottom: 0.0625rem solid var(--line-soft);
+  white-space: nowrap;
+}
+
+.settings-permission-table th:first-child,
+.settings-permission-table td:first-child {
+  text-align: left;
+  color: var(--muted);
+}
+
+.settings-permission-table thead th {
+  color: var(--faint);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: var(--text-3xs);
+}
+
+@media (max-width: 1180px) {
+  /* Matches .dash-main's own padding change at this breakpoint, so the
+     fixed-height frame still adds up to exactly one viewport. */
+  .settings-frame {
+    height: calc(100dvh - var(--space-5) - var(--space-7));
+  }
+}
+
+@media (max-width: 960px) {
+  .settings-shell {
+    grid-template-columns: 11rem minmax(0, 1fr);
+  }
+
+  .settings-field-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  /* Side nav is gone and the back-button/single-column pattern takes
+     over below — the fixed-height frame is a desktop/tablet-only
+     device, so fall back to plain document flow here. */
+  .settings-frame {
+    display: block;
+    height: auto;
+  }
+
+  .settings-content-col {
+    height: auto;
+  }
+
+  .settings-panel-scroll {
+    overflow-y: visible;
+  }
+
+  .settings-landing-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-shell {
+    display: block;
+  }
+
+  .settings-side-nav {
+    display: none;
+  }
+
+  .settings-back {
+    display: inline-flex;
+  }
+
+  .settings-row {
+    flex-wrap: wrap;
+  }
+
+  .settings-row-control {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .settings-row-control .input {
+    width: 100%;
+  }
+
+  .settings-danger-row {
+    flex-wrap: wrap;
+  }
+
+  .settings-danger-row .btn {
+    width: 100%;
+  }
+}
