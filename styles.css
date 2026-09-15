@@ -1489,17 +1489,45 @@ html:not(.nav-open) .site-nav {
    mirrors .featured's own no-JS fallback: a real background and normal
    in-flow padding instead of the full-viewport pinned illusion. */
 
+/* ==========================================================================
+   Strategy / Value - a signature statement engine, not a hero-in-a-section.
+   Transparent on purpose: it shares whatever sits behind it in the sticky
+   stack (.featured, one stack-layer down - see motion.js/the [data-stack-
+   section] comment above) rather than carrying its own background, and by
+   the time it's fully settled Featured's own content is already wiped
+   away by the ordinary section-transition mask, leaving just Featured's
+   flat backdrop showing through. A fine technical grid is the one
+   atmosphere layer this section adds itself. The three phrases (see
+   motion.js's updateValueStatements) are read as three states of one
+   system rather than three slides - same crossfade mechanics as before
+   (opacity + translateY per line, staggered), now joined by a scale/blur
+   "coming into focus" cue, a live 01/03 index with a fill line, and a
+   state label pulled straight from each phrase's own subject.
+   ========================================================================== */
+
 .value {
   position: relative;
   overflow: hidden;
   height: 100svh;
   min-height: 38rem;
   padding: 8.125rem 0 5.125rem;
-  background: rgb(41, 41, 41);
+}
+
+.value-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(248, 245, 239, 0.05) 0.0625rem, transparent 0.0625rem),
+    linear-gradient(to bottom, rgba(248, 245, 239, 0.04) 0.0625rem, transparent 0.0625rem);
+  background-size: clamp(3.5rem, 6vw, 6rem) 100%, 100% clamp(3.5rem, 8vh, 6rem);
+  mask-image: radial-gradient(65% 60% at 28% 42%, black, transparent 85%);
 }
 
 .value-container {
   position: relative;
+  z-index: 2;
   height: 100%;
 }
 
@@ -1511,53 +1539,66 @@ html:not(.nav-open) .site-nav {
   height: 100svh;
 }
 
-.value-copy {
-  position: absolute;
-  left: 0;
-  top: clamp(3.25rem, 9svh, 5.5rem);
-  width: min(28rem, 46%);
+.value-grid {
+  position: relative;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-rows: auto 1fr auto;
+  row-gap: clamp(1.5rem, 4svh, 3rem);
+  padding-block: clamp(3rem, 8svh, 5rem) clamp(2rem, 6svh, 3.5rem);
 }
 
-.value-copy h2 {
-  color: var(--white);
+.value-intro {
+  grid-column: 1;
+  grid-row: 1;
+  max-width: 28rem;
+  color: rgb(233, 230, 223);
   font-family: "Innov8 Comfortaa", "Century Gothic", sans-serif;
   font-weight: 300;
   font-size: clamp(1.75rem, 2.6vw, 2.625rem);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
-.value-copy h2 span {
+.value-intro span {
   color: var(--orange);
 }
 
 .value-summary {
-  position: absolute;
-  right: 0;
-  top: clamp(7rem, 16svh, 9.75rem);
-  width: min(19rem, 30%);
-  color: rgb(224, 220, 212);
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  width: min(22rem, 100%);
+  text-align: right;
+  color: rgba(224, 220, 212, 0.7);
   font-family: "Innov8 Century Gothic", Arial, Helvetica, sans-serif;
   font-size: var(--text-base);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .value-tagline {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: var(--page-w);
-  text-align: center;
-  transform: translate(-50%, -50%);
+  grid-column: 1;
+  grid-row: 2;
+  align-self: center;
+}
+
+.value-tag {
+  margin: 0 0 1rem;
+  color: rgba(255, 116, 23, 0.85);
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: var(--text-sm);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
 }
 
 /* Three scroll-activated, two-line statements, stacked into the exact
    same grid cell so all three share one physical position/size/alignment
    with zero positional interpolation - the grid sizes itself to the
-   widest line among all of them, so every statement stays centered on
+   widest line among all of them, so every statement stays anchored to
    the same point regardless of which one is active. Each statement's two
    .value-line children are independent elements so motion.js can animate
-   them with their own opacity/translateY and a short stagger between
+   them with their own opacity/transform/blur and a short stagger between
    them; see updateValueStatements. */
 
 .value-statement-stack {
@@ -1568,7 +1609,7 @@ html:not(.nav-open) .site-nav {
   grid-area: 1 / 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .value-line {
@@ -1576,17 +1617,12 @@ html:not(.nav-open) .site-nav {
   opacity: 0;
   color: var(--white);
   font-family: "Innov8 Comfortaa", "Century Gothic", sans-serif;
-  font-weight: 400;
-  /* Sized off the actual content width (--page-w) rather than a plain vw
-     unit, since --page-w's own formula doesn't scale 1:1 with vw - this
-     keeps the longest phrase ("strengthens perception.") safely inside
-     the margins at every viewport instead of just at whichever width it
-     happened to be tuned against. */
-  font-size: clamp(2.75rem, calc(var(--page-w) * 0.072), 6.5rem);
-  line-height: 1.08;
-  letter-spacing: -0.01em;
+  font-weight: 300;
+  font-size: clamp(2.25rem, 4.6vw, 5rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
   white-space: nowrap;
-  will-change: opacity, transform;
+  will-change: opacity, transform, filter;
 }
 
 .value-statement:first-child .value-line {
@@ -1594,7 +1630,57 @@ html:not(.nav-open) .site-nav {
 }
 
 .value-line span {
+  position: relative;
+  display: inline-block;
   color: var(--orange);
+}
+
+.value-line span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0.06em;
+  width: 100%;
+  height: 0.045em;
+  background: currentcolor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 640ms var(--ease, cubic-bezier(0.16, 1, 0.3, 1)) 120ms;
+}
+
+.value-line span.is-active::after {
+  transform: scaleX(1);
+}
+
+.value-index {
+  grid-column: 1;
+  grid-row: 3;
+  display: flex;
+  align-items: center;
+  gap: 1.3125rem;
+  color: rgba(248, 245, 239, 0.4);
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: calc(var(--text-sm) * 1.5);
+  letter-spacing: 0.08em;
+}
+
+.value-index-current {
+  color: rgba(248, 245, 239, 0.85);
+}
+
+.value-index-track {
+  position: relative;
+  width: 8.25rem;
+  height: 0.09375rem;
+  background: rgba(248, 245, 239, 0.16);
+}
+
+.value-index-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  transform: scaleX(var(--value-progress, 0));
+  background: var(--orange);
 }
 
 .value-tab {
@@ -1615,6 +1701,18 @@ html:not(.nav-open) .site-nav {
   transform: translateY(-50%);
   font: inherit;
   cursor: pointer;
+}
+
+/* #whyPanelOpenMobile is a plain sibling of .value (not nested inside it)
+   specifically so it sits outside .value's own stacking context - .value
+   is position:sticky with its own z-index for the sticky-stack system, so
+   anything painted *inside* it (like the original #whyPanelOpen trigger)
+   stays trapped beneath .services once .services' own stacking context
+   takes over during the cover transition, no matter how high that nested
+   element's own z-index is set. Hidden by default; only shown (as a
+   fixed, viewport-anchored trigger) at the mobile breakpoint below. */
+.value-tab--mobile {
+  display: none;
 }
 
 .value-tab-arrow {
@@ -1949,28 +2047,124 @@ html:not(.nav-open) .site-nav {
   line-height: 1.65;
 }
 
-/* Our Process - deliberately NOT a [data-stack-section] (see motion.js):
-   it scrolls up in plain document flow directly after .services, as one
-   continuous block sharing its background, with no sticky pin and no
-   wipe/overlap between them. Its z-index matches .services' own (3, tied
-   with Value's stack-layer) so it keeps covering the still-sticky Value
-   for as long as it's on screen, then the footer's own much higher
-   z-index (100) takes over once .process scrolls past. */
+/* ==========================================================================
+   How We Work - a continuous methodology, not a carousel of five cards.
+   Deliberately NOT a [data-stack-section] (see motion.js): it scrolls up
+   in plain document flow directly after .services, as one continuous
+   block sharing its background, with no sticky pin and no wipe/overlap
+   between them. Its z-index matches .services' own (3, tied with Value's
+   stack-layer) so it keeps covering the still-sticky Value for as long as
+   it's on screen, then the footer's own much higher z-index (100) takes
+   over once .process scrolls past.
+
+   Shares .services' exact light register (rgb(199,199,199), dark text)
+   rather than Value's dark one now, so the two sections read as one
+   uninterrupted surface with no seam between them - no grid-line texture
+   here on purpose (a flat, genuinely seamless field), just the same
+   cursor-reactive orange glow and concentric rings the About page uses
+   (see .pc-cursor-glow/.pc-ring below, ported from .ab-cursor-glow/
+   .ab-ring), which read as "premium light studio" rather than "technical
+   dark HUD" - a deliberate register shift from Value's, on purpose.
+
+   The five real stages (Diagnose/Define/Create/Launch/Measure - unchanged
+   content) live inside one tall scroll runway (.process-journey) with a
+   sticky inner stage (.process-stage-wrap), read and driven by
+   process-journey.js using the same non-scroll-jacking technique as the
+   rest of the site: a plain getBoundingClientRect() progress read each
+   frame, never a preventDefault() on scroll/wheel/touch. A persistent
+   .process-axis (a thin fill line + five numbered nodes) is the one
+   throughline connecting all five stages; past stages stay dimly visible
+   in the axis rather than vanishing, so the whole thing reads as one
+   system being moved through rather than five independent slides. */
 
 .process {
+  /* No overflow: hidden here on purpose - .process-journey's sticky inner
+     stage needs its nearest ancestors to stay non-clipping for its sticky
+     range to work correctly across the section's full scroll runway.
+     .process-atmosphere is inset: 0 on .process directly, so it never
+     needs a clip to stay within bounds anyway. */
   position: relative;
   z-index: 3;
   background: rgb(199, 199, 199);
   color: rgb(17, 17, 17);
-  padding-block: clamp(4.25rem, 10svh, 6.5rem) clamp(3.5rem, 8svh, 5.5rem);
+  padding-block: clamp(3rem, 7svh, 4.5rem) clamp(2.5rem, 6svh, 4rem);
+}
+
+.process-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ---------- cursor glow, ported from about.css's .ab-cursor-glow ---------- */
+
+.pc-cursor-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34rem;
+  height: 34rem;
+  margin: -17rem 0 0 -17rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 116, 23, 0.12), transparent 68%);
+  filter: blur(1.5rem);
+  mix-blend-mode: multiply;
+  opacity: 0;
+  transition: opacity 600ms ease;
+  will-change: transform;
+}
+
+.process.pc-cursor-active .pc-cursor-glow {
+  opacity: 1;
+}
+
+/* ---------- rings, ported from about.css's .ab-ring ---------- */
+
+.pc-ring {
+  position: absolute;
+  top: 50%;
+  right: -8%;
+  border: 0.0625rem solid rgba(17, 17, 17, 0.1);
+  border-radius: 50%;
+  transform: translateY(-50%) scale(0.4);
+  opacity: 0;
+  transition: transform 1400ms var(--ease), opacity 1400ms var(--ease);
+}
+
+.pc-ring--1 { width: 20rem; height: 20rem; }
+.pc-ring--2 { width: 36rem; height: 36rem; transition-delay: 120ms; }
+.pc-ring--3 { width: 50rem; height: 50rem; border-color: rgba(255, 116, 23, 0.14); transition-delay: 240ms; }
+
+.process.is-in .pc-ring {
+  transform: translateY(-50%) scale(1);
+  opacity: 1;
+}
+
+.pc-ring-origin {
+  position: absolute;
+  top: 50%;
+  right: -8%;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-top: -0.25rem;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 0 0.5rem rgba(255, 116, 23, 0.14);
+}
+
+.process-container {
+  position: relative;
+  z-index: 1;
 }
 
 .process .section-kicker {
-  color: rgb(23, 23, 23);
+  color: rgba(17, 17, 17, 0.55);
 }
 
 .process .section-kicker span {
-  background: rgba(17, 17, 17, 0.55);
+  background: rgba(17, 17, 17, 0.3);
 }
 
 .process-top h2 {
@@ -1987,199 +2181,189 @@ html:not(.nav-open) .site-nav {
   color: var(--orange);
 }
 
-/* Carousel system ported from the Sellam (Sellamre.com) "Featured
-   Communities" carousel: a 3-column grid (arrow / viewport / arrow) with
-   the arrows vertically centered on the card artwork via a JS-computed
-   --process-arrow-top, a native overflow-x + scroll-snap track for the
-   actual scrolling/swiping, and paging dots synced to scroll position.
-   See process-carousel.js for the port of Sellam's exact JS logic. */
+/* ---------- the journey: tall runway + sticky stage (see process-journey.js) ---------- */
 
-.process-carousel {
+.process-journey {
   position: relative;
-  margin-top: clamp(2.75rem, 6svh, 4rem);
+  height: 210vh;
+}
+
+.process-stage-wrap {
+  position: sticky;
+  top: clamp(5rem, 10vw, 7.5rem);
+  height: min(64vh, 36rem);
   display: grid;
-  grid-template-columns: 3rem minmax(0, 1fr) 3rem;
-  align-items: start;
-  column-gap: 1.5rem;
-  --process-arrow-top: 13rem;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  column-gap: clamp(2rem, 5vw, 4rem);
 }
 
-.process-viewport {
-  width: 100%;
-  overflow: hidden;
-}
+/* ---------- axis: the one persistent thread connecting all five stages ---------- */
 
-.process-track {
-  display: flex;
-  gap: 1.5rem;
-  align-items: stretch;
-  padding-block: 0.25rem 0.5rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  overscroll-behavior-x: contain;
-}
-
-.process-track::-webkit-scrollbar {
-  display: none;
-}
-
-.process-card {
-  flex: 0 0 clamp(12.5rem, 19vw, 16rem);
-  min-width: 0;
+.process-axis {
+  position: relative;
   display: flex;
   flex-direction: column;
-  scroll-snap-align: start;
+  align-items: center;
+  gap: 0;
+  padding-block: 0.5rem;
 }
 
-.process-card-media {
-  aspect-ratio: 0.78 / 1;
-  overflow: hidden;
-  background: rgba(17, 17, 17, 0.08);
-  transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 480ms cubic-bezier(0.22, 1, 0.36, 1);
+.process-axis-line {
+  position: absolute;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  left: 50%;
+  width: 0.0625rem;
+  background: rgba(17, 17, 17, 0.14);
+  transform: translateX(-50%);
 }
 
-.process-card-media img {
+.process-axis-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--process-fill, 0%);
+  background: var(--orange);
+  transition: height 60ms linear;
+}
+
+.process-node {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border: 0;
+  background: none;
+  color: rgba(17, 17, 17, 0.32);
+  cursor: pointer;
+}
+
+.process-node span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.875rem;
+  height: 1.875rem;
+  border: 0.0625rem solid currentcolor;
+  border-radius: 50%;
+  background: rgb(199, 199, 199);
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: var(--text-2xs);
+  letter-spacing: 0.04em;
+  transition: color 320ms ease, border-color 320ms ease, transform 320ms var(--ease, ease);
+}
+
+.process-node.is-passed {
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.process-node.is-active {
+  color: rgb(8, 8, 8);
+}
+
+.process-node.is-active span {
+  border-color: var(--orange);
+  color: var(--orange);
+  background: rgb(199, 199, 199);
+  transform: scale(1.15);
+}
+
+/* ---------- stage: typography-led, image kept subtle and structural ---------- */
+
+.process-stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+  column-gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+/* .process-stage-text wraps the progress label + stage copy as normal-flow
+   siblings (progress sitting above the stack with its own margin) instead
+   of the old position: absolute; top: -2.5rem, which floated the label
+   into an unrelated position that could land behind the "How we work"
+   heading above the sticky stage - a real rendering glitch, not a design
+   choice, fixed by construction here rather than by nudging the offset. */
+
+.process-stage-text {
+  min-width: 0;
+}
+
+.process-stage-progress {
+  margin: 0 0 1rem;
+  color: rgba(17, 17, 17, 0.45);
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: var(--text-sm);
+  letter-spacing: 0.14em;
+}
+
+.process-stage-stack {
+  display: grid;
+}
+
+.process-stage-item {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: translateY(1.5rem) scale(0.98);
+  filter: blur(0.5rem);
+  will-change: opacity, transform, filter;
+}
+
+.process-stage-item:first-child {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.process-stage-number {
+  display: block;
+  color: rgba(255, 116, 23, 0.85);
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: clamp(2.25rem, 4vw, 3.5rem);
+  line-height: 1;
+}
+
+.process-stage-title {
+  margin-top: 0.5rem;
+  color: rgb(8, 8, 8);
+  font-family: "Innov8 Comfortaa", "Century Gothic", sans-serif;
+  font-weight: 300;
+  font-size: clamp(2.75rem, 5.2vw, 5.25rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+
+.process-stage-desc {
+  margin-top: 1.25rem;
+  max-width: 26rem;
+  color: rgba(17, 17, 17, 0.62);
+  font-family: "Innov8 Century Gothic", Arial, Helvetica, sans-serif;
+  font-size: var(--text-base);
+  line-height: 1.6;
+}
+
+.process-stage-media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border: 0.0625rem solid rgba(17, 17, 17, 0.12);
+}
+
+.process-stage-media img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0;
+  will-change: opacity;
 }
 
-.process-card:hover .process-card-media,
-.process-card:focus-within .process-card-media {
-  transform: translateY(-0.5rem);
-  box-shadow: rgba(17, 17, 17, 0.28) 0 1.5rem 2.75rem;
-}
-
-.process-card:hover .process-card-media img,
-.process-card:focus-within .process-card-media img {
-  transform: scale(1.08);
-}
-
-.process-card-body {
-  margin-top: 1.25rem;
-}
-
-.process-card-heading {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.process-card-number {
-  color: rgb(17, 17, 17);
-  font-family: "Innov8 Comfortaa", "Century Gothic", sans-serif;
-  font-size: 1.125rem;
-  font-weight: 700;
-  transition: color 320ms ease;
-}
-
-.process-card-title {
-  color: var(--orange);
-  font-family: "Innov8 Comfortaa", "Century Gothic", sans-serif;
-  font-size: 1.25rem;
-  font-weight: 600;
-  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.process-card:hover .process-card-title,
-.process-card:focus-within .process-card-title {
-  transform: translateX(0.25rem);
-}
-
-.process-card-desc {
-  margin-top: 0.5rem;
-  color: rgba(17, 17, 17, 0.62);
-  font-family: "Innov8 Century Gothic", Arial, Helvetica, sans-serif;
-  font-size: var(--text-sm);
-  line-height: 1.5;
-}
-
-/* Arrows: same chevron-from-two-bars construction as Sellam's
-   .slider-arrow, vertically centered on the card artwork rather than the
-   whole card (via --process-arrow-top, computed in JS off the first
-   card's .process-card-media). */
-
-.process-arrow {
-  position: relative;
-  width: 2.75rem;
-  height: 2.75rem;
-  margin-top: calc(var(--process-arrow-top) - 1.375rem);
-  justify-self: center;
-  border: 0;
-  background: transparent;
-  color: rgb(17, 17, 17);
-  transition: opacity 180ms ease;
-}
-
-.process-arrow span {
-  position: absolute;
-  inset: 0;
-}
-
-.process-arrow span::before,
-.process-arrow span::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 1.375rem;
-  height: 0.125rem;
-  border-radius: 0.125rem;
-  background: currentcolor;
-  transform-origin: left center;
-}
-
-.process-arrow.prev span::before {
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-.process-arrow.prev span::after {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-/* Same chevron as prev; scaleX(-1) flips it to point right while keeping
-   it centered in its own click box. */
-.process-arrow.next span {
-  transform: scaleX(-1);
-}
-
-.process-arrow.next span::before {
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-.process-arrow.next span::after {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.process-arrow:disabled {
-  cursor: default;
-  opacity: 0.22;
-}
-
-.process-dots {
-  grid-column: 2;
-  margin-top: 2.25rem;
-  display: flex;
-  justify-content: center;
-  gap: 0.75rem;
-}
-
-.process-dot {
-  width: 0.75rem;
-  height: 0.75rem;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(17, 17, 17, 0.28);
-  transition: background 180ms ease, transform 180ms ease;
-}
-
-.process-dot.is-active {
-  background: rgb(17, 17, 17);
-  transform: scale(1.35);
+.process-stage-media img:first-child {
+  opacity: 1;
 }
 
 /* Shared footer */
@@ -2576,20 +2760,24 @@ html:not(.nav-open) .site-nav {
   }
 
   .value-container, .motion-ready .value-container {
-    position: static;
+    /* relative, not static - it must stay a positioned element so its
+       z-index still holds it above .value::after's gradient overlay,
+       which otherwise paints on top of this (now non-positioned) text */
+    position: relative;
     height: auto;
+  }
+
+  .value-grid {
     display: flex;
     flex-direction: column;
-    gap: 2.75rem;
+    gap: 2.5rem;
+    height: auto;
+    padding-block: 0;
   }
 
-  .value-copy, .value-summary, .value-tagline {
-    position: static;
+  .value-summary {
+    justify-self: auto;
     width: 100%;
-    transform: none;
-  }
-
-  .value-tagline {
     text-align: left;
   }
 
@@ -2670,28 +2858,56 @@ html:not(.nav-open) .site-nav {
     padding-block: 11rem 3.5rem;
   }
 
-  .process-carousel {
-    margin-top: 2.25rem;
+  .process-journey {
+    height: 240vh;
+  }
+
+  .process-stage-wrap {
+    top: 4.5rem;
+    height: min(80vh, 48rem);
     grid-template-columns: 1fr;
-    row-gap: 1.125rem;
+    grid-template-rows: auto 1fr;
+    row-gap: 2rem;
   }
 
-  .process-arrow {
-    display: none;
+  .process-axis {
+    flex-direction: row;
+    padding-inline: 0.5rem;
   }
 
-  .process-track {
-    gap: 1rem;
+  .process-axis-line {
+    top: 50%;
+    bottom: auto;
+    left: 0.75rem;
+    right: 0.75rem;
+    width: auto;
+    height: 0.0625rem;
+    transform: translateY(-50%);
   }
 
-  .process-card {
-    flex: 0 0 74vw;
+  .process-axis-fill {
+    top: 0;
+    left: 0;
+    width: var(--process-fill, 0%);
+    height: 100%;
   }
 
-  .process-dots {
-    grid-column: 1;
-    margin-top: 0.25rem;
+  .process-stage {
+    grid-template-columns: 1fr;
+    row-gap: 1.5rem;
   }
+
+  .process-stage-progress {
+    margin-bottom: 0.5rem;
+  }
+
+  .process-stage-media {
+    aspect-ratio: 16 / 10;
+  }
+
+  .pc-ring--1 { width: 12rem; height: 12rem; }
+  .pc-ring--2 { width: 20rem; height: 20rem; }
+  .pc-ring--3 { width: 28rem; height: 28rem; }
 
   /* Shared footer */
 
@@ -2943,86 +3159,406 @@ html:not(.nav-open) .site-nav {
 }
 
 /* ==========================================================================
-   Why Innovate panel - a full-screen takeover opened/closed by the "Why
-   Innovate" tab on the Value section. It is intentionally not a
-   `main > section`, so motion.js's scroll-stacked section system and the
-   Value statement animation never see it or touch it - this is a plain
-   position: fixed overlay toggled by why-panel.js, entirely independent
-   of the page's existing scroll-driven animation.
+   Why Innovate panel - a spatial drawer opened/closed by the "Why Innovate"
+   tab on the Value section. It is intentionally not a `main > section`, so
+   motion.js's scroll-stacked section system and the Value statement
+   animation never see it or touch it - this is a plain position: fixed
+   overlay toggled by why-panel.js, entirely independent of the page's
+   existing scroll-driven animation. The panel occupies ~84% of the
+   viewport width and stays right-aligned so the page it came from stays
+   visible (and dimmed via .why-scrim) behind it - "entered another layer",
+   not "opened a new page". LAYER 01 background/.why-panel gradient,
+   LAYER 02 .why-atmosphere (grid + ghost numeral), LAYER 03 typography,
+   LAYER 04 .why-image, LAYER 05 .why-close + caption metadata.
    ========================================================================== */
+
+.why-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 499;
+  opacity: 0;
+  pointer-events: none;
+  background: rgba(4, 4, 5, 0.62);
+  backdrop-filter: blur(3px);
+  transition: opacity 500ms ease;
+}
+
+body.why-panel-open .why-scrim {
+  opacity: 1;
+  pointer-events: auto;
+}
 
 .why-panel {
   position: fixed;
-  inset: 0;
+  inset: 0 0 0 auto;
+  width: min(84vw, 90rem);
   z-index: 500;
-  overflow-y: auto;
-  background: radial-gradient(120% 100% at 72% 38%, #ff9a3d 0%, #ff7417 45%, #d94f00 78%, #b23c00 100%);
+  overflow: hidden;
+  background: linear-gradient(160deg, #0d0d0e 0%, #141414 52%, #0a0a0a 100%);
+  border-left: 0.0625rem solid rgba(248, 245, 239, 0.08);
+  box-shadow: rgba(0, 0, 0, 0.55) -2rem 0 6rem;
   transform: translateX(100%);
-  transition: transform 650ms var(--ease);
+  transition: transform 420ms var(--ease);
   will-change: transform;
 }
 
 .why-panel.is-open {
   transform: translateX(0);
+  transition: transform 640ms var(--ease);
 }
 
-.why-panel-inner {
-  padding-block: clamp(5rem, 12vh, 7.5rem) clamp(3rem, 8vh, 5rem);
+/* ---------- Layer 02: atmosphere - faint grid + oversized ghost numeral ---------- */
+
+.why-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
 }
 
-.why-panel .section-kicker {
-  color: rgb(23, 23, 23);
+.why-atmosphere::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(248, 245, 239, 0.05) 0.0625rem, transparent 0.0625rem),
+    linear-gradient(to bottom, rgba(248, 245, 239, 0.045) 0.0625rem, transparent 0.0625rem);
+  background-size: clamp(4rem, 8vw, 7rem) 100%, 100% clamp(6rem, 14vh, 10rem);
+  mask-image: linear-gradient(to bottom, transparent, black 14%, black 72%, transparent);
 }
 
-.why-panel .section-kicker span {
-  background: rgba(17, 17, 17, 0.55);
+.why-ghost {
+  position: absolute;
+  top: clamp(1rem, 4vh, 2.5rem);
+  right: clamp(1rem, 3vw, 3rem);
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: clamp(9rem, 19vw, 17rem);
+  line-height: 0.8;
+  color: rgba(248, 245, 239, 0.035);
+  user-select: none;
 }
 
-.why-panel-heading {
-  margin-top: 1.5rem;
-  max-width: 45rem;
-  color: rgb(20, 12, 4);
+/* ---------- scroll wrapper (content scrolls; atmosphere layer stays static) ---------- */
+
+.why-scroll {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.why-inner {
+  position: relative;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 7vh, 5rem);
+  padding: clamp(5rem, 10vh, 7.5rem) clamp(2rem, 5vw, 5rem) clamp(4rem, 8vh, 6rem);
+}
+
+/* ---------- Layer 03: typography ---------- */
+
+.why-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(248, 245, 239, 0.55);
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: var(--text-sm);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition: opacity 500ms ease, transform 500ms var(--ease);
+}
+
+.why-tag::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--orange);
+}
+
+.why-statement {
+  margin-top: clamp(1rem, 2.5vh, 1.5rem);
+  max-width: 64rem;
+}
+
+.why-line {
+  display: block;
   font-family: "Innov8 Comfortaa", "Century Gothic", sans-serif;
   font-weight: 300;
-  font-size: clamp(2.25rem, 4.4vw, 3.75rem);
-  line-height: 1.08;
   letter-spacing: -0.03em;
+  line-height: 0.98;
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 600ms ease, transform 600ms var(--ease);
 }
 
-.why-panel-summary {
-  margin-top: 1.5rem;
-  max-width: 34rem;
-  color: rgba(20, 12, 4, 0.82);
+.why-line--soft {
+  font-size: clamp(1.75rem, 3.3vw, 2.75rem);
+  color: rgba(248, 245, 239, 0.4);
+}
+
+.why-line--strong {
+  margin-top: 0.25rem;
+  font-size: clamp(2.75rem, 5.9vw, 5.25rem);
+  font-weight: 400;
+  color: var(--white);
+}
+
+.why-line--strong span {
+  color: var(--orange);
+}
+
+.why-philosophy {
+  align-self: flex-end;
+  max-width: 32rem;
+  color: rgba(248, 245, 239, 0.72);
+  font-family: "Innov8 Century Gothic", Arial, Helvetica, sans-serif;
+  font-size: var(--text-lg);
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 600ms ease, transform 600ms var(--ease);
+}
+
+/* ---------- principles + Layer 04 image, asymmetric row ---------- */
+
+.why-body {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(2.5rem, 5vw, 4rem);
+  align-items: stretch;
+}
+
+.why-principles {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.why-principle {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.25rem;
+  padding-block: clamp(1.25rem, 2.6vw, 1.75rem);
+  border-top: 0.0625rem solid rgba(248, 245, 239, 0.12);
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition: opacity 500ms ease, transform 500ms var(--ease);
+}
+
+.why-principles li:last-child {
+  border-bottom: 0.0625rem solid rgba(248, 245, 239, 0.12);
+}
+
+.why-principle-index {
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: clamp(1.625rem, 2.4vw, 2.125rem);
+  color: rgba(248, 245, 239, 0.3);
+}
+
+.why-principle-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.why-principle-title {
+  font-family: "Innov8 Comfortaa", "Century Gothic", sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.0625rem, 1.4vw, 1.3125rem);
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+.why-principle-desc {
+  color: rgba(248, 245, 239, 0.58);
   font-family: "Innov8 Century Gothic", Arial, Helvetica, sans-serif;
   font-size: var(--text-base);
-  line-height: 1.55;
+  line-height: 1.5;
 }
 
-.why-panel-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(1.5rem, 3vw, 3rem);
-  margin-top: clamp(3.5rem, 9vh, 6rem);
+.why-image {
+  position: relative;
+  margin: 0;
+  min-height: clamp(20rem, 42vh, 34rem);
+  overflow: hidden;
+  border: 0.0625rem solid rgba(248, 245, 239, 0.12);
+  opacity: 0;
+  transform: translateY(1.25rem) scale(0.98);
+  transition: opacity 650ms ease, transform 650ms var(--ease);
 }
 
-.why-panel-item h3 {
+.why-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(5, 5, 5, 0.6), transparent 45%);
+  pointer-events: none;
+}
+
+.why-image img {
+  position: absolute;
+  inset: -6%;
+  width: 112%;
+  height: 112%;
+  object-fit: cover;
+  transition: transform 500ms var(--ease);
+  will-change: transform;
+}
+
+.why-image-caption {
+  position: absolute;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin: 0;
+  color: rgba(248, 245, 239, 0.85);
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: rgba(0, 0, 0, 0.6) 0 0.125rem 0.5rem;
+}
+
+.why-image-caption::before {
+  content: "";
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--orange);
+}
+
+.why-closing {
+  margin-top: auto;
+  max-width: 48rem;
+  padding-top: clamp(2rem, 5vh, 3rem);
+  border-top: 0.0625rem solid rgba(248, 245, 239, 0.12);
   color: var(--white);
   font-family: "Innov8 Comfortaa", "Century Gothic", sans-serif;
   font-weight: 300;
-  font-size: clamp(1.375rem, 1.8vw, 1.75rem);
-  line-height: 1.15;
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 600ms ease, transform 600ms var(--ease);
 }
 
-.why-panel-item p {
-  margin-top: 1rem;
-  color: rgba(20, 12, 4, 0.82);
-  font-family: "Innov8 Century Gothic", Arial, Helvetica, sans-serif;
-  font-size: var(--text-sm);
-  line-height: 1.55;
+.why-closing span {
+  color: var(--orange);
 }
 
-.why-panel-close {
+/* ---------- Layer 05: close control ---------- */
+
+.why-close {
   position: absolute;
+  top: clamp(1.5rem, 3vh, 2.25rem);
+  right: clamp(1.5rem, 3vw, 2.5rem);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.625rem 0.625rem 1rem;
+  border: 0.0625rem solid rgba(248, 245, 239, 0.18);
+  border-radius: 62.4375rem;
+  background: rgba(248, 245, 239, 0.04);
+  color: var(--white);
+  font: inherit;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-0.5rem);
+  transition: opacity 450ms ease, transform 450ms var(--ease), border-color 220ms ease, background-color 220ms ease;
+}
+
+.why-close:hover,
+.why-close:focus-visible {
+  border-color: rgba(255, 116, 23, 0.6);
+  background: rgba(255, 116, 23, 0.08);
+}
+
+.why-close-text {
+  font-family: "Innov8 Century Gothic", Arial, Helvetica, sans-serif;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.why-close-key {
+  padding: 0.1875rem 0.5rem;
+  border: 0.0625rem solid rgba(248, 245, 239, 0.25);
+  border-radius: 0.375rem;
+  color: rgba(248, 245, 239, 0.6);
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: var(--text-2xs);
+  letter-spacing: 0.05em;
+}
+
+/* ---------- entrance choreography: scrim -> panel -> type -> image -> details ---------- */
+
+.why-panel.is-open .why-tag {
+  opacity: 1;
+  transform: none;
+  transition-delay: 160ms;
+}
+
+.why-panel.is-open .why-line--soft {
+  opacity: 1;
+  transform: none;
+  transition-delay: 200ms;
+}
+
+.why-panel.is-open .why-line--strong {
+  opacity: 1;
+  transform: none;
+  transition-delay: 240ms;
+}
+
+.why-panel.is-open .why-image {
+  opacity: 1;
+  transform: none;
+  transition-delay: 320ms;
+}
+
+.why-panel.is-open .why-philosophy {
+  opacity: 1;
+  transform: none;
+  transition-delay: 300ms;
+}
+
+.why-panel.is-open .why-principle {
+  opacity: 1;
+  transform: none;
+}
+
+.why-panel.is-open .why-principle:nth-child(1) { transition-delay: 380ms; }
+.why-panel.is-open .why-principle:nth-child(2) { transition-delay: 420ms; }
+.why-panel.is-open .why-principle:nth-child(3) { transition-delay: 460ms; }
+.why-panel.is-open .why-principle:nth-child(4) { transition-delay: 500ms; }
+
+.why-panel.is-open .why-closing {
+  opacity: 1;
+  transform: none;
+  transition-delay: 520ms;
+}
+
+.why-panel.is-open .why-close {
+  opacity: 1;
+  transform: none;
+  transition-delay: 560ms;
 }
 
 body.why-panel-open {
@@ -3030,18 +3566,94 @@ body.why-panel-open {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .why-panel,
+  .why-panel *,
+  .why-scrim {
+    transition-delay: 0ms !important;
+  }
+}
+
+@media (max-width: 64rem) {
   .why-panel {
-    transition: none;
+    width: min(92vw, 90rem);
+  }
+
+  .why-body {
+    grid-template-columns: 1fr;
+  }
+
+  .why-image {
+    min-height: clamp(18rem, 46vh, 28rem);
+    order: -1;
+  }
+
+  .why-ghost {
+    font-size: clamp(7rem, 22vw, 12rem);
   }
 }
 
 @media (max-width: 55rem) {
-  .why-panel-grid {
-    grid-template-columns: 1fr;
-    gap: 2.25rem;
+  /* #whyPanelOpen is normally position: absolute against .value's own
+     document-flow box (top: 50svh from its top edge) - fine on desktop,
+     where .value stays pinned for a long sticky runway, but at mobile
+     .value reverts to auto height and can stack quite tall, so that same
+     offset can land the tab far below the fold. Hidden here in favor of
+     #whyPanelOpenMobile (see .value-tab--mobile) - a plain sibling of
+     .value, fixed to the viewport, that isn't trapped inside .value's
+     own stacking context the way this nested trigger is. */
+  #whyPanelOpen.value-tab {
+    display: none;
   }
 
-  .why-panel-close {
+  .value-tab--mobile {
+    display: flex;
+    position: fixed;
+    top: auto;
+    bottom: 6.5rem;
+    right: 0;
+    z-index: 40;
+    padding: 1.125rem 0.625rem;
+    transform: none;
+  }
+
+  .why-panel {
+    width: 96vw;
+  }
+
+  .why-inner {
+    padding-inline: clamp(1.25rem, 5vw, 2rem);
+    gap: 2.5rem;
+  }
+
+  .why-line--soft {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+  }
+
+  .why-line--strong {
+    font-size: clamp(2.25rem, 11vw, 3.25rem);
+  }
+
+  .why-philosophy {
+    align-self: flex-start;
+  }
+
+  .why-close {
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 0.5rem 0.5rem 0.875rem;
+  }
+
+  .why-close-text {
+    display: none;
+  }
+}
+
+@media (max-width: 35rem) {
+  .why-panel {
+    width: 100vw;
+  }
+
+  .why-ghost {
     display: none;
   }
 }

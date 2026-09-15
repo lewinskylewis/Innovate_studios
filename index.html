@@ -175,31 +175,41 @@
       </section>
 
       <section class="value" id="value">
+        <div class="value-atmosphere" aria-hidden="true"></div>
+
         <div class="section-container value-container">
-          <div class="value-copy">
-            <h2>Your Business Has<br /><span>Value.</span> We Make the<br />Market <span>See It.</span></h2>
-          </div>
+          <div class="value-grid">
+            <p class="value-intro">Your Business Has <span>Value.</span> We Make the Market <span>See It.</span></p>
 
-          <p class="value-summary">
-            We help ambitious brands strengthen market positioning, earn customer trust and drive
-            measurable growth through brand strategy, creative design, cinematic 3D, digital marketing
-            and conversion-focused web development.
-          </p>
+            <p class="value-summary">
+              We help ambitious brands strengthen market positioning, earn customer trust and drive
+              measurable growth through brand strategy, creative design, cinematic 3D, digital marketing
+              and conversion-focused web development.
+            </p>
 
-          <div class="value-tagline">
-            <div class="value-statement-stack">
-              <div class="value-statement" data-statement="1">
-                <span class="value-line" data-line="1">Strategy that</span>
-                <span class="value-line" data-line="2">creates <span>direction.</span></span>
+            <div class="value-tagline">
+              <p class="value-tag" data-value-tag>Strategy</p>
+
+              <div class="value-statement-stack">
+                <div class="value-statement" data-statement="1">
+                  <span class="value-line" data-line="1">Strategy that</span>
+                  <span class="value-line" data-line="2">creates <span>direction.</span></span>
+                </div>
+                <div class="value-statement" data-statement="2">
+                  <span class="value-line" data-line="1">Design that</span>
+                  <span class="value-line" data-line="2">strengthens <span>perception.</span></span>
+                </div>
+                <div class="value-statement" data-statement="3">
+                  <span class="value-line" data-line="1">Technology that</span>
+                  <span class="value-line" data-line="2">drives <span>performance.</span></span>
+                </div>
               </div>
-              <div class="value-statement" data-statement="2">
-                <span class="value-line" data-line="1">Design that</span>
-                <span class="value-line" data-line="2">strengthens <span>perception.</span></span>
-              </div>
-              <div class="value-statement" data-statement="3">
-                <span class="value-line" data-line="1">Technology that</span>
-                <span class="value-line" data-line="2">drives <span>performance.</span></span>
-              </div>
+            </div>
+
+            <div class="value-index" aria-hidden="true">
+              <span class="value-index-current" data-value-index>01</span>
+              <span class="value-index-track"><span class="value-index-fill" data-value-fill></span></span>
+              <span class="value-index-total">03</span>
             </div>
           </div>
         </div>
@@ -209,6 +219,11 @@
           <span class="value-tab-label">Why Innovate</span>
         </button>
       </section>
+
+      <button type="button" class="value-tab value-tab--mobile" id="whyPanelOpenMobile" aria-expanded="false" aria-controls="whyPanel">
+        <span class="value-tab-arrow" aria-hidden="true"></span>
+        <span class="value-tab-label">Why Innovate</span>
+      </button>
 
       <section class="services" id="services">
         <div class="section-container services-container">
@@ -315,6 +330,13 @@
       </section>
 
       <section class="process" id="process">
+        <div class="process-atmosphere" aria-hidden="true">
+          <span class="pc-cursor-glow" data-process-cursor-glow></span>
+          <span class="pc-ring pc-ring--1"></span>
+          <span class="pc-ring pc-ring--2"></span>
+          <span class="pc-ring pc-ring--3"></span>
+          <span class="pc-ring-origin"></span>
+        </div>
         <div class="section-container process-container">
           <div class="process-top">
             <div class="section-kicker">
@@ -324,142 +346,131 @@
             <h2>How we <span>work</span>.</h2>
           </div>
 
-          <div class="process-carousel" data-process-carousel aria-label="Our process, step by step">
-            <button type="button" class="process-arrow prev" data-process-prev aria-label="Previous step">
-              <span></span>
-            </button>
+          <div class="process-journey" data-process-journey>
+            <div class="process-stage-wrap">
+              <nav class="process-axis" aria-label="Process stages">
+                <span class="process-axis-line" aria-hidden="true"><span class="process-axis-fill" data-process-axis-fill></span></span>
+                <button type="button" class="process-node" data-process-node="0" aria-label="Diagnose"><span>01</span></button>
+                <button type="button" class="process-node" data-process-node="1" aria-label="Define"><span>02</span></button>
+                <button type="button" class="process-node" data-process-node="2" aria-label="Create"><span>03</span></button>
+                <button type="button" class="process-node" data-process-node="3" aria-label="Launch"><span>04</span></button>
+                <button type="button" class="process-node" data-process-node="4" aria-label="Measure"><span>05</span></button>
+              </nav>
 
-            <div class="process-viewport">
-              <div class="process-track" data-process-track>
-                <article class="process-card">
-                  <div class="process-card-media">
-                    <img src="assets/images/kelly-sikkema-8JaHVliaARs-unsplash.jpg" alt="Pantone color swatches fanned out beside a blank sketchpad and pen" loading="lazy" />
-                  </div>
-                  <div class="process-card-body">
-                    <div class="process-card-heading">
-                      <span class="process-card-number">01.</span>
-                      <span class="process-card-title">Diagnose</span>
-                    </div>
-                    <p class="process-card-desc">We dig into the business, the audience, and the goal before a single deliverable exists.</p>
-                  </div>
-                </article>
+              <div class="process-stage">
+                <div class="process-stage-text">
+                  <p class="process-stage-progress" data-process-progress>01 / 05</p>
 
-                <article class="process-card">
-                  <div class="process-card-media">
-                    <img src="assets/images/balazs-ketyi-_x335IZXxfc-unsplash.jpg" alt="A design system on screen showing colors, text styles, and a component library" loading="lazy" />
+                  <div class="process-stage-stack" data-process-stack>
+                    <article class="process-stage-item" data-stage="0">
+                      <span class="process-stage-number">01</span>
+                      <h3 class="process-stage-title">Diagnose</h3>
+                      <p class="process-stage-desc">We dig into the business, the audience, and the goal before a single deliverable exists.</p>
+                    </article>
+                    <article class="process-stage-item" data-stage="1">
+                      <span class="process-stage-number">02</span>
+                      <h3 class="process-stage-title">Define</h3>
+                      <p class="process-stage-desc">We turn research into a clear strategy, direction, and system everyone can build from.</p>
+                    </article>
+                    <article class="process-stage-item" data-stage="2">
+                      <span class="process-stage-number">03</span>
+                      <h3 class="process-stage-title">Create</h3>
+                      <p class="process-stage-desc">We design, build, and produce the work itself, from first pixel to finished system.</p>
+                    </article>
+                    <article class="process-stage-item" data-stage="3">
+                      <span class="process-stage-number">04</span>
+                      <h3 class="process-stage-title">Launch</h3>
+                      <p class="process-stage-desc">We ship, test, and hand off, making sure every detail is ready for the real world.</p>
+                    </article>
+                    <article class="process-stage-item" data-stage="4">
+                      <span class="process-stage-number">05</span>
+                      <h3 class="process-stage-title">Measure</h3>
+                      <p class="process-stage-desc">We track performance after launch and refine, so the work keeps earning its results.</p>
+                    </article>
                   </div>
-                  <div class="process-card-body">
-                    <div class="process-card-heading">
-                      <span class="process-card-number">02.</span>
-                      <span class="process-card-title">Define</span>
-                    </div>
-                    <p class="process-card-desc">We turn research into a clear strategy, direction, and system everyone can build from.</p>
-                  </div>
-                </article>
+                </div>
 
-                <article class="process-card">
-                  <div class="process-card-media">
-                    <img src="assets/images/nubelson-fernandes-6rrIT4YcqoI-unsplash.jpg" alt="A designer reviewing icon pack artwork on a monitor" loading="lazy" />
-                  </div>
-                  <div class="process-card-body">
-                    <div class="process-card-heading">
-                      <span class="process-card-number">03.</span>
-                      <span class="process-card-title">Create</span>
-                    </div>
-                    <p class="process-card-desc">We design, build, and produce the work itself, from first pixel to finished system.</p>
-                  </div>
-                </article>
-
-                <article class="process-card">
-                  <div class="process-card-media">
-                    <img src="assets/images/jakub-zerdzicki-OF3jqHO27ko-unsplash.jpg" alt="A handwritten checklist on a tablet with every item ticked off" loading="lazy" />
-                  </div>
-                  <div class="process-card-body">
-                    <div class="process-card-heading">
-                      <span class="process-card-number">04.</span>
-                      <span class="process-card-title">Launch</span>
-                    </div>
-                    <p class="process-card-desc">We ship, test, and hand off, making sure every detail is ready for the real world.</p>
-                  </div>
-                </article>
-
-                <article class="process-card">
-                  <div class="process-card-media">
-                    <img src="assets/images/peter-stumpf-i1_xsS9fBRc-unsplash.jpg" alt="Waveform and scope readouts on a video editing monitor" loading="lazy" />
-                  </div>
-                  <div class="process-card-body">
-                    <div class="process-card-heading">
-                      <span class="process-card-number">05.</span>
-                      <span class="process-card-title">Measure</span>
-                    </div>
-                    <p class="process-card-desc">We track performance after launch and refine, so the work keeps earning its results.</p>
-                  </div>
-                </article>
+                <div class="process-stage-media" data-process-media>
+                  <img data-stage="0" src="assets/images/kelly-sikkema-8JaHVliaARs-unsplash.jpg" alt="Pantone color swatches fanned out beside a blank sketchpad and pen" loading="lazy" />
+                  <img data-stage="1" src="assets/images/balazs-ketyi-_x335IZXxfc-unsplash.jpg" alt="A design system on screen showing colors, text styles, and a component library" loading="lazy" />
+                  <img data-stage="2" src="assets/images/nubelson-fernandes-6rrIT4YcqoI-unsplash.jpg" alt="A designer reviewing icon pack artwork on a monitor" loading="lazy" />
+                  <img data-stage="3" src="assets/images/jakub-zerdzicki-OF3jqHO27ko-unsplash.jpg" alt="A handwritten checklist on a tablet with every item ticked off" loading="lazy" />
+                  <img data-stage="4" src="assets/images/peter-stumpf-i1_xsS9fBRc-unsplash.jpg" alt="Waveform and scope readouts on a video editing monitor" loading="lazy" />
+                </div>
               </div>
             </div>
-
-            <button type="button" class="process-arrow next" data-process-next aria-label="Next step">
-              <span></span>
-            </button>
-
-            <div class="process-dots" data-process-dots aria-label="Process carousel pages"></div>
           </div>
         </div>
       </section>
     </main>
 
+    <div class="why-scrim" data-why-scrim aria-hidden="true"></div>
+
     <div class="why-panel" id="whyPanel" aria-hidden="true">
-      <div class="why-panel-inner section-container">
-        <div class="section-kicker">
-          <span></span>
-          <p>Our services</p>
-        </div>
+      <div class="why-atmosphere" aria-hidden="true">
+        <span class="why-ghost">01</span>
+      </div>
 
-        <h2 class="why-panel-heading">Why Ambitious Brands<br />Choose Innov8 Studios</h2>
+      <div class="why-scroll">
+        <div class="why-inner">
+          <header>
+            <p class="why-tag">Why Innovate / 01</p>
+            <h2 class="why-statement">
+              <span class="why-line why-line--soft">We don't make things look better.</span>
+              <span class="why-line why-line--strong">We make them <span>work better.</span></span>
+            </h2>
+          </header>
 
-        <p class="why-panel-summary">
-          We combine strategy, design, technology, and marketing to solve business challenges,
-          strengthen market perception, and build brands people choose with confidence.
-        </p>
+          <p class="why-philosophy">
+            Most creative work starts by asking what to make. We start by asking what needs to
+            change - then use strategy, design and technology as the tool for getting there.
+          </p>
 
-        <div class="why-panel-grid">
-          <div class="why-panel-item">
-            <h3>Commercial<br />Thinking</h3>
-            <p>
-              We begin with the business problem, not the deliverable. Every recommendation must
-              support perception, demand, conversion or long-term market value.
-            </p>
+          <div class="why-body">
+            <ol class="why-principles">
+              <li class="why-principle">
+                <span class="why-principle-index">01</span>
+                <span class="why-principle-body">
+                  <span class="why-principle-title">Think First</span>
+                  <span class="why-principle-desc">Strategy before decoration.</span>
+                </span>
+              </li>
+              <li class="why-principle">
+                <span class="why-principle-index">02</span>
+                <span class="why-principle-body">
+                  <span class="why-principle-title">Build Different</span>
+                  <span class="why-principle-desc">Design, 3D, technology and systems, treated as one discipline instead of four.</span>
+                </span>
+              </li>
+              <li class="why-principle">
+                <span class="why-principle-index">03</span>
+                <span class="why-principle-body">
+                  <span class="why-principle-title">Make It Matter</span>
+                  <span class="why-principle-desc">Beautiful is easy. Beautiful and effective is the work.</span>
+                </span>
+              </li>
+              <li class="why-principle">
+                <span class="why-principle-index">04</span>
+                <span class="why-principle-body">
+                  <span class="why-principle-title">Stay In Motion</span>
+                  <span class="why-principle-desc">The work should evolve with the business, not stop at delivery.</span>
+                </span>
+              </li>
+            </ol>
+
+            <figure class="why-image" data-why-image>
+              <img src="assets/images/portfolio/nike-leadership.png" alt="Cinematic still from the Nike Kenya \"Own The Ground\" campaign" loading="lazy" decoding="async" data-why-image-el />
+              <figcaption class="why-image-caption">Selected work - Nike Kenya</figcaption>
+            </figure>
           </div>
 
-          <div class="why-panel-item">
-            <h3>Integrated<br />Execution</h3>
-            <p>
-              Strategy, design, 3D, development and marketing direction are coordinated under one
-              creative system rather than fragmented across several vendors.
-            </p>
-          </div>
-
-          <div class="why-panel-item">
-            <h3>Senior-Level<br />Attention</h3>
-            <p>
-              Every engagement receives direct strategic and creative oversight, protecting quality
-              and maintaining consistency from concept to launch.
-            </p>
-          </div>
-
-          <div class="why-panel-item">
-            <h3>Built for<br />Modern Markets</h3>
-            <p>
-              We combine cultural understanding, technology and world-class visual execution to help
-              brands compete locally and internationally.
-            </p>
-          </div>
+          <p class="why-closing">The difference isn't what we make.<br />It's <span>what changes after we make it.</span></p>
         </div>
       </div>
 
-      <button type="button" class="value-tab why-panel-close" id="whyPanelClose" aria-expanded="true" aria-controls="whyPanel">
-        <span class="value-tab-arrow value-tab-arrow--left" aria-hidden="true"></span>
-        <span class="value-tab-label">Why Innovate</span>
+      <button type="button" class="why-close" id="whyPanelClose" aria-expanded="true" aria-controls="whyPanel">
+        <span class="why-close-text">Close</span>
+        <span class="why-close-key" aria-hidden="true">Esc</span>
       </button>
     </div>
 
@@ -478,6 +489,6 @@
     <!-- whatsapp-float.js disabled site-wide for now - hidden, not deleted, for later use -->
     <script src="why-panel.js" defer></script>
     <script src="services-interface.js" defer></script>
-    <script src="process-carousel.js" defer></script>
+    <script src="process-journey.js" defer></script>
   </body>
 </html>

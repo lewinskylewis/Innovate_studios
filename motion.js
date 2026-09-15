@@ -19,6 +19,8 @@
         lines: [...el.querySelectorAll(".value-line")]
       }))
     : [];
+  const valueTagEl = document.querySelector("[data-value-tag]");
+  const valueIndexEl = document.querySelector("[data-value-index]");
   const heroHeader = document.querySelector("[data-header]");
   const getViewportHeight = () => window.visualViewport?.height || window.innerHeight;
   const getIncomingProgress = (section, viewportHeight) => {
@@ -62,15 +64,26 @@
   // settled) with a smoothstep crossfade into its neighbor; line 2's
   // crossfade is the same shape as line 1's but starts partway through
   // it (LINE_STAGGER), so it visibly trails - "Line 2 begins slightly
-  // after Line 1" - while both still finish together. Everything here is
-  // a pure function of scroll position: no timers drive progression, so
-  // it scrubs forward and backward exactly with the user's scroll.
+  // after Line 1" - while both still finish together. On top of the
+  // original opacity/translateY, each line now also unblurs as it
+  // settles (a "coming into focus" cue, not just a fade), the emphasised
+  // word gets a short underline "activation" once its statement is fully
+  // settled (see .value-line span.is-active in styles.css - a discrete
+  // class toggle, not scroll-scrubbed, so it reads as a deliberate
+  // follow-through rather than more crossfade), and three small pieces of
+  // metadata track the same progress: the state label pulled straight
+  // from each statement's own first word (Strategy/Design/Technology -
+  // no invented copy) and a live 01/03 index. Everything here is a pure
+  // function of scroll position: no timers drive progression, so it
+  // scrubs forward and backward exactly with the user's scroll.
   const clamp01 = (value) => Math.min(Math.max(value, 0), 1);
   const smoothstep = (t) => t * t * (3 - 2 * t);
   const MOBILE_SEQUENCE_SPAN = 0.35;
   const STATEMENT_CROSSFADE = 0.08;
   const LINE_STAGGER = 0.4;
   const LINE_RISE_PX = 22;
+  const LINE_BLUR_PX = 6;
+  const VALUE_STATE_LABELS = ["Strategy", "Design", "Technology"];
 
   // .offsetTop is not trustworthy here once .value is actually stuck -
   // some engines report it shifted by the sticky offset rather than its
@@ -108,7 +121,10 @@
     const step = plateau + crossfade;
 
     valueStatements.forEach(({ lines }, index) => {
-      const plateauStart = crossfade + index * step;
+      // Index 0 has no preceding state to crossfade from, so it starts
+      // already settled at progress 0 instead of fading in from nothing
+      // the instant the section becomes sticky-pinned.
+      const plateauStart = index === 0 ? 0 : crossfade + index * step;
       const plateauEnd = plateauStart + plateau;
       let direction;
       let zoneT;
@@ -133,11 +149,23 @@
         const eased = smoothstep(t);
         const rise = direction === "out" ? -LINE_RISE_PX : LINE_RISE_PX;
         const offset = (1 - eased) * rise;
+        const blur = (1 - eased) * LINE_BLUR_PX;
 
         line.style.opacity = eased.toFixed(3);
         line.style.transform = `translateY(${offset.toFixed(2)}px)`;
+        line.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : "none";
+
+        if (lineIndex === 1) {
+          const emphasis = line.querySelector("span");
+          emphasis?.classList.toggle("is-active", direction === "settled");
+        }
       });
     });
+
+    const activeIndex = Math.min(count - 1, Math.floor(progress / step));
+    if (valueTagEl) valueTagEl.textContent = VALUE_STATE_LABELS[activeIndex] || VALUE_STATE_LABELS[0];
+    if (valueIndexEl) valueIndexEl.textContent = String(activeIndex + 1).padStart(2, "0");
+    valueSection?.style.setProperty("--value-progress", progress.toFixed(3));
   };
 
   const transitionPairs = sectionElements.slice(0, -1).map((section, index) => {
@@ -241,10 +269,6 @@
         updateServicesCorner(rawProgress);
       }
 
-      if (section === valueSection) {
-        updateValueStatements(rawProgress);
-      }
-
       const controlsHeaderFade = section.matches(".hero, .about-hero")
         || (document.body.classList.contains("portfolio-page") && section === sectionElements[0]);
 
@@ -253,6 +277,15 @@
         heroHeader?.style.setProperty("--hero-logo-opacity", (1 - easedProgress).toFixed(3));
       }
     });
+
+    // Value is the last section in sectionElements, so it's never the
+    // "current" half of a transitionPairs entry (transitionPairs only
+    // pairs a section with the one after it) - called directly here
+    // instead, once per frame, with the same "how far has Value scrolled
+    // into view" progress getIncomingProgress already provides.
+    if (valueSection) {
+      updateValueStatements(getIncomingProgress(valueSection, viewportHeight));
+    }
 
     ticking = false;
   };
