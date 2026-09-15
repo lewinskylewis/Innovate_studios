@@ -13,7 +13,22 @@
   --page-gutter: max(0.75rem, calc((100vw - var(--container)) / 4));
   --portfolio-dark: #262626;
   --portfolio-orange: #ff5a00;
-  background: var(--portfolio-dark);
+  /* One seamless environment for the whole page - the same recipe the
+     Hero used to keep to itself (dark radial gradient + fixed technical
+     grid via .pf-page-atmosphere below), now shared by every zone so
+     nothing resets/repeats as you scroll past a section boundary. */
+  background: radial-gradient(120% 85% at 50% 8%, #1c1c1c 0%, #101010 55%, #050505 100%);
+}
+
+.pf-page-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(248, 245, 239, 0.05) 0.0625rem, transparent 0.0625rem),
+    linear-gradient(to bottom, rgba(248, 245, 239, 0.045) 0.0625rem, transparent 0.0625rem);
+  background-size: clamp(3.5rem, 6vw, 6rem) 100%, 100% clamp(3.5rem, 8vh, 6rem);
 }
 
 .portfolio-page .section-container,
@@ -46,335 +61,625 @@
 }
 
 .portfolio-page main {
-  background: var(--portfolio-dark);
   font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
 }
 
-/* ---------- hero (content unchanged, kept as the page's own anchor) ---------- */
+/* ==========================================================================
+   Hero - "entering an environment", not a banner. Oversized typography over
+   a faint technical grid, with the atmosphere built from fragments of the
+   real project covers (JS-positioned) so the hero previews the gallery's
+   own visual language instead of a disconnected image.
+   ========================================================================== */
 
-.portfolio-hero {
+.pf-hero {
   position: relative;
-  min-height: clamp(42rem, 47.55vw, 57.125rem);
+  min-height: 100svh;
   overflow: hidden;
-  background: var(--portfolio-orange);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.portfolio-hero-inner {
-  position: relative;
-  min-height: inherit;
-}
-
-.portfolio-hero-copy {
+.pf-hero-mosaic {
   position: absolute;
-  top: 52.5%;
-  left: 0;
-  z-index: 2;
-  width: min(27rem, 32vw);
-  transform: translateY(-15%);
-}
-
-.portfolio-hero-copy h1 {
-  color: white;
-  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
-  font-size: clamp(2.75rem, 2.95vw, 3.55rem);
-  font-weight: 400;
-  line-height: 0.98;
-  letter-spacing: -0.045em;
-}
-
-.portfolio-hero-copy p {
-  max-width: 26rem;
-  margin-top: 4.75rem;
-  color: white;
-  font-family: "Innov8 Century Gothic", Arial, sans-serif;
-  font-size: 0.875rem;
-  line-height: 1.45;
-}
-
-.portfolio-hero-copy p + p {
-  margin-top: 1.75rem;
-}
-
-.portfolio-hero-duo {
-  position: absolute;
-  right: -2.3%;
-  top: -19%;
+  inset: 0;
   z-index: 1;
-  width: auto;
-  max-width: none;
-  height: 176%;
   pointer-events: none;
 }
 
-/* ---------- chapter heading (kicker/title/intro, kept verbatim) ---------- */
-
-.pf-chapter {
-  position: relative;
-  background: var(--portfolio-dark);
-}
-
-.pf-chapter-heading {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(22rem, 34rem);
-  align-items: end;
-  gap: 5rem;
+.pf-hero-mosaic img {
+  position: absolute;
+  object-fit: cover;
+  border: 0.0625rem solid rgba(248, 245, 239, 0.08);
+  border-radius: 0.1875rem;
+  filter: saturate(0.8) brightness(0.62);
   opacity: 0;
   transform: translateY(1.5rem);
-  filter: blur(0.375rem);
-  transition: opacity 900ms var(--ease), transform 900ms var(--ease), filter 900ms var(--ease);
+  transition: opacity 900ms var(--ease), transform 900ms var(--ease);
+  will-change: transform;
 }
 
-.pf-chapter.is-in .pf-chapter-heading {
-  opacity: 1;
-  transform: none;
-  filter: blur(0);
-}
-
-.portfolio-kicker {
-  gap: 1.625rem;
-}
-
-.portfolio-kicker span {
-  width: 3.75rem;
-}
-
-.portfolio-kicker p {
-  font-family: "Innov8 Century Gothic", Arial, sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-}
-
-.pf-chapter-title {
-  margin-top: 2rem;
-  color: var(--portfolio-orange);
-  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
-  font-size: clamp(3.25rem, 4.35vw, 5.25rem);
-  font-weight: 400;
-  line-height: 0.94;
-  letter-spacing: -0.055em;
-}
-
-.pf-chapter-intro {
-  max-width: 33rem;
-  padding-bottom: 0.55rem;
-  color: #f5f3ee;
-  font-family: "Innov8 Century Gothic", Arial, sans-serif;
-  font-size: 0.875rem;
-  line-height: 1.48;
-}
-
-/* ---------- chapter body: the Index (left) + sticky Stage (right) ---------- */
-
-.pf-chapter-inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  column-gap: clamp(3rem, 6vw, 5rem);
-  padding-block: clamp(7.5rem, 8.3vw, 10rem) clamp(6rem, 7vw, 8.5rem);
-}
-
-.pf-index {
-  grid-column: 1;
-  grid-row: 2;
-  margin: clamp(4rem, 7vw, 6rem) 0 0;
-  padding: 0;
-  list-style: none;
-  border-top: 0.0625rem solid rgba(255, 255, 255, 0.14);
-}
-
-.pf-row {
-  border-bottom: 0.0625rem solid rgba(255, 255, 255, 0.14);
-  opacity: 0;
-  transform: translateY(1rem);
-  transition: opacity 620ms var(--ease), transform 620ms var(--ease);
-}
-
-.pf-row.is-in {
+.pf-hero.is-in .pf-hero-mosaic img {
   opacity: 1;
   transform: none;
 }
 
-.pf-row-link {
+.pf-hero-content {
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: clamp(1rem, 2vw, 1.5rem);
-  padding-block: clamp(1.375rem, 2.6vw, 1.875rem);
-  color: inherit;
-  text-decoration: none;
+  z-index: 2;
+  text-align: center;
 }
 
-.pf-row-link:focus-visible {
-  outline: 0.125rem solid var(--portfolio-orange);
-  outline-offset: -0.125rem;
-  border-radius: 0.25rem;
-}
-
-.pf-row-index {
-  flex: 0 0 auto;
-  width: 2.25rem;
-  color: rgba(255, 255, 255, 0.32);
-  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+.pf-hero-tag {
+  color: rgba(248, 245, 239, 0.5);
+  font-family: "Innov8 Abel", Arial, sans-serif;
   font-size: var(--text-sm);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  transition: color 320ms ease;
-}
-
-.pf-row-thumb {
-  flex: 0 0 auto;
-  width: 3.75rem;
-  height: 3.75rem;
-  object-fit: cover;
-  border-radius: 0.375rem;
-  opacity: 0.78;
-  transition: transform 480ms var(--ease), opacity 320ms ease;
-}
-
-.pf-row-main {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-}
-
-.pf-row-title {
-  display: block;
-  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
-  font-size: clamp(1.1875rem, 1.9vw, 1.625rem);
-  font-weight: 400;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  color: rgba(255, 255, 255, 0.62);
-  transition: color 320ms ease;
-}
-
-.pf-row-meta {
-  display: block;
-  color: rgba(255, 255, 255, 0.32);
-  font-family: "Innov8 Century Gothic", Arial, sans-serif;
-  font-size: var(--text-xs);
-  letter-spacing: 0.07em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
 }
 
-.pf-row-arrow {
+.pf-hero-heading {
+  margin-top: 1.25rem;
+}
+
+.pf-hero-line {
+  display: block;
+  font-family: "Innov8 Comfortaa", "Century Gothic", sans-serif;
+  font-weight: 300;
+  font-size: clamp(3.5rem, 12vw, 9.5rem);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  color: var(--white);
+}
+
+.pf-hero-line--accent {
+  color: var(--portfolio-orange);
+}
+
+.pf-hero-sub {
+  margin: 1.75rem auto 0;
+  max-width: 28rem;
+  color: rgba(248, 245, 239, 0.6);
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: var(--text-base);
+  line-height: 1.5;
+}
+
+.pf-hero-cue {
+  position: absolute;
+  bottom: clamp(1.5rem, 4vh, 2.5rem);
+  left: 50%;
+  z-index: 2;
+  transform: translateX(-50%);
+}
+
+.pf-hero-cue span {
+  display: block;
+  width: 0.0625rem;
+  height: 2.5rem;
+  background: linear-gradient(to bottom, rgba(248, 245, 239, 0.5), transparent);
+  animation: pf-cue 1.8s ease-in-out infinite;
+}
+
+@keyframes pf-cue {
+  0%, 100% { transform: scaleY(0.55); opacity: 0.35; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+/* ==========================================================================
+   Gallery shell - a left index rail + scrolling content column beneath the
+   Hero. The rail is plain, technical typography (no button chrome) that
+   tracks the active zone as a quiet progress/mode indicator while the
+   tiles scroll on the right.
+   ========================================================================== */
+
+.pf-gallery-shell {
+  display: grid;
+  grid-template-columns: minmax(11rem, 14rem) minmax(0, 1fr);
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: start;
+}
+
+.pf-sidebar {
+  position: sticky;
+  top: clamp(6.5rem, 11vw, 9rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.pf-sidebar-link {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding-block: 1rem;
+  border: 0;
+  border-top: 0.0625rem solid rgba(248, 245, 239, 0.12);
+  background: none;
+  color: rgba(248, 245, 239, 0.4);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 260ms ease;
+}
+
+.pf-sidebar-link:last-child {
+  border-bottom: 0.0625rem solid rgba(248, 245, 239, 0.12);
+}
+
+.pf-sidebar-index {
   flex: 0 0 auto;
-  color: var(--portfolio-orange);
-  font-size: 1.125rem;
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  color: rgba(248, 245, 239, 0.32);
+  transition: color 260ms ease;
+}
+
+.pf-sidebar-label {
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: clamp(0.9375rem, 1vw, 1.0625rem);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+.pf-sidebar-link:hover,
+.pf-sidebar-link:focus-visible {
+  color: rgba(248, 245, 239, 0.75);
+}
+
+.pf-sidebar-link.is-active {
+  color: var(--white);
+}
+
+.pf-sidebar-link.is-active .pf-sidebar-index {
+  color: var(--pf-active-accent, var(--portfolio-orange));
+}
+
+.pf-content {
+  min-width: 0;
+}
+
+/* ==========================================================================
+   Zones - each category is a distinct atmosphere within one continuous
+   scroll, not a boring heading + grid. Accent/glow shift per zone via CSS
+   custom properties, picked up by the HUD dot and tile glow too.
+   ========================================================================== */
+
+.pf-zone {
+  position: relative;
+  padding-block: clamp(2rem, 3.5vw, 3.5rem);
+  overflow: hidden;
+}
+
+.pf-zone[data-pf-zone="Marketing Commercials"],
+.pf-reel-zone[data-pf-zone="3D Showreel"] { --pf-zone-accent: #ff8a3d; }
+.pf-zone[data-pf-zone="Brand Identity"],
+.pf-reel-zone[data-pf-zone="Motion Graphics"] { --pf-zone-accent: #d9a53a; }
+.pf-zone[data-pf-zone="Web Experiences"] { --pf-zone-accent: #4db3d6; }
+
+.pf-reel-zone {
+  position: relative;
+  padding-block: clamp(1.5rem, 2.5vw, 2.5rem);
+}
+
+.pf-zone-heading {
+  position: relative;
+  z-index: 1;
+}
+
+.pf-zone-kicker {
+  color: rgba(248, 245, 239, 0.45);
+  font-family: "Innov8 Abel", Arial, sans-serif;
+  font-size: var(--text-sm);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.pf-zone-title {
+  margin-top: 0.75rem;
+  color: var(--white);
+  font-family: "Innov8 Comfortaa", "Century Gothic", sans-serif;
+  font-weight: 300;
+  font-size: clamp(2.25rem, 4.4vw, 3.75rem);
+  letter-spacing: -0.03em;
+}
+
+/* ==========================================================================
+   Mosaic - a symmetrical CSS Grid: every tile shares the same span and
+   aspect-ratio, so the grid reads as one clean, precise system. Hierarchy
+   comes from order and content, not uneven tile sizes.
+   ========================================================================== */
+
+.pf-mosaic {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(0.875rem, 1.6vw, 1.5rem);
+}
+
+.pf-tile {
+  position: relative;
+  display: block;
+  grid-column: span 4;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 0.375rem;
+  border: 0.0625rem solid rgba(248, 245, 239, 0.08);
+  color: inherit;
+  text-decoration: none;
   opacity: 0;
-  transform: translate(-0.25rem, 0.25rem);
-  transition: opacity 280ms ease, transform 280ms ease;
+  transition: opacity 700ms var(--ease), transform 700ms var(--ease), border-color 260ms ease;
 }
 
-.pf-row-link:hover .pf-row-index,
-.pf-row-link:focus-visible .pf-row-index {
-  color: var(--portfolio-orange);
-}
+.pf-tile[data-enter="left"] { transform: translateX(-2rem); }
+.pf-tile[data-enter="right"] { transform: translateX(2rem); }
+.pf-tile[data-enter="up"] { transform: translateY(2rem); }
 
-.pf-row-link:hover .pf-row-title,
-.pf-row-link:focus-visible .pf-row-title {
-  color: white;
-}
-
-.pf-row-link:hover .pf-row-thumb,
-.pf-row-link:focus-visible .pf-row-thumb {
-  opacity: 1;
-  transform: scale(1.06);
-}
-
-.pf-row-link:hover .pf-row-arrow,
-.pf-row-link:focus-visible .pf-row-arrow {
+.pf-tile.is-in {
   opacity: 1;
   transform: none;
 }
 
-.pf-row--opener .pf-row-title {
-  font-size: clamp(1.75rem, 3.1vw, 2.75rem);
-}
-
-.pf-row--opener .pf-row-thumb {
-  width: 5.25rem;
-  height: 5.25rem;
-}
-
-.pf-row--opener .pf-row-meta {
-  font-size: var(--text-sm);
-}
-
-/* ---------- stage: sticky, crossfades to whichever row is hovered/focused ---------- */
-
-.pf-stage {
-  grid-column: 2;
-  grid-row: 2;
-  position: sticky;
-  top: clamp(6.5rem, 11vh, 8.5rem);
-  align-self: start;
-  margin-top: clamp(4rem, 7vw, 6rem);
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.pf-stage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 1;
-}
-
-.pf-stage img.is-settling {
-  animation: pf-stage-settle 480ms var(--ease);
-}
-
-@keyframes pf-stage-settle {
-  0% { opacity: 0.4; transform: scale(1.025); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-/* ---------- interlude: chapter break, reusing the real showreel imagery ---------- */
-
-.pf-interlude {
-  position: relative;
-  margin: 0;
-  min-height: clamp(28rem, 34vw, 42rem);
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 900ms var(--ease);
-}
-
-.pf-interlude.is-in {
-  opacity: 1;
-}
-
-.pf-interlude img {
-  width: 100%;
-  height: 100%;
+.pf-tile-media {
   position: absolute;
   inset: 0;
-  object-fit: cover;
+  z-index: 0;
 }
 
-.pf-interlude::after {
+.pf-tile-media img,
+.pf-tile-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.02);
+  transition: transform 700ms var(--ease);
+}
+
+.pf-tile::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(12, 12, 12, 0.5);
+  z-index: 1;
+  background: linear-gradient(to top, rgba(5, 5, 5, 0.85), rgba(5, 5, 5, 0.05) 55%);
+  pointer-events: none;
 }
 
-.pf-interlude-mark {
+.pf-tile::before {
+  content: "";
   position: absolute;
-  z-index: 1;
-  right: clamp(1.5rem, 4vw, 4rem);
-  bottom: clamp(-1.5rem, -3vw, -0.5rem);
-  font-family: "Innov8 Comfortaa", "Innov8 Century Gothic", Arial, sans-serif;
-  font-size: clamp(7rem, 15vw, 12rem);
-  font-weight: 300;
-  line-height: 1;
-  color: rgba(255, 255, 255, 0.08);
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  opacity: 0;
   pointer-events: none;
+  background: radial-gradient(16rem circle at var(--pf-x, 50%) var(--pf-y, 50%), rgba(255, 116, 23, 0.25), transparent 60%);
+  transition: opacity 260ms ease;
+}
+
+.pf-tile:focus-visible {
+  outline: 0.125rem solid var(--portfolio-orange);
+  outline-offset: 0.1875rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pf-tile:hover .pf-tile-media img,
+  .pf-tile:hover .pf-tile-media video,
+  .pf-tile:focus-visible .pf-tile-media img,
+  .pf-tile:focus-visible .pf-tile-media video {
+    transform: scale(1.09);
+  }
+
+  .pf-tile:hover::before,
+  .pf-tile:focus-visible::before {
+    opacity: 1;
+  }
+
+  .pf-mosaic:hover .pf-tile:not(:hover) {
+    opacity: 0.6;
+  }
+}
+
+.pf-tile-body {
+  position: absolute;
+  left: 1.125rem;
+  right: 1.125rem;
+  bottom: 1.125rem;
+  z-index: 3;
+}
+
+.pf-tile-title {
+  margin-top: 0;
+  color: var(--white);
+  font-family: "Innov8 Comfortaa", "Century Gothic", sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 1.3vw, 1.3125rem);
+  line-height: 1.15;
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition: opacity 280ms ease, transform 280ms var(--ease);
+}
+
+.pf-tile-meta {
+  margin-top: 0;
+  display: flex;
+  gap: 0.625rem;
+  color: rgba(248, 245, 239, 0.55);
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: var(--text-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 320ms var(--ease), opacity 220ms ease, margin-top 320ms var(--ease);
+}
+
+.pf-tile:hover .pf-tile-title,
+.pf-tile:focus-visible .pf-tile-title {
+  opacity: 1;
+  transform: none;
+}
+
+.pf-tile:hover .pf-tile-meta,
+.pf-tile:focus-visible .pf-tile-meta {
+  margin-top: 0.5rem;
+  max-height: 2rem;
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Reel carousels - 3D Showreel and Motion Graphics. Native overflow-x +
+   scroll-snap track (same technique as the homepage Process carousel),
+   paged by arrow buttons. Cards get the same restrained "video" badge
+   language as the rest of the site - a play glyph + label, not a plastered
+   YouTube-style thumbnail.
+   ========================================================================== */
+
+.pf-reel {
+  position: relative;
+  margin-top: clamp(2rem, 4vw, 3rem);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pf-reel-track {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  gap: clamp(0.875rem, 1.6vw, 1.5rem);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.pf-reel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.pf-reel-card {
+  position: relative;
+  flex: 0 0 auto;
+  width: min(26rem, 74vw);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 0.375rem;
+  border: 0.0625rem solid rgba(248, 245, 239, 0.1);
+  scroll-snap-align: start;
+}
+
+.pf-reel--portrait .pf-reel-card {
+  width: min(15rem, 56vw);
+  aspect-ratio: 9 / 16;
+}
+
+.pf-reel-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pf-reel-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(5, 5, 5, 0.75), rgba(5, 5, 5, 0.05) 55%);
+  pointer-events: none;
+}
+
+.pf-reel-badge {
+  position: absolute;
+  top: 0.875rem;
+  left: 0.875rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.6875rem 0.375rem 0.5625rem;
+  border: 0.0625rem solid rgba(248, 245, 239, 0.25);
+  border-radius: 62.4375rem;
+  background: rgba(5, 5, 5, 0.55);
+  backdrop-filter: blur(0.375rem);
+  color: var(--white);
+  font-family: "Innov8 Century Gothic", Arial, sans-serif;
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pf-reel-badge-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.125rem;
+  height: 0.6875rem;
+}
+
+.pf-reel-badge-bars span {
+  width: 0.1875rem;
+  background: var(--portfolio-orange);
+  border-radius: 0.0625rem;
+  animation: pf-bars 900ms ease-in-out infinite;
+}
+
+.pf-reel-badge-bars span:nth-child(1) { height: 40%; animation-delay: -0.3s; }
+.pf-reel-badge-bars span:nth-child(2) { height: 100%; animation-delay: -0.15s; }
+.pf-reel-badge-bars span:nth-child(3) { height: 65%; }
+
+@keyframes pf-bars {
+  0%, 100% { transform: scaleY(0.45); }
+  50% { transform: scaleY(1); }
+}
+
+.pf-reel-title {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 0.875rem;
+  z-index: 1;
+  margin: 0;
+  color: var(--white);
+  font-family: "Innov8 Comfortaa", "Century Gothic", sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.9375rem, 1.2vw, 1.125rem);
+  line-height: 1.2;
+}
+
+.pf-reel-arrow {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  border: 0.0625rem solid rgba(248, 245, 239, 0.16);
+  background: rgba(248, 245, 239, 0.03);
+  cursor: pointer;
+  transition: border-color 220ms ease, background-color 220ms ease;
+}
+
+.pf-reel-arrow:hover,
+.pf-reel-arrow:focus-visible {
+  border-color: rgba(255, 90, 0, 0.5);
+  background: rgba(255, 90, 0, 0.1);
+}
+
+.pf-reel-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.pf-reel-arrow span {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-top: 0.125rem solid var(--white);
+  border-right: 0.125rem solid var(--white);
+}
+
+.pf-reel-prev span {
+  transform: rotate(-135deg) translate(0.0625rem, -0.0625rem);
+}
+
+.pf-reel-next span {
+  transform: rotate(45deg);
+}
+
+/* ==========================================================================
+   Project popup - opens over the gallery instead of navigating away.
+   The real /portfolio/:slug pages stay fully intact (direct links, the
+   noscript fallback, and modifier-clicks all still go there); this is a
+   progressive enhancement on top, reusing portfolio-project.css/
+   portfolio-blocks.js so the content itself never needs to be redesigned.
+   ========================================================================== */
+
+.pf-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  opacity: 0;
+  pointer-events: none;
+  background: rgba(4, 4, 5, 0.72);
+  backdrop-filter: blur(0.5rem);
+  transition: opacity 380ms ease;
+}
+
+.pf-modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 601;
+  width: 50vw;
+  transform: translateX(-50%) translateY(1.5rem);
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-left: 0.0625rem solid rgba(248, 245, 239, 0.1);
+  border-right: 0.0625rem solid rgba(248, 245, 239, 0.1);
+  background: var(--portfolio-dark);
+  box-shadow: rgba(0, 0, 0, 0.5) 0 2rem 5rem;
+  transition: opacity 380ms var(--ease), transform 380ms var(--ease);
+}
+
+.pf-modal-overlay.is-open,
+.pf-modal.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pf-modal.is-open {
+  transform: translateX(-50%) translateY(0);
+}
+
+.pf-modal-close.pf-modal-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 2;
+}
+
+.pf-modal-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.pf-modal-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.pf-modal-content {
+  width: 95%;
+  margin-inline: auto;
+  padding-block: clamp(4rem, 8vh, 5.5rem) clamp(3rem, 6vh, 4rem);
+}
+
+/* portfolio-project.css's width rules assume the full-page context; inside
+   the popup's narrower 95%-wide column, "full width" means the popup's own
+   width, not a viewport-relative one, and the gutter padding is redundant. */
+
+.pf-modal-content .pp-header {
+  padding-block: 0;
+}
+
+.pf-modal-content .pp-width-full {
+  width: 100%;
+}
+
+.pf-modal-content .pp-width-contained,
+.pf-modal-content .pp-width-narrow {
+  padding-inline: 0;
+}
+
+body.pf-modal-open {
+  overflow: hidden;
 }
 
 /* ---------- footer (portfolio's own orange treatment, unchanged) ---------- */
@@ -439,38 +744,37 @@
   color: #242424;
 }
 
+/* ---------- reduced motion: stop idle/looping animation, keep instant reveals ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-hero-cue,
+  .pf-reel-badge-bars span {
+    animation: none;
+  }
+
+  .pf-hero-mosaic img,
+  .pf-tile {
+    transition-delay: 0ms !important;
+  }
+}
+
 /* ---------- responsive ---------- */
 
 @media (max-width: 64rem) {
-  .portfolio-hero {
-    min-height: 48rem;
+  .pf-hero-line {
+    font-size: clamp(3rem, 11vw, 6rem);
   }
 
-  .portfolio-hero-copy {
-    top: 35%;
-    width: min(23rem, 46vw);
+  .pf-mosaic {
+    grid-template-columns: repeat(6, 1fr);
   }
 
-  .portfolio-hero-duo {
-    right: -24%;
-    height: 150%;
+  .pf-tile {
+    grid-column: span 3;
   }
 
-  .pf-chapter-heading {
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-  }
-
-  .pf-chapter-inner {
-    grid-template-columns: 1fr;
-  }
-
-  .pf-stage {
-    display: none;
-  }
-
-  .pf-index {
-    grid-column: 1;
+  .pf-modal {
+    width: 68vw;
   }
 
   .portfolio-page .footer-grid {
@@ -491,23 +795,66 @@
     right: 0.875rem;
   }
 
-  .pf-chapter-heading {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
+  .pf-hero-mosaic {
+    display: none;
   }
 
-  .pf-chapter-intro {
-    max-width: 36rem;
+  .pf-gallery-shell {
+    display: block;
   }
 
-  .pf-row-thumb {
-    width: 3.25rem;
-    height: 3.25rem;
+  .pf-sidebar {
+    position: sticky;
+    top: 4.5rem;
+    z-index: 10;
+    flex-direction: row;
+    gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: linear-gradient(to bottom, rgba(5, 5, 5, 0.85) 0%, rgba(5, 5, 5, 0.6) 70%, transparent 100%);
+    backdrop-filter: blur(0.375rem);
+    margin-inline: calc(var(--page-gutter) * -1);
+    padding-inline: var(--page-gutter);
+    padding-block: 0.625rem 1rem;
   }
 
-  .pf-row--opener .pf-row-thumb {
-    width: 4.25rem;
-    height: 4.25rem;
+  .pf-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pf-sidebar-link {
+    flex: 0 0 auto;
+    padding: 0.5rem 0.875rem;
+    border-top: 0;
+    border: 0.0625rem solid rgba(248, 245, 239, 0.16);
+    border-radius: 62.4375rem;
+  }
+
+  .pf-sidebar-label {
+    white-space: nowrap;
+  }
+
+  .pf-sidebar-link:last-child {
+    border-bottom: 0.0625rem solid rgba(248, 245, 239, 0.16);
+  }
+
+  .pf-sidebar-link.is-active {
+    border-color: var(--pf-active-accent, var(--portfolio-orange));
+  }
+
+  .pf-content {
+    margin-top: 1.5rem;
+  }
+
+  .pf-zone,
+  .pf-reel-zone {
+    padding-block: 2rem;
+  }
+
+  .pf-modal {
+    width: 100vw;
+    border-left: 0;
+    border-right: 0;
   }
 }
 
@@ -517,73 +864,22 @@
     width: 9rem;
   }
 
-  .portfolio-hero {
-    min-height: 46rem;
+  .pf-hero-line {
+    font-size: clamp(2.5rem, 15vw, 3.75rem);
   }
 
-  .portfolio-hero-copy {
-    top: 15rem;
-    width: 78%;
-    transform: none;
+  .pf-hero-sub {
+    max-width: 20rem;
+    font-size: var(--text-sm);
   }
 
-  .portfolio-hero-copy h1 {
-    font-size: clamp(2.5rem, 12vw, 3.25rem);
+  .pf-mosaic {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.625rem;
   }
 
-  .portfolio-hero-copy p {
-    max-width: 17rem;
-    margin-top: 2rem;
-    font-size: 0.75rem;
-  }
-
-  .portfolio-hero-copy p + p {
-    margin-top: 1rem;
-  }
-
-  .portfolio-hero-duo {
-    top: -2%;
-    right: -58%;
-    bottom: auto;
-    height: 80%;
-  }
-
-  .pf-chapter-inner {
-    padding-block: 6.5rem 5rem;
-  }
-
-  .pf-chapter-title {
-    font-size: clamp(2.75rem, 14vw, 4rem);
-  }
-
-  .pf-row-link {
-    gap: 0.875rem;
-  }
-
-  .pf-row-index {
-    width: 1.75rem;
-  }
-
-  .pf-row-thumb {
-    width: 2.75rem;
-    height: 2.75rem;
-  }
-
-  .pf-row--opener .pf-row-thumb {
-    width: 3.5rem;
-    height: 3.5rem;
-  }
-
-  .pf-row-arrow {
-    display: none;
-  }
-
-  .pf-interlude {
-    min-height: 20rem;
-  }
-
-  .pf-interlude-mark {
-    font-size: clamp(5rem, 24vw, 7rem);
+  .pf-tile {
+    grid-column: span 1;
   }
 
   .portfolio-page .footer-grid {

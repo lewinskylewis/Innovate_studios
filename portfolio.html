@@ -11,9 +11,11 @@
     <link rel="preload" href="Fonts/CenturyGothicPaneuropeanRegular.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="portfolio.css" />
+    <link rel="stylesheet" href="portfolio-project.css" />
     <script>document.documentElement.classList.add("js");</script>
   </head>
   <body class="portfolio-page">
+    <div class="pf-page-atmosphere" aria-hidden="true"></div>
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header" data-header>
@@ -70,84 +72,131 @@
     </header>
 
     <main id="main" class="portfolio-main">
-      <section class="portfolio-hero" id="portfolio-top">
-        <div class="portfolio-hero-inner section-container">
-          <div class="portfolio-hero-copy">
-            <h1>Selected Work</h1>
-            <p>Fourteen projects across commercials, brand identity and digital experience — built for African and global brands who refuse to blend in.</p>
-            <p>Sorted by discipline below. Every piece links through to the full case study.</p>
-          </div>
-          <img class="portfolio-hero-duo" src="assets/images/Hero.png" alt="" />
+      <section class="pf-hero" id="portfolio-top" aria-label="Portfolio">
+        <div class="pf-hero-mosaic" data-pf-hero-mosaic aria-hidden="true"></div>
+
+        <div class="pf-hero-content section-container">
+          <p class="pf-hero-tag">Innov8 Studios / Portfolio</p>
+          <h1 class="pf-hero-heading">
+            <span class="pf-hero-line">Selected</span>
+            <span class="pf-hero-line pf-hero-line--accent">Work.</span>
+          </h1>
+          <p class="pf-hero-sub">Fourteen projects across commercials, brand identity and digital experience.</p>
         </div>
+
+        <div class="pf-hero-cue" aria-hidden="true"><span></span></div>
       </section>
 
-      <section class="pf-chapter">
-        <div class="section-container">
-          <div class="pf-chapter-heading">
-            <div>
-              <div class="section-kicker portfolio-kicker"><span></span><p>Chapter 01</p></div>
-              <h2 class="pf-chapter-title">Marketing Commercials</h2>
-            </div>
-            <p class="pf-chapter-intro">Campaign films and commercial work built to earn attention in a crowded feed and hold it in a boardroom.</p>
-          </div>
+      <div class="pf-gallery-shell section-container">
+        <nav class="pf-sidebar" data-pf-sidebar aria-label="Jump to a discipline">
+          <button type="button" class="pf-sidebar-link" data-pf-jump="Marketing Commercials">
+            <span class="pf-sidebar-index">01</span>
+            <span class="pf-sidebar-label">Marketing Commercials</span>
+          </button>
+          <button type="button" class="pf-sidebar-link" data-pf-jump="3D Showreel">
+            <span class="pf-sidebar-index">02</span>
+            <span class="pf-sidebar-label">3D Showreel</span>
+          </button>
+          <button type="button" class="pf-sidebar-link" data-pf-jump="Brand Identity">
+            <span class="pf-sidebar-index">03</span>
+            <span class="pf-sidebar-label">Brand Identity</span>
+          </button>
+          <button type="button" class="pf-sidebar-link" data-pf-jump="Motion Graphics">
+            <span class="pf-sidebar-index">04</span>
+            <span class="pf-sidebar-label">Motion Graphics</span>
+          </button>
+          <button type="button" class="pf-sidebar-link" data-pf-jump="Web Experiences">
+            <span class="pf-sidebar-index">05</span>
+            <span class="pf-sidebar-label">Web Experiences</span>
+          </button>
+        </nav>
 
-          <div class="pf-chapter-inner">
-            <ul class="pf-index" data-pf-index="Marketing Commercials"></ul>
-            <div class="pf-stage">
-              <img data-pf-stage-img alt="" />
+        <div class="pf-content">
+          <section class="pf-zone" data-pf-zone="Marketing Commercials" id="zone-marketing" aria-label="Marketing Commercials">
+            <header class="pf-zone-heading">
+              <p class="pf-zone-kicker">Zone 01</p>
+              <h2 class="pf-zone-title">Marketing Commercials</h2>
+            </header>
+            <div class="pf-mosaic" data-pf-mosaic="Marketing Commercials"></div>
+          </section>
+
+          <section class="pf-reel-zone" data-pf-zone="3D Showreel" id="zone-3d-showreel" aria-label="3D Showreel">
+            <header class="pf-zone-heading">
+              <p class="pf-zone-kicker">Zone 02</p>
+              <h2 class="pf-zone-title">3D Showreel</h2>
+            </header>
+            <div class="pf-reel" data-pf-reel="3d">
+              <button type="button" class="pf-reel-arrow pf-reel-prev" data-pf-reel-prev="3d" aria-label="Previous video"><span></span></button>
+              <div class="pf-reel-track" data-pf-reel-track="3d"></div>
+              <button type="button" class="pf-reel-arrow pf-reel-next" data-pf-reel-next="3d" aria-label="Next video"><span></span></button>
             </div>
-          </div>
+          </section>
+
+          <section class="pf-zone" data-pf-zone="Brand Identity" id="zone-brand" aria-label="Brand Identity">
+            <header class="pf-zone-heading">
+              <p class="pf-zone-kicker">Zone 03</p>
+              <h2 class="pf-zone-title">Brand Identity</h2>
+            </header>
+            <div class="pf-mosaic" data-pf-mosaic="Brand Identity"></div>
+          </section>
+
+          <section class="pf-reel-zone" data-pf-zone="Motion Graphics" id="zone-motion-graphics" aria-label="Motion Graphics">
+            <header class="pf-zone-heading">
+              <p class="pf-zone-kicker">Zone 04</p>
+              <h2 class="pf-zone-title">Motion Graphics</h2>
+            </header>
+            <div class="pf-reel pf-reel--portrait" data-pf-reel="motion">
+              <button type="button" class="pf-reel-arrow pf-reel-prev" data-pf-reel-prev="motion" aria-label="Previous reel"><span></span></button>
+              <div class="pf-reel-track" data-pf-reel-track="motion"></div>
+              <button type="button" class="pf-reel-arrow pf-reel-next" data-pf-reel-next="motion" aria-label="Next reel"><span></span></button>
+            </div>
+          </section>
+
+          <section class="pf-zone" data-pf-zone="Web Experiences" id="zone-web" aria-label="Web Experiences">
+            <header class="pf-zone-heading">
+              <p class="pf-zone-kicker">Zone 05</p>
+              <h2 class="pf-zone-title">Web Experiences</h2>
+            </header>
+            <div class="pf-mosaic" data-pf-mosaic="Web Experiences"></div>
+          </section>
         </div>
-      </section>
-
-      <div class="pf-interlude">
-        <img src="assets/images/Featured-Stanbic.png" alt="" />
-        <span class="pf-interlude-mark">02</span>
       </div>
 
-      <section class="pf-chapter">
-        <div class="section-container">
-          <div class="pf-chapter-heading">
-            <div>
-              <div class="section-kicker portfolio-kicker"><span></span><p>Chapter 02</p></div>
-              <h2 class="pf-chapter-title">Brand Identity</h2>
-            </div>
-            <p class="pf-chapter-intro">Visual identity systems — mark, type, colour and guidelines — built to read as premium at every scale.</p>
-          </div>
-
-          <div class="pf-chapter-inner">
-            <ul class="pf-index" data-pf-index="Brand Identity"></ul>
-            <div class="pf-stage">
-              <img data-pf-stage-img alt="" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div class="pf-interlude">
-        <img src="assets/images/Featured-Jubilee.png" alt="" />
-        <span class="pf-interlude-mark">03</span>
-      </div>
-
-      <section class="pf-chapter">
-        <div class="section-container">
-          <div class="pf-chapter-heading">
-            <div>
-              <div class="section-kicker portfolio-kicker"><span></span><p>Chapter 03</p></div>
-              <h2 class="pf-chapter-title">Web Experiences</h2>
-            </div>
-            <p class="pf-chapter-intro">Digital products and web experiences designed and built end to end, from interface to interaction.</p>
-          </div>
-
-          <div class="pf-chapter-inner">
-            <ul class="pf-index" data-pf-index="Web Experiences"></ul>
-            <div class="pf-stage">
-              <img data-pf-stage-img alt="" />
-            </div>
-          </div>
-        </div>
-      </section>
+      <noscript>
+        <nav class="pf-noscript-nav section-container" aria-label="All portfolio projects">
+          <ul>
+            <li><a href="/portfolio/nike-kenya-own-the-ground">Nike Kenya — Own The Ground</a></li>
+            <li><a href="/portfolio/stanbic-digital-card-campaign">Stanbic Digital Card Campaign</a></li>
+            <li><a href="/portfolio/grosvenor-residential-towers">Grosvenor Residential Towers</a></li>
+            <li><a href="/portfolio/hyundai-electric-mobility">Hyundai Electric Mobility</a></li>
+            <li><a href="/portfolio/jetour-g700-campaign">Jetour G700 Campaign</a></li>
+            <li><a href="/portfolio/virtuoso-connoisseur-co">Virtuoso Connoisseur Co.</a></li>
+            <li><a href="/portfolio/vena-luxury-jewelry">Vena Luxury Jewelry</a></li>
+            <li><a href="/portfolio/sorena-greece">Sorena Greece</a></li>
+            <li><a href="/portfolio/candle-space-premium">Candle Space Premium</a></li>
+            <li><a href="/portfolio/jovana-brand-identity">Jovana Brand Identity</a></li>
+            <li><a href="/portfolio/green-gold-floral-mark">Green &amp; Gold Floral Mark</a></li>
+            <li><a href="/portfolio/green-mobile-experience">Green Mobile Experience</a></li>
+            <li><a href="/portfolio/purple-mobile-registration">Purple Mobile Registration</a></li>
+            <li><a href="/portfolio/prysmtech-image-management">Prysmtech Image Management</a></li>
+          </ul>
+        </nav>
+      </noscript>
     </main>
+
+    <div class="pf-modal-overlay" data-pf-modal-overlay aria-hidden="true"></div>
+    <div class="pf-modal" id="pfModal" role="dialog" aria-modal="true" aria-label="Project details" aria-hidden="true">
+      <button type="button" class="why-close pf-modal-close" data-pf-modal-close aria-label="Close project">
+        <span class="why-close-text">Close</span>
+        <span class="why-close-key" aria-hidden="true">Esc</span>
+      </button>
+      <div class="pf-modal-scroll" data-pf-modal-scroll>
+        <div class="pf-modal-content portfolio-project-main">
+          <header class="pp-header" data-pf-modal-header></header>
+          <div class="pp-blocks" data-pf-modal-blocks></div>
+        </div>
+      </div>
+    </div>
 
     <footer class="site-footer">
       <div class="section-container footer-grid">
@@ -195,7 +244,8 @@
 
     <script src="script.js"></script>
     <script src="portfolio-project-data.js"></script>
-    <script src="portfolio-index.js" defer></script>
+    <script src="portfolio-blocks.js"></script>
+    <script src="portfolio-gallery.js" defer></script>
     <!-- whatsapp-float.js disabled site-wide for now - hidden, not deleted, for later use -->
   </body>
 </html>
